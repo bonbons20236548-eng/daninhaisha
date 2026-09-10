@@ -1,71 +1,517 @@
 <!DOCTYPE html>
-<!-- saved from url=(0161)file:///C:/Users/bonbo/AppData/Local/Temp/696763d2-522f-4974-bf6e-50b78e9b8ff3_minibus_trip_manager_v3_pink_black.zip.ff3/minibus_trip_manager_v3_pink_black.html -->
-<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ff2d87"><title>ミニバス 配車管理 V3</title>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<title>🏀 ミニバス 配車管理 V4</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;background:#f2f2f2;color:#111111}
-header{background:linear-gradient(135deg,#111111 0%,#111111 58%,#ff2d87 100%);color:white;padding:20px 16px 18px;position:sticky;top:0;z-index:5}h1{font-size:22px;margin:0 0 4px}.sub{font-size:12px;opacity:.9}
-main{max-width:760px;margin:auto;padding:14px 14px 90px}.card{background:white;border-radius:16px;border-top:3px solid #ff2d87;padding:16px;margin:12px 0;box-shadow:0 2px 12px #11111112}
-.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.nav button,.btn{border:0;border-radius:12px;padding:12px;font-weight:700;background:#fbe4ef;color:#c21868}.nav button.active{background:#111111;color:#ff7eb5;box-shadow:inset 0 0 0 2px #ff2d87}
-label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid #d8d8d8;border-radius:10px;font-size:16px;background:#fff}
-.primary{background:linear-gradient(135deg,#ff2d87,#e91e73);color:#fff!important;width:100%;margin-top:16px}.danger{background:#ffe1e9;color:#c2185b}.edit{background:#ffe8f2;color:#c21868}.muted{color:#666666;font-size:12px}
-.members{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}.member{border:1px solid #d8d8d8;border-radius:10px;padding:11px;background:#fff;display:flex;gap:8px;align-items:center;font-weight:600}.member input{width:auto}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#ffe8f2;border-radius:14px;padding:14px}.stat b{font-size:24px;display:block}.stat span{font-size:12px;color:#5d5d5d}
-.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.history{border-top:1px solid #e9e9e9;padding-top:12px;margin-top:12px}.pill{font-size:11px;background:#eeeeee;padding:4px 8px;border-radius:999px}.hidden{display:none}.empty{text-align:center;color:#777777;padding:24px}
-.actions{display:flex;gap:7px;margin-top:9px}.actions button{flex:1;border:0;border-radius:9px;padding:9px;font-weight:700}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111111;color:#fff;padding:11px 16px;border-radius:999px;display:none;z-index:20;font-size:13px}
-.modal{position:fixed;inset:0;background:#11111199;display:none;align-items:flex-end;justify-content:center;z-index:10}.modal.open{display:flex}.sheet{background:white;width:100%;max-width:760px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px 28px}.sheet h2{margin-top:0}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Noto Sans JP",sans-serif;
+  background:#f5f7fb;
+  color:#222;
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:18px 16px 14px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+header h1{
+  margin:0;
+  font-size:21px;
+}
+
+.sync{
+  margin-top:6px;
+  font-size:12px;
+  opacity:.9;
+}
+
+.sync.online{
+  color:#86efac;
+}
+
+.sync.offline{
+  color:#fca5a5;
+}
+
+.container{
+  max-width:760px;
+  margin:auto;
+  padding:12px;
+  padding-bottom:80px;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-bottom:12px;
+}
+
+.tab{
+  border:0;
+  background:#e5e7eb;
+  padding:12px 4px;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.tab.active{
+  background:#2563eb;
+  color:white;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.card h2,
+.card h3{
+  margin:0 0 12px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin:12px 0 5px;
+}
+
+input,
+select{
+  width:100%;
+  border:1px solid #d1d5db;
+  border-radius:9px;
+  padding:12px;
+  font-size:16px;
+  background:white;
+}
+
+.member-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.member-check{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:10px;
+  background:#f3f4f6;
+  border-radius:9px;
+  font-size:14px;
+}
+
+.member-check input{
+  width:20px;
+  height:20px;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:13px;
+  margin-top:12px;
+  font-size:15px;
+  font-weight:bold;
+}
+
+.btn.primary{
+  background:#2563eb;
+  color:white;
+}
+
+.btn.green{
+  background:#16a34a;
+  color:white;
+}
+
+.btn.gray{
+  background:#e5e7eb;
+}
+
+.btn.red{
+  background:#dc2626;
+  color:white;
+}
+
+.btn.small{
+  width:auto;
+  padding:8px 12px;
+  margin:0;
+  font-size:13px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.history{
+  border-bottom:1px solid #eee;
+  padding:12px 0;
+}
+
+.history:last-child{
+  border-bottom:0;
+}
+
+.history-title{
+  font-weight:bold;
+  font-size:15px;
+}
+
+.muted{
+  color:#6b7280;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.actions{
+  display:flex;
+  gap:6px;
+  margin-top:8px;
+}
+
+.actions button{
+  border:0;
+  border-radius:7px;
+  padding:7px 11px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.edit{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.danger{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:8px;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.summary:last-child{
+  border-bottom:0;
+}
+
+.badge{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.empty{
+  text-align:center;
+  color:#9ca3af;
+  padding:25px 10px;
+}
+
+.member-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 0;
+  border-bottom:1px solid #eee;
+}
+
+.member-row:last-child{
+  border-bottom:0;
+}
+
+.member-delete{
+  border:0;
+  background:#fee2e2;
+  color:#b91c1c;
+  border-radius:7px;
+  padding:7px 10px;
+  font-size:12px;
+}
+
+.notice{
+  padding:10px;
+  border-radius:9px;
+  background:#eff6ff;
+  color:#1e40af;
+  font-size:12px;
+  margin-bottom:10px;
+}
+
+.error-box{
+  display:none;
+  background:#fee2e2;
+  color:#991b1b;
+  padding:10px;
+  border-radius:9px;
+  font-size:12px;
+  margin-bottom:10px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:100;
+  padding:15px;
+  overflow:auto;
+}
+
+.modal-box{
+  background:white;
+  max-width:600px;
+  margin:30px auto;
+  border-radius:15px;
+  padding:16px;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%);
+  background:#111827;
+  color:white;
+  padding:11px 17px;
+  border-radius:30px;
+  font-size:13px;
+  z-index:200;
+  display:none;
+  max-width:90%;
+  text-align:center;
+}
+
+.hidden{
+  display:none !important;
+}
+
+.stat-box{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.stat{
+  background:#f3f4f6;
+  border-radius:10px;
+  padding:12px;
+  text-align:center;
+}
+
+.stat-number{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.stat-label{
+  font-size:11px;
+  color:#6b7280;
+}
 </style>
 </head>
+
 <body>
-<header><h1>🏀 ミニバス 配車管理 V3</h1><div class="sub">まとめて登録・自動集計・後から編集</div></header>
-<main>
-<div class="nav">
-<button class="active" onclick="show(&#39;register&#39;,this)">配車登録</button>
-<button onclick="show(&#39;summary&#39;,this)" class="">団員別集計</button>
-<button onclick="show(&#39;members&#39;,this)" class="">団員管理</button>
+
+<header>
+  <h1>🏀 ミニバス 配車管理 V4</h1>
+  <div id="syncStatus" class="sync">
+    ☁️ Firebaseに接続しています…
+  </div>
+</header>
+
+<div class="container">
+
+  <div id="errorBox" class="error-box"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('register',this)">配車登録</button>
+    <button class="tab" onclick="showTab('summary',this)">団員別集計</button>
+    <button class="tab" onclick="showTab('members',this)">団員管理</button>
+  </div>
+
+  <!-- ========================= -->
+  <!-- 配車登録 -->
+  <!-- ========================= -->
+
+  <section id="tab-register">
+
+    <div class="card">
+      <h2>🚗 配車を登録</h2>
+
+      <label>日付</label>
+      <input type="date" id="date">
+
+      <label>行き先</label>
+      <input type="text" id="place" placeholder="例：サンアリーナ">
+
+      <label>走行距離（km）</label>
+      <input type="number" id="distance" min="0" step="0.1" placeholder="例：120">
+
+      <label>乗車した団員</label>
+      <div id="memberChecks" class="member-grid"></div>
+
+      <button class="btn primary" onclick="addTrip()">
+        🚗 選択した団員をまとめて登録
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>登録済みの配車</h3>
+      <div id="recent"></div>
+    </div>
+
+  </section>
+
+  <!-- ========================= -->
+  <!-- 団員別集計 -->
+  <!-- ========================= -->
+
+  <section id="tab-summary" class="hidden">
+
+    <div class="card">
+      <h2>📊 団員別集計</h2>
+
+      <div class="stat-box">
+        <div class="stat">
+          <div class="stat-number" id="totalTrips">0</div>
+          <div class="stat-label">配車件数</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-number" id="totalDistance">0</div>
+          <div class="stat-label">総走行距離 km</div>
+        </div>
+      </div>
+
+      <div id="summaryList" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>📅 履歴</h3>
+
+      <label>団員を選択</label>
+      <select id="historyMember" onchange="renderHistory()">
+        <option value="">すべて</option>
+      </select>
+
+      <div id="history" style="margin-top:10px;"></div>
+    </div>
+
+  </section>
+
+  <!-- ========================= -->
+  <!-- 団員管理 -->
+  <!-- ========================= -->
+
+  <section id="tab-members" class="hidden">
+
+    <div class="card">
+      <h2>👥 団員管理</h2>
+
+      <div class="notice">
+        団員を追加・削除できます。変更すると、他の端末にも自動反映されます。
+      </div>
+
+      <div class="row">
+        <input type="text" id="newMember" placeholder="新しい団員名">
+        <button class="btn green small" onclick="addMember()">
+          追加
+        </button>
+      </div>
+
+      <div id="memberList" style="margin-top:12px;"></div>
+    </div>
+
+  </section>
+
 </div>
 
-<section id="register" class="">
-<div class="card">
-<h2 id="formTitle">配車をまとめて登録</h2>
-<label>日付</label><input id="date" type="date">
-<label>行き先（往復高速料金も記載）</label><input id="place" placeholder="例：○○体育館">
-<label>往復距離（km）</label><input id="distance" type="number" min="0" step="0.1" placeholder="例：32">
-<label>配車担当者を選択</label><div id="memberChecks" class="members"><label class="member"><input type="checkbox" value="西濱"> 西濱</label><label class="member"><input type="checkbox" value="小澤"> 小澤</label><label class="member"><input type="checkbox" value="竹内"> 竹内</label><label class="member"><input type="checkbox" value="粉川"> 粉川</label><label class="member"><input type="checkbox" value="山口"> 山口</label><label class="member"><input type="checkbox" value="藤本"> 藤本</label><label class="member"><input type="checkbox" value="萩"> 萩</label><label class="member"><input type="checkbox" value="中田"> 中田</label><label class="member"><input type="checkbox" value="西田"> 西田</label><label class="member"><input type="checkbox" value="伊丹"> 伊丹</label><label class="member"><input type="checkbox" value="高木"> 高木</label><label class="member"><input type="checkbox" value="鈴木"> 鈴木</label><label class="member"><input type="checkbox" value="加藤"> 加藤</label><label class="member"><input type="checkbox" value="舘"> 舘</label><label class="member"><input type="checkbox" value="長沼"> 長沼</label></div>
-<button class="btn primary" onclick="addTrip()">選択した団員をまとめて登録</button>
+<!-- ========================= -->
+<!-- 編集モーダル -->
+<!-- ========================= -->
+
+<div id="editModal" class="modal">
+
+  <div class="modal-box">
+
+    <h2>✏️ 配車を編集</h2>
+
+    <input type="hidden" id="editId">
+
+    <label>日付</label>
+    <input type="date" id="editDate">
+
+    <label>行き先</label>
+    <input type="text" id="editPlace">
+
+    <label>走行距離（km）</label>
+    <input type="number" id="editDistance" min="0" step="0.1">
+
+    <label>乗車した団員</label>
+    <div id="editChecks" class="member-grid"></div>
+
+    <button class="btn primary" onclick="saveEdit()">
+      保存する
+    </button>
+
+    <button class="btn gray" onclick="closeEdit()">
+      キャンセル
+    </button>
+
+  </div>
+
 </div>
-<div class="card">
-  <h3>登録済みの配車</h3>
-  <div id="recent"></div>
-</div>
 
-<section id="summary" class="hidden">
-<div class="card"><h2>団員別集計</h2><div id="summaryList"><div class="row card" style="margin:8px 0;padding:12px"><b>西濱</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>小澤</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>竹内</b><span><b>1回</b>　5555km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>粉川</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>山口</b><span><b>1回</b>　5555km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>藤本</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>萩</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>中田</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>西田</b><span><b>1回</b>　5555km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>伊丹</b><span><b>1回</b>　5555km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>高木</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>鈴木</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>加藤</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>舘</b><span><b>0回</b>　0km</span></div><div class="row card" style="margin:8px 0;padding:12px"><b>長沼</b><span><b>0回</b>　0km</span></div></div></div>
-<div class="card"><h3>団員を選んで履歴を見る</h3><select id="historyMember" onchange="renderHistory()"><option>西濱</option><option>小澤</option><option>竹内</option><option>粉川</option><option>山口</option><option>藤本</option><option>萩</option><option>中田</option><option>西田</option><option>伊丹</option><option>高木</option><option>鈴木</option><option>加藤</option><option>舘</option><option>長沼</option></select><div id="history"><div class="stats" style="margin-top:12px"><div class="stat"><b>0</b><span>配車回数</span></div><div class="stat"><b>0km</b><span>合計配車距離</span></div></div><div class="empty">配車履歴はありません</div></div></div>
-</section>
+<div id="toast" class="toast"></div>
 
-<section id="members" class="hidden">
-<div class="card"><h2>団員管理</h2><label>団員名</label><input id="newMember" placeholder="例：山田 太郎"><button class="btn primary" onclick="addMember()">団員を追加</button></div>
-<div class="card"><div id="memberList"><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>西濱</b><button class="smallbtn danger" onclick="deleteMember(&#39;西濱&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>小澤</b><button class="smallbtn danger" onclick="deleteMember(&#39;小澤&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>竹内</b><button class="smallbtn danger" onclick="deleteMember(&#39;竹内&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>粉川</b><button class="smallbtn danger" onclick="deleteMember(&#39;粉川&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>山口</b><button class="smallbtn danger" onclick="deleteMember(&#39;山口&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>藤本</b><button class="smallbtn danger" onclick="deleteMember(&#39;藤本&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>萩</b><button class="smallbtn danger" onclick="deleteMember(&#39;萩&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>中田</b><button class="smallbtn danger" onclick="deleteMember(&#39;中田&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>西田</b><button class="smallbtn danger" onclick="deleteMember(&#39;西田&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>伊丹</b><button class="smallbtn danger" onclick="deleteMember(&#39;伊丹&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>高木</b><button class="smallbtn danger" onclick="deleteMember(&#39;高木&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>鈴木</b><button class="smallbtn danger" onclick="deleteMember(&#39;鈴木&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>加藤</b><button class="smallbtn danger" onclick="deleteMember(&#39;加藤&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>舘</b><button class="smallbtn danger" onclick="deleteMember(&#39;舘&#39;)">削除</button></div><div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>長沼</b><button class="smallbtn danger" onclick="deleteMember(&#39;長沼&#39;)">削除</button></div></div></div>
-</section>
-</main>
-
-<div id="modal" class="modal"><div class="sheet">
-<h2>配車記録を編集</h2>
-<input id="editId" type="hidden" value="1787355202447">
-<label>日付</label><input id="editDate" type="date">
-<label>行き先</label><input id="editPlace">
-<label>往復距離（km）</label><input id="editDistance" type="number" min="0" step="0.1">
-<label>配車担当者</label><div id="editChecks" class="members"><label class="member"><input type="checkbox" value="西濱"> 西濱</label><label class="member"><input type="checkbox" value="小澤"> 小澤</label><label class="member"><input type="checkbox" value="竹内" checked=""> 竹内</label><label class="member"><input type="checkbox" value="粉川"> 粉川</label><label class="member"><input type="checkbox" value="山口" checked=""> 山口</label><label class="member"><input type="checkbox" value="藤本"> 藤本</label><label class="member"><input type="checkbox" value="萩"> 萩</label><label class="member"><input type="checkbox" value="中田"> 中田</label><label class="member"><input type="checkbox" value="西田" checked=""> 西田</label><label class="member"><input type="checkbox" value="伊丹" checked=""> 伊丹</label><label class="member"><input type="checkbox" value="高木" checked=""> 高木</label><label class="member"><input type="checkbox" value="鈴木"> 鈴木</label><label class="member"><input type="checkbox" value="加藤"> 加藤</label><label class="member"><input type="checkbox" value="舘"> 舘</label><label class="member"><input type="checkbox" value="長沼"> 長沼</label></div>
-<div class="actions"><button class="edit" onclick="saveEdit()">変更を保存</button><button class="danger" onclick="closeModal()">キャンセル</button></div>
-</div></div>
-<div id="toast" class="toast" style="display: none;">変更を保存しました</div>
-
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore-compat.js"></script>
 
 <script>
+
+/* =========================================================
+   Firebase設定
+========================================================= */
+
 const firebaseConfig = {
   apiKey: "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
   authDomain: "minibusdanin.firebaseapp.com",
@@ -77,600 +523,1005 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const firestore = firebase.firestore();
 
-console.log("Firebase接続OK");
-</script>
-<script>
-const SETTINGS_REF = firestore.collection("settings").doc("main");
-let db = {members: [], trips: []};
+const SETTINGS_REF =
+  firestore.collection("settings").doc("main");
+
+const TRIPS_REF =
+  firestore.collection("trips");
+
+
+/* =========================================================
+   初期団員
+========================================================= */
 
 const DEFAULT_MEMBERS = [
-"西濱","小澤","竹内","粉川","山口","藤本","萩",
-"中田","西田","伊丹","高木","鈴木","加藤","舘","長沼"
+  "西濱",
+  "小澤",
+  "竹内",
+  "粉川",
+  "山口",
+  "藤本",
+  "萩",
+  "中田",
+  "西田",
+  "伊丹",
+  "高木",
+  "鈴木",
+  "加藤",
+  "舘",
+  "長沼"
 ];
 
-const $ = id => document.getElementById(id);
 
-function toast(t){
-  $("toast").textContent=t;
-  $("toast").style.display="block";
-  clearTimeout(window._toast);
-  window._toast=setTimeout(()=>$("toast").style.display="none",1800);
+/* =========================================================
+   アプリデータ
+========================================================= */
+
+let db = {
+  members: [],
+  trips: []
+};
+
+
+/* =========================================================
+   共通
+========================================================= */
+
+function $(id){
+  return document.getElementById(id);
 }
 
-function esc(s){
-  return String(s).replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  }[c]));
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-function js(s){
-  return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+function showToast(message){
+
+  const el = $("toast");
+
+  el.textContent = message;
+  el.style.display = "block";
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(()=>{
+    el.style.display = "none";
+  },2500);
 }
 
-function fmt(n){
-  return Number.isInteger(Number(n)) ? Number(n) : Number(n).toFixed(1);
+function showError(message){
+
+  const box = $("errorBox");
+
+  box.textContent = message;
+  box.style.display = "block";
 }
 
-function selected(id){
-  return [...$(id).querySelectorAll("input:checked")].map(x=>x.value);
+function clearError(){
+
+  const box = $("errorBox");
+
+  box.textContent = "";
+  box.style.display = "none";
 }
 
-function checks(id, selected=[]){
-  $(id).innerHTML=db.members.length
-    ? db.members.map(n=>`
-      <label class="member">
-        <input type="checkbox" value="${esc(n)}"
-        ${selected.includes(n)?"checked":""}>
-        ${esc(n)}
+function formatDate(date){
+
+  if(!date) return "";
+
+  const p = String(date).split("-");
+
+  if(p.length !== 3) return date;
+
+  return `${p[0]}/${p[1]}/${p[2]}`;
+}
+
+
+/* =========================================================
+   タブ
+========================================================= */
+
+function showTab(name, button){
+
+  document.querySelectorAll("[id^='tab-']")
+    .forEach(el => el.classList.add("hidden"));
+
+  $("tab-" + name).classList.remove("hidden");
+
+  document.querySelectorAll(".tab")
+    .forEach(el => el.classList.remove("active"));
+
+  button.classList.add("active");
+
+  renderAll();
+}
+
+
+/* =========================================================
+   団員チェックボックス
+========================================================= */
+
+function renderMemberChecks(){
+
+  const html = db.members
+    .map(name => `
+      <label class="member-check">
+        <input type="checkbox"
+               value="${escapeHtml(name)}">
+        <span>${escapeHtml(name)}</span>
       </label>
-    `).join("")
-    : `<div class="empty" style="grid-column:1/-1">
-        先に団員を追加してください
-       </div>`;
+    `)
+    .join("");
+
+  $("memberChecks").innerHTML =
+    html || `<div class="empty">団員が登録されていません</div>`;
 }
 
-function stats(n){
-  const t=db.trips.filter(x =>
-    Array.isArray(x.members) && x.members.includes(n)
-  );
+function getSelectedMembers(containerId){
 
-  return {
-    count:t.length,
-    km:t.reduce((a,x)=>a+Number(x.distance||0),0)
-  };
+  const container = $(containerId);
+
+  if(!container) return [];
+
+  return Array.from(
+    container.querySelectorAll("input[type='checkbox']:checked")
+  ).map(input => input.value);
 }
 
-/* 画面切り替え */
-function show(id,btn){
-  ["register","summary","members"].forEach(x=>{
-    $(x).classList.toggle("hidden",x!==id);
-  });
 
-  document.querySelectorAll(".nav button")
-    .forEach(b=>b.classList.remove("active"));
+/* =========================================================
+   配車登録
+========================================================= */
 
-  btn.classList.add("active");
-  renderAll();
-}
+async function addTrip(){
 
-/* 団員データ */
-async function loadMembers(){
+  clearError();
 
-  const snap=await SETTINGS_REF.get();
+  const date =
+    $("date").value;
 
-  if(!snap.exists){
+  const place =
+    $("place").value.trim();
 
-    await SETTINGS_REF.set({
-      members:DEFAULT_MEMBERS
-    });
+  const distance =
+    Number($("distance").value);
 
-    db.members=[...DEFAULT_MEMBERS];
+  const members =
+    getSelectedMembers("memberChecks");
 
-  }else{
-
-    const data=snap.data()||{};
-
-    db.members=Array.isArray(data.members)
-      ? data.members
-      : [...DEFAULT_MEMBERS];
+  if(!date){
+    showToast("日付を入力してください");
+    return;
   }
 
-  renderAll();
-}
-
-/* 団員をリアルタイム監視 */
-SETTINGS_REF.onSnapshot(snap=>{
-
-  const data=snap.data()||{};
-
-  if(Array.isArray(data.members)){
-    db.members=data.members;
-    renderAll();
+  if(!place){
+    showToast("行き先を入力してください");
+    return;
   }
 
-},err=>{
-  console.error(err);
-  toast("団員データの読み込みに失敗しました");
-});
-
-/* 配車データをリアルタイム監視 */
-firestore.collection("trips").onSnapshot(snap=>{
-
-  db.trips=snap.docs
-    .map(doc=>({
-      id:doc.id,
-      ...doc.data()
-    }))
-    .filter(t =>
-      t.date &&
-      t.place &&
-      Number(t.distance)>0 &&
-      Array.isArray(t.members)
-    );
-
-  renderAll();
-
-  if($("syncStatus")){
-    $("syncStatus").textContent="☁️ 共有データと同期中";
-    $("syncStatus").className="sync online";
+  if(!(distance > 0)){
+    showToast("走行距離を入力してください");
+    return;
   }
 
-},err=>{
-  console.error(err);
-
-  if($("syncStatus")){
-    $("syncStatus").textContent="⚠️ Firebase接続エラー";
-    $("syncStatus").className="sync offline";
-  }
-
-  toast("データを読み込めませんでした");
-});
-
-/* 団員追加 */
-async function addMember(){
-
-  const n=$("newMember").value.trim();
-
-  if(!n){
-    return toast("団員名を入力してください");
-  }
-
-  if(db.members.includes(n)){
-    return toast("同じ名前が登録されています");
-  }
-
-  try{
-
-    await SETTINGS_REF.set({
-      members:[...db.members,n]
-    },{merge:true});
-
-    $("newMember").value="";
-
-    toast("団員を追加しました");
-
-  }catch(e){
-
-    console.error(e);
-    toast("追加できませんでした");
-  }
-}
-
-/* 団員削除 */
-async function deleteMember(n){
-
-  if(db.trips.some(t=>t.members.includes(n))){
-    return toast("配車履歴があるため削除できません");
-  }
-
-  if(!confirm(n+" を削除しますか？")){
+  if(!members.length){
+    showToast("乗車した団員を選択してください");
     return;
   }
 
   try{
 
-    await SETTINGS_REF.set({
-      members:db.members.filter(x=>x!==n)
-    },{merge:true});
+    $("syncStatus").textContent =
+      "☁️ Firebaseへ保存しています…";
 
-    toast("削除しました");
+    const ref =
+      await TRIPS_REF.add({
 
-  }catch(e){
+        date: date,
 
-    console.error(e);
-    toast("削除できませんでした");
+        place: place,
+
+        distance: distance,
+
+        members: members,
+
+        createdAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+
+      });
+
+    console.log("登録成功:", ref.id);
+
+    $("place").value = "";
+    $("distance").value = "";
+
+    $("memberChecks")
+      .querySelectorAll("input")
+      .forEach(input => {
+        input.checked = false;
+      });
+
+    showToast("✅ Firebaseに登録しました");
+
+    $("syncStatus").textContent =
+      "☁️ 共有データと同期中";
+
+  }catch(error){
+
+    console.error(error);
+
+    $("syncStatus").textContent =
+      "⚠️ Firebase接続エラー";
+
+    showError(
+      "配車の保存に失敗しました。\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+
+    showToast("保存できませんでした");
   }
 }
 
-/* 配車登録 */
-async function addTrip(){
 
-  const date=$("date").value;
-  const place=$("place").value.trim();
-  const distance=Number($("distance").value);
-  const members=selected("memberChecks");
+/* =========================================================
+   配車表示
+========================================================= */
 
-  if(
-    !date ||
-    !place ||
-    !(distance>0) ||
-    !members.length
-  ){
-    return toast("日付・行き先・距離・団員を入力してください");
+function renderRecent(){
+
+  const box = $("recent");
+
+  const trips = [...db.trips]
+    .sort((a,b) =>
+      String(b.date).localeCompare(String(a.date))
+    );
+
+  if(!trips.length){
+
+    box.innerHTML =
+      `<div class="empty">まだ配車登録がありません</div>`;
+
+    return;
   }
 
-  try{
+  box.innerHTML =
+    trips.map(trip => {
 
-   try {
-  await firestore.collection("trips").add({
-    date: date,
-    place: place,
-    distance: distance,
-    members: members,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
+      const members =
+        Array.isArray(trip.members)
+          ? trip.members
+          : [];
 
-  $("place").value = "";
-  $("distance").value = "";
+      return `
+        <div class="history">
 
-  $("memberChecks")
-    .querySelectorAll("input")
-    .forEach(x => x.checked = false);
+          <div class="history-title">
+            ${formatDate(trip.date)}
+           　${escapeHtml(trip.place)}
+          </div>
 
-  toast("まとめて登録しました");
+          <div class="muted">
+            🚗 ${Number(trip.distance)}km
+          </div>
 
-} catch (error) {
-  console.error(error);
-  toast("保存エラー：" + error.message);
-} }catch(e){
+          <div class="muted">
+            👥 ${members.map(escapeHtml).join("、")}
+          </div>
 
-    console.error(e);
-    toast("登録できませんでした");
-  }
+          <div class="actions">
+
+            <button
+              class="edit"
+              onclick="openEdit('${trip.id}')">
+              ✏️ 編集
+            </button>
+
+            <button
+              class="danger"
+              onclick="deleteTrip('${trip.id}')">
+              🗑️ 削除
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
 }
 
-/* 編集 */
+
+/* =========================================================
+   編集
+========================================================= */
+
 function openEdit(id){
 
-  const t=db.trips.find(
-    x=>String(x.id)===String(id)
-  );
+  const trip =
+    db.trips.find(t => t.id === id);
 
-  if(!t)return;
+  if(!trip){
 
-  $("editId").value=t.id;
-  $("editDate").value=t.date;
-  $("editPlace").value=t.place;
-  $("editDistance").value=t.distance;
+    showToast("データが見つかりません");
 
-  checks("editChecks",t.members);
+    return;
+  }
 
-  $("modal").classList.add("open");
+  $("editId").value =
+    id;
+
+  $("editDate").value =
+    trip.date || "";
+
+  $("editPlace").value =
+    trip.place || "";
+
+  $("editDistance").value =
+    trip.distance || "";
+
+  const members =
+    Array.isArray(trip.members)
+      ? trip.members
+      : [];
+
+  $("editChecks").innerHTML =
+    db.members.map(name => `
+
+      <label class="member-check">
+
+        <input
+          type="checkbox"
+          value="${escapeHtml(name)}"
+          ${members.includes(name) ? "checked" : ""}>
+
+        <span>${escapeHtml(name)}</span>
+
+      </label>
+
+    `).join("");
+
+  $("editModal").style.display =
+    "block";
 }
 
-function closeModal(){
-  $("modal").classList.remove("open");
+function closeEdit(){
+
+  $("editModal").style.display =
+    "none";
 }
 
-/* 編集保存 */
 async function saveEdit(){
 
-  const id=$("editId").value;
+  const id =
+    $("editId").value;
 
-  const date=$("editDate").value;
-  const place=$("editPlace").value.trim();
-  const distance=Number($("editDistance").value);
-  const members=selected("editChecks");
+  const date =
+    $("editDate").value;
 
-  if(
-    !date ||
-    !place ||
-    !(distance>0) ||
-    !members.length
-  ){
-    return toast("日付・行き先・距離・団員を入力してください");
+  const place =
+    $("editPlace").value.trim();
+
+  const distance =
+    Number($("editDistance").value);
+
+  const members =
+    getSelectedMembers("editChecks");
+
+  if(!date || !place || !(distance > 0) || !members.length){
+
+    showToast("すべて入力してください");
+
+    return;
   }
 
   try{
 
-    await firestore
-      .collection("trips")
-      .doc(String(id))
-      .set({
+    await TRIPS_REF
+      .doc(id)
+      .update({
 
-        date:date,
-        place:place,
-        distance:distance,
-        members:members,
+        date: date,
+
+        place: place,
+
+        distance: distance,
+
+        members: members,
 
         updatedAt:
           firebase.firestore.FieldValue.serverTimestamp()
 
-      },{merge:true});
+      });
 
-    closeModal();
+    closeEdit();
 
-    toast("変更を保存しました");
+    showToast("✅ 編集内容を保存しました");
 
-  }catch(e){
+  }catch(error){
 
-    console.error(e);
-    toast("変更できませんでした");
+    console.error(error);
+
+    showError(
+      "編集保存エラー\n\n" +
+      error.code + "\n" +
+      error.message
+    );
   }
 }
 
-/* 配車削除 */
+
+/* =========================================================
+   削除
+========================================================= */
+
 async function deleteTrip(id){
 
-  if(!confirm(
-    "この配車記録を削除しますか？\n"+
-    "削除すると集計からも差し引かれます。"
-  )){
-    return;
-  }
+  const trip =
+    db.trips.find(t => t.id === id);
+
+  if(!trip) return;
+
+  const ok =
+    confirm(
+      `${formatDate(trip.date)} ${trip.place}\n` +
+      `この配車を削除しますか？`
+    );
+
+  if(!ok) return;
 
   try{
 
-    await firestore
-      .collection("trips")
-      .doc(String(id))
+    await TRIPS_REF
+      .doc(id)
       .delete();
 
-    toast("削除しました");
+    showToast("🗑️ 削除しました");
 
-  }catch(e){
+  }catch(error){
 
-    console.error(e);
-    toast("削除できませんでした");
+    console.error(error);
+
+    showError(
+      "削除エラー\n\n" +
+      error.code + "\n" +
+      error.message
+    );
   }
 }
 
-/* 集計 */
+
+/* =========================================================
+   団員別集計
+========================================================= */
+
 function renderSummary(){
 
-  $("summaryList").innerHTML =
-    db.members.length
+  const summary = {};
 
-    ? db.members.map(n=>{
+  db.members.forEach(name => {
 
-        const s=stats(n);
+    summary[name] = {
+      count:0,
+      distance:0
+    };
 
-        return `
-        <div class="row card"
-             style="margin:8px 0;padding:12px">
+  });
 
-          <b>${esc(n)}</b>
+  db.trips.forEach(trip => {
 
-          <span>
-            <b>${s.count}回</b>
-            　${fmt(s.km)}km
-          </span>
+    const members =
+      Array.isArray(trip.members)
+        ? trip.members
+        : [];
 
-        </div>
-        `;
+    members.forEach(name => {
 
-      }).join("")
+      if(!summary[name]){
 
-    : `<div class="empty">団員がいません</div>`;
+        summary[name] = {
+          count:0,
+          distance:0
+        };
 
-  const current=$("historyMember").value;
+      }
 
-  $("historyMember").innerHTML =
-    db.members.length
+      summary[name].count += 1;
 
-    ? db.members.map(n=>
-        `<option value="${esc(n)}">${esc(n)}</option>`
-      ).join("")
+      summary[name].distance +=
+        Number(trip.distance) || 0;
 
-    : `<option>団員がいません</option>`;
+    });
 
-  if(
-    current &&
-    db.members.includes(current)
-  ){
-    $("historyMember").value=current;
-  }
+  });
 
-  renderHistory();
-}
+  $("totalTrips").textContent =
+    db.trips.length;
 
-/* 個人履歴 */
-function renderHistory(){
+  const totalDistance =
+    db.trips.reduce(
+      (sum,trip) =>
+        sum + (Number(trip.distance) || 0),
+      0
+    );
 
-  const n=$("historyMember").value;
+  $("totalDistance").textContent =
+    totalDistance;
 
-  if(
-    !n ||
-    !db.members.includes(n)
-  ){
-    $("history").innerHTML="";
+  const names =
+    Object.keys(summary);
+
+  if(!names.length){
+
+    $("summaryList").innerHTML =
+      `<div class="empty">団員が登録されていません</div>`;
+
     return;
   }
 
-  const rows=db.trips
-    .filter(x=>x.members.includes(n))
-    .sort((a,b)=>b.date.localeCompare(a.date));
+  $("summaryList").innerHTML =
+    names.map(name => `
 
-  const s=stats(n);
+      <div class="summary">
 
-  $("history").innerHTML=`
+        <div>
+          <b>${escapeHtml(name)}</b>
+        </div>
 
-    <div class="stats" style="margin-top:12px">
+        <span class="badge">
+          ${summary[name].count}回
+        </span>
 
-      <div class="stat">
-        <b>${s.count}</b>
-        <span>配車回数</span>
+        <span class="badge">
+          ${summary[name].distance}km
+        </span>
+
       </div>
 
-      <div class="stat">
-        <b>${fmt(s.km)}km</b>
-        <span>合計配車距離</span>
-      </div>
+    `).join("");
+}
 
-    </div>
 
-  `+
+/* =========================================================
+   履歴
+========================================================= */
 
-  (
-    rows.length
+function renderHistory(){
 
-    ? rows.map(t=>`
+  const selected =
+    $("historyMember").value;
+
+  let trips =
+    [...db.trips]
+      .sort((a,b) =>
+        String(b.date).localeCompare(String(a.date))
+      );
+
+  if(selected){
+
+    trips =
+      trips.filter(trip =>
+        Array.isArray(trip.members) &&
+        trip.members.includes(selected)
+      );
+  }
+
+  if(!trips.length){
+
+    $("history").innerHTML =
+      `<div class="empty">履歴がありません</div>`;
+
+    return;
+  }
+
+  $("history").innerHTML =
+    trips.map(trip => `
 
       <div class="history">
 
-        <div class="row">
-
-          <b>
-            ${t.date.replaceAll("-","/")}
-          </b>
-
-          <span class="pill">
-            ${fmt(t.distance)}km
-          </span>
-
-        </div>
-
-        <div style="margin-top:5px">
-          ${esc(t.place)}
+        <div class="history-title">
+          ${formatDate(trip.date)}
+         　${escapeHtml(trip.place)}
         </div>
 
         <div class="muted">
-          担当者：
-          ${t.members.map(esc).join("、")}
+          ${Number(trip.distance)}km
         </div>
 
-        <div class="actions">
-
-          <button
-            class="edit"
-            onclick="openEdit('${js(t.id)}')">
-            編集
-          </button>
-
-          <button
-            class="danger"
-            onclick="deleteTrip('${js(t.id)}')">
-            削除
-          </button>
-
+        <div class="muted">
+          ${Array.isArray(trip.members)
+            ? trip.members.map(escapeHtml).join("、")
+            : ""}
         </div>
 
       </div>
 
-    `).join("")
-
-    : `<div class="empty">
-        配車履歴はありません
-       </div>`
-  );
+    `).join("");
 }
 
-/* 最新配車 */
-function renderRecent(){
+function renderHistoryMemberSelect(){
 
-  const rows=[...db.trips]
-    .sort((a,b)=>b.date.localeCompare(a.date));
+  const select =
+    $("historyMember");
 
-  $("recent").innerHTML=
+  const current =
+    select.value;
 
-    rows.length
+  select.innerHTML =
+    `<option value="">すべて</option>` +
+    db.members.map(name =>
+      `<option value="${escapeHtml(name)}">
+        ${escapeHtml(name)}
+      </option>`
+    ).join("");
 
-    ? rows.map(t=>`
+  if(db.members.includes(current)){
 
-      <div class="history">
+    select.value = current;
 
-        <div class="row">
+  }
 
-          <b>
-            ${t.date.replaceAll("-","/")}
-            　${esc(t.place)}
-          </b>
-
-          <span>
-            ${fmt(t.distance)}km
-          </span>
-
-        </div>
-
-        <div class="muted">
-          ${t.members.map(esc).join("、")}
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="edit"
-            onclick="openEdit('${js(t.id)}')">
-            編集
-          </button>
-
-          <button
-            class="danger"
-            onclick="deleteTrip('${js(t.id)}')">
-            削除
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("")
-
-    : `<div class="empty">
-        まだ配車登録がありません
-       </div>`;
 }
 
-/* 団員一覧 */
-function renderMembers(){
 
-  $("memberList").innerHTML=
+/* =========================================================
+   団員管理
+========================================================= */
 
-    db.members.length
+function renderMemberList(){
 
-    ? db.members.map(n=>`
+  const box =
+    $("memberList");
 
-      <div class="row"
-           style="padding:10px 0;border-bottom:1px solid #eee">
+  if(!db.members.length){
 
-        <b>${esc(n)}</b>
+    box.innerHTML =
+      `<div class="empty">団員がいません</div>`;
+
+    return;
+  }
+
+  box.innerHTML =
+    db.members.map(name => `
+
+      <div class="member-row">
+
+        <b>${escapeHtml(name)}</b>
 
         <button
-          class="smallbtn danger"
-          onclick="deleteMember('${js(n)}')">
+          class="member-delete"
+          onclick="deleteMember('${escapeHtml(name)}')">
           削除
         </button>
 
       </div>
 
-    `).join("")
-
-    : `<div class="empty">
-        団員がいません
-       </div>`;
+    `).join("");
 }
 
-/* 全画面更新 */
-function renderAll(){
+async function addMember(){
 
-  checks("memberChecks");
+  const input =
+    $("newMember");
 
-  if($("editChecks")){
-    checks("editChecks");
+  const name =
+    input.value.trim();
+
+  if(!name){
+
+    showToast("団員名を入力してください");
+
+    return;
   }
 
-  renderSummary();
-  renderRecent();
-  renderMembers();
+  if(db.members.includes(name)){
+
+    showToast("その団員はすでに登録されています");
+
+    return;
+  }
+
+  try{
+
+    const newMembers =
+      [...db.members,name];
+
+    await SETTINGS_REF.set({
+
+      members:newMembers
+
+    },{
+
+      merge:true
+
+    });
+
+    input.value = "";
+
+    showToast("👤 団員を追加しました");
+
+  }catch(error){
+
+    console.error(error);
+
+    showError(
+      "団員追加エラー\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+  }
 }
 
-/* 起動 */
-$("date").value=
-  new Date().toISOString().slice(0,10);
+async function deleteMember(name){
 
-loadMembers();
+  const ok =
+    confirm(
+      `${name}さんを団員一覧から削除しますか？`
+    );
+
+  if(!ok) return;
+
+  try{
+
+    const newMembers =
+      db.members.filter(
+        member => member !== name
+      );
+
+    await SETTINGS_REF.set({
+
+      members:newMembers
+
+    },{
+
+      merge:true
+
+    });
+
+    showToast("👤 団員を削除しました");
+
+  }catch(error){
+
+    console.error(error);
+
+    showError(
+      "団員削除エラー\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+  }
+}
+
+
+/* =========================================================
+   全画面更新
+========================================================= */
+
+function renderAll(){
+
+  renderMemberChecks();
+
+  renderRecent();
+
+  renderSummary();
+
+  renderHistoryMemberSelect();
+
+  renderHistory();
+
+  renderMemberList();
+}
+
+
+/* =========================================================
+   Firebase 初期化
+========================================================= */
+
+async function initializeData(){
+
+  clearError();
+
+  try{
+
+    $("syncStatus").textContent =
+      "☁️ Firebaseに接続しています…";
+
+    const snap =
+      await SETTINGS_REF.get();
+
+    if(!snap.exists){
+
+      await SETTINGS_REF.set({
+
+        members: DEFAULT_MEMBERS,
+
+        createdAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+
+      });
+
+      db.members =
+        [...DEFAULT_MEMBERS];
+
+    }else{
+
+      const data =
+        snap.data() || {};
+
+      if(Array.isArray(data.members)){
+
+        db.members =
+          data.members;
+
+      }else{
+
+        await SETTINGS_REF.set({
+
+          members: DEFAULT_MEMBERS
+
+        },{
+
+          merge:true
+
+        });
+
+        db.members =
+          [...DEFAULT_MEMBERS];
+      }
+
+    }
+
+    renderAll();
+
+    $("syncStatus").textContent =
+      "☁️ 共有データと同期中";
+
+  }catch(error){
+
+    console.error(error);
+
+    $("syncStatus").textContent =
+      "⚠️ Firebase接続エラー";
+
+    showError(
+      "Firebaseへの接続に失敗しました。\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+  }
+}
+
+
+/* =========================================================
+   団員リアルタイム監視
+========================================================= */
+
+SETTINGS_REF.onSnapshot(
+
+  snap => {
+
+    if(!snap.exists) return;
+
+    const data =
+      snap.data() || {};
+
+    if(Array.isArray(data.members)){
+
+      db.members =
+        data.members;
+
+      renderAll();
+
+    }
+
+  },
+
+  error => {
+
+    console.error(error);
+
+    $("syncStatus").textContent =
+      "⚠️ Firebase接続エラー";
+
+    showError(
+      "団員データの読み込みに失敗しました。\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+  }
+
+);
+
+
+/* =========================================================
+   配車リアルタイム監視
+========================================================= */
+
+TRIPS_REF.onSnapshot(
+
+  snap => {
+
+    db.trips =
+      snap.docs
+        .map(doc => ({
+
+          id:doc.id,
+
+          ...doc.data()
+
+        }))
+        .filter(trip =>
+          trip.date &&
+          trip.place &&
+          Number(trip.distance) > 0 &&
+          Array.isArray(trip.members)
+        );
+
+    renderAll();
+
+    $("syncStatus").textContent =
+      "☁️ 共有データと同期中";
+
+    clearError();
+
+  },
+
+  error => {
+
+    console.error(error);
+
+    $("syncStatus").textContent =
+      "⚠️ Firebase接続エラー";
+
+    showError(
+      "配車データの読み込みに失敗しました。\n\n" +
+      error.code + "\n" +
+      error.message
+    );
+  }
+
+);
+
+
+/* =========================================================
+   起動
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const today =
+      new Date();
+
+    const yyyy =
+      today.getFullYear();
+
+    const mm =
+      String(today.getMonth()+1)
+      .padStart(2,"0");
+
+    const dd =
+      String(today.getDate())
+      .padStart(2,"0");
+
+    $("date").value =
+      `${yyyy}-${mm}-${dd}`;
+
+    initializeData();
+
+  }
+);
+
 </script>
-</body></html>
+
+</body>
+</html>
