@@ -60,48 +60,5 @@ label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}input,selec
 </div></div>
 <div id="toast" class="toast" style="display: none;">変更を保存しました</div>
 
-<script>
-const KEY='minibasukei_v2';
-let db=JSON.parse(localStorage.getItem(KEY)||'{"members":[],"trips":[]}');
-const $=id=>document.getElementById(id);
-function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>{$('toast').style.display='none'},1800)}
-function show(id,btn){['register','summary','members'].forEach(x=>$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAll()}
-function addMember(){let n=$('newMember').value.trim();if(!n)return toast('団員名を入力してください');if(db.members.includes(n))return toast('同じ名前が登録されています');db.members.push(n);$('newMember').value='';save();toast('団員を追加しました')}
-function deleteMember(n){if(db.trips.some(t=>t.members.includes(n)))return toast('配車履歴があるため削除できません');if(confirm(n+' を削除しますか？')){db.members=db.members.filter(x=>x!==n);save()}}
-function checks(id,selected=[]){$(id).innerHTML=db.members.length?db.members.map(n=>`<label class="member"><input type="checkbox" value="${esc(n)}" ${selected.includes(n)?'checked':''}> ${esc(n)}</label>`).join(''):'<div class="empty" style="grid-column:1/-1">先に団員を追加してください</div>'}
-function selected(id){return [...$(id).querySelectorAll('input:checked')].map(x=>x.value)}
-function addTrip(){
- let date=$('date').value,place=$('place').value.trim(),distance=Number($('distance').value),members=selected('memberChecks');
- if(!date||!place||!(distance>0)||!members.length)return toast('日付・行き先・距離・団員を入力してください');
- db.trips.push({id:Date.now(),date,place,distance,members});save();
- $('place').value='';$('distance').value='';$('memberChecks').querySelectorAll('input').forEach(x=>x.checked=false);toast('まとめて登録しました')
-}
-function openEdit(id){
- let t=db.trips.find(x=>x.id==id);if(!t)return;
- $('editId').value=t.id;$('editDate').value=t.date;$('editPlace').value=t.place;$('editDistance').value=t.distance;checks('editChecks',t.members);$('modal').classList.add('open')
-}
-function closeModal(){$('modal').classList.remove('open')}
-function saveEdit(){
- let id=Number($('editId').value),t=db.trips.find(x=>x.id===id);if(!t)return;
- let date=$('editDate').value,place=$('editPlace').value.trim(),distance=Number($('editDistance').value),members=selected('editChecks');
- if(!date||!place||!(distance>0)||!members.length)return toast('日付・行き先・距離・団員を入力してください');
- t.date=date;t.place=place;t.distance=distance;t.members=members;save();closeModal();toast('変更を保存しました')
-}
-function deleteTrip(id){if(confirm('この配車記録を削除しますか？\\n削除すると集計からも差し引かれます。')){db.trips=db.trips.filter(x=>x.id!==id);save();toast('削除しました')}}
-function stats(n){let t=db.trips.filter(x=>x.members.includes(n));return {count:t.length,km:t.reduce((a,x)=>a+x.distance,0)}}
-function renderSummary(){
- $('summaryList').innerHTML=db.members.length?db.members.map(n=>{let s=stats(n);return `<div class="row card" style="margin:8px 0;padding:12px"><b>${esc(n)}</b><span><b>${s.count}回</b>　${fmt(s.km)}km</span></div>`}).join(''):'<div class="empty">団員がいません</div>';
- $('historyMember').innerHTML=db.members.length?db.members.map(n=>`<option>${esc(n)}</option>`).join(''):'<option>団員がいません</option>';renderHistory()
-}
-function renderHistory(){let n=$('historyMember').value;if(!n||!db.members.includes(n)){$('history').innerHTML='';return}let rows=db.trips.filter(x=>x.members.includes(n)).sort((a,b)=>b.date.localeCompare(a.date));let s=stats(n);
- $('history').innerHTML=`<div class="stats" style="margin-top:12px"><div class="stat"><b>${s.count}</b><span>配車回数</span></div><div class="stat"><b>${fmt(s.km)}km</b><span>合計配車距離</span></div></div>`+(rows.length?rows.map(t=>`<div class="history"><div class="row"><b>${t.date.replaceAll('-','/')}</b><span class="pill">${fmt(t.distance)}km</span></div><div style="margin-top:5px">${esc(t.place)}</div><div class="muted">担当者：${t.members.map(esc).join('、')}</div><div class="actions"><button class="edit" onclick="openEdit(${t.id})">編集</button><button class="danger" onclick="deleteTrip(${t.id})">削除</button></div></div>`).join(''):'<div class="empty">配車履歴はありません</div>')}
-function renderRecent(){let rows=[...db.trips].sort((a,b)=>b.date.localeCompare(a.date));$('recent').innerHTML=rows.length?rows.map(t=>`<div class="history"><div class="row"><b>${t.date.replaceAll('-','/')}　${esc(t.place)}</b><span>${fmt(t.distance)}km</span></div><div class="muted">${t.members.map(esc).join('、')}</div><div class="actions"><button class="edit" onclick="openEdit(${t.id})">編集</button><button class="danger" onclick="deleteTrip(${t.id})">削除</button></div></div>`).join(''):'<div class="empty">まだ配車登録がありません</div>'}
-function renderMembers(){$('memberList').innerHTML=db.members.length?db.members.map(n=>`<div class="row" style="padding:10px 0;border-bottom:1px solid #eee"><b>${esc(n)}</b><button class="smallbtn danger" onclick="deleteMember('${js(n)}')">削除</button></div>`).join(''):'<div class="empty">団員がいません</div>'}
-function renderAll(){checks('memberChecks');renderSummary();renderRecent();renderMembers()}
-function fmt(n){return Number.isInteger(n)?n:n.toFixed(1)}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function js(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
-$('date').value=new Date().toISOString().slice(0,10);renderAll();
-</script>
+
 </body></html>
