@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firebase接続テスト</title>
 </head>
-
 <body>
-
 <h2>🏀 Firebase接続テスト</h2>
-
 <p id="status">接続確認中……</p>
 
 <script type="module">
-
 import { initializeApp } from
   "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
@@ -24,9 +20,8 @@ import {
 } from
   "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
 const firebaseConfig = {
-  apiKey: "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
+  apiKey: "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
   authDomain: "minibusdanin.firebaseapp.com",
   projectId: "minibusdanin",
   storageBucket: "minibusdanin.firebasestorage.app",
@@ -35,52 +30,35 @@ const firebaseConfig = {
   measurementId: "G-XFSJQRLHQ2"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
-
 async function testFirebase() {
-
   const status = document.getElementById("status");
 
   try {
-
     const ref = doc(db, "trips", "7DnjLoCLxhH6m06KHFkS");
-
     const snapshot = await getDoc(ref);
 
     if (snapshot.exists()) {
-
       status.textContent =
         "✅ Firebase接続成功！ testデータを取得できました。";
-
     } else {
-
       status.textContent =
         "✅ Firebaseには接続できました。ただし指定したデータがありません。";
-
     }
 
   } catch (error) {
-
     console.error(error);
-
     status.textContent =
       "❌ 接続失敗: " +
       error.code +
       " / " +
       error.message;
-
   }
-
 }
 
-
 testFirebase();
-
 </script>
-
 </body>
 </html>
