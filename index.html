@@ -265,6 +265,9 @@ const firebaseConfig={
 firebase.initializeApp(firebaseConfig);
 
 const firestore=firebase.firestore();
+firestore.settings({
+  experimentalAutoDetectLongPolling: true
+});
 
 const SETTINGS_REF=
 firestore.collection("settings").doc("main");
