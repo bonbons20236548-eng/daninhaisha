@@ -79,4 +79,596 @@ const firestore = firebase.firestore();
 
 console.log("Firebase接続OK");
 </script>
+<script>
+const SETTINGS_REF = firestore.collection("settings").doc("main");
+let db = {members: [], trips: []};
+
+const DEFAULT_MEMBERS = [
+"西濱","小澤","竹内","粉川","山口","藤本","萩",
+"中田","西田","伊丹","高木","鈴木","加藤","舘","長沼"
+];
+
+const $ = id => document.getElementById(id);
+
+function toast(t){
+  $("toast").textContent=t;
+  $("toast").style.display="block";
+  clearTimeout(window._toast);
+  window._toast=setTimeout(()=>$("toast").style.display="none",1800);
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function js(s){
+  return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+}
+
+function fmt(n){
+  return Number.isInteger(Number(n)) ? Number(n) : Number(n).toFixed(1);
+}
+
+function selected(id){
+  return [...$(id).querySelectorAll("input:checked")].map(x=>x.value);
+}
+
+function checks(id, selected=[]){
+  $(id).innerHTML=db.members.length
+    ? db.members.map(n=>`
+      <label class="member">
+        <input type="checkbox" value="${esc(n)}"
+        ${selected.includes(n)?"checked":""}>
+        ${esc(n)}
+      </label>
+    `).join("")
+    : `<div class="empty" style="grid-column:1/-1">
+        先に団員を追加してください
+       </div>`;
+}
+
+function stats(n){
+  const t=db.trips.filter(x =>
+    Array.isArray(x.members) && x.members.includes(n)
+  );
+
+  return {
+    count:t.length,
+    km:t.reduce((a,x)=>a+Number(x.distance||0),0)
+  };
+}
+
+/* 画面切り替え */
+function show(id,btn){
+  ["register","summary","members"].forEach(x=>{
+    $(x).classList.toggle("hidden",x!==id);
+  });
+
+  document.querySelectorAll(".nav button")
+    .forEach(b=>b.classList.remove("active"));
+
+  btn.classList.add("active");
+  renderAll();
+}
+
+/* 団員データ */
+async function loadMembers(){
+
+  const snap=await SETTINGS_REF.get();
+
+  if(!snap.exists){
+
+    await SETTINGS_REF.set({
+      members:DEFAULT_MEMBERS
+    });
+
+    db.members=[...DEFAULT_MEMBERS];
+
+  }else{
+
+    const data=snap.data()||{};
+
+    db.members=Array.isArray(data.members)
+      ? data.members
+      : [...DEFAULT_MEMBERS];
+  }
+
+  renderAll();
+}
+
+/* 団員をリアルタイム監視 */
+SETTINGS_REF.onSnapshot(snap=>{
+
+  const data=snap.data()||{};
+
+  if(Array.isArray(data.members)){
+    db.members=data.members;
+    renderAll();
+  }
+
+},err=>{
+  console.error(err);
+  toast("団員データの読み込みに失敗しました");
+});
+
+/* 配車データをリアルタイム監視 */
+firestore.collection("trips").onSnapshot(snap=>{
+
+  db.trips=snap.docs
+    .map(doc=>({
+      id:doc.id,
+      ...doc.data()
+    }))
+    .filter(t =>
+      t.date &&
+      t.place &&
+      Number(t.distance)>0 &&
+      Array.isArray(t.members)
+    );
+
+  renderAll();
+
+  if($("syncStatus")){
+    $("syncStatus").textContent="☁️ 共有データと同期中";
+    $("syncStatus").className="sync online";
+  }
+
+},err=>{
+  console.error(err);
+
+  if($("syncStatus")){
+    $("syncStatus").textContent="⚠️ Firebase接続エラー";
+    $("syncStatus").className="sync offline";
+  }
+
+  toast("データを読み込めませんでした");
+});
+
+/* 団員追加 */
+async function addMember(){
+
+  const n=$("newMember").value.trim();
+
+  if(!n){
+    return toast("団員名を入力してください");
+  }
+
+  if(db.members.includes(n)){
+    return toast("同じ名前が登録されています");
+  }
+
+  try{
+
+    await SETTINGS_REF.set({
+      members:[...db.members,n]
+    },{merge:true});
+
+    $("newMember").value="";
+
+    toast("団員を追加しました");
+
+  }catch(e){
+
+    console.error(e);
+    toast("追加できませんでした");
+  }
+}
+
+/* 団員削除 */
+async function deleteMember(n){
+
+  if(db.trips.some(t=>t.members.includes(n))){
+    return toast("配車履歴があるため削除できません");
+  }
+
+  if(!confirm(n+" を削除しますか？")){
+    return;
+  }
+
+  try{
+
+    await SETTINGS_REF.set({
+      members:db.members.filter(x=>x!==n)
+    },{merge:true});
+
+    toast("削除しました");
+
+  }catch(e){
+
+    console.error(e);
+    toast("削除できませんでした");
+  }
+}
+
+/* 配車登録 */
+async function addTrip(){
+
+  const date=$("date").value;
+  const place=$("place").value.trim();
+  const distance=Number($("distance").value);
+  const members=selected("memberChecks");
+
+  if(
+    !date ||
+    !place ||
+    !(distance>0) ||
+    !members.length
+  ){
+    return toast("日付・行き先・距離・団員を入力してください");
+  }
+
+  try{
+
+    await firestore.collection("trips").add({
+
+      date:date,
+      place:place,
+      distance:distance,
+      members:members,
+
+      createdAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+
+    });
+
+    $("place").value="";
+    $("distance").value="";
+
+    $("memberChecks")
+      .querySelectorAll("input")
+      .forEach(x=>x.checked=false);
+
+    toast("まとめて登録しました");
+
+  }catch(e){
+
+    console.error(e);
+    toast("登録できませんでした");
+  }
+}
+
+/* 編集 */
+function openEdit(id){
+
+  const t=db.trips.find(
+    x=>String(x.id)===String(id)
+  );
+
+  if(!t)return;
+
+  $("editId").value=t.id;
+  $("editDate").value=t.date;
+  $("editPlace").value=t.place;
+  $("editDistance").value=t.distance;
+
+  checks("editChecks",t.members);
+
+  $("modal").classList.add("open");
+}
+
+function closeModal(){
+  $("modal").classList.remove("open");
+}
+
+/* 編集保存 */
+async function saveEdit(){
+
+  const id=$("editId").value;
+
+  const date=$("editDate").value;
+  const place=$("editPlace").value.trim();
+  const distance=Number($("editDistance").value);
+  const members=selected("editChecks");
+
+  if(
+    !date ||
+    !place ||
+    !(distance>0) ||
+    !members.length
+  ){
+    return toast("日付・行き先・距離・団員を入力してください");
+  }
+
+  try{
+
+    await firestore
+      .collection("trips")
+      .doc(String(id))
+      .set({
+
+        date:date,
+        place:place,
+        distance:distance,
+        members:members,
+
+        updatedAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+
+      },{merge:true});
+
+    closeModal();
+
+    toast("変更を保存しました");
+
+  }catch(e){
+
+    console.error(e);
+    toast("変更できませんでした");
+  }
+}
+
+/* 配車削除 */
+async function deleteTrip(id){
+
+  if(!confirm(
+    "この配車記録を削除しますか？\n"+
+    "削除すると集計からも差し引かれます。"
+  )){
+    return;
+  }
+
+  try{
+
+    await firestore
+      .collection("trips")
+      .doc(String(id))
+      .delete();
+
+    toast("削除しました");
+
+  }catch(e){
+
+    console.error(e);
+    toast("削除できませんでした");
+  }
+}
+
+/* 集計 */
+function renderSummary(){
+
+  $("summaryList").innerHTML =
+    db.members.length
+
+    ? db.members.map(n=>{
+
+        const s=stats(n);
+
+        return `
+        <div class="row card"
+             style="margin:8px 0;padding:12px">
+
+          <b>${esc(n)}</b>
+
+          <span>
+            <b>${s.count}回</b>
+            　${fmt(s.km)}km
+          </span>
+
+        </div>
+        `;
+
+      }).join("")
+
+    : `<div class="empty">団員がいません</div>`;
+
+  const current=$("historyMember").value;
+
+  $("historyMember").innerHTML =
+    db.members.length
+
+    ? db.members.map(n=>
+        `<option value="${esc(n)}">${esc(n)}</option>`
+      ).join("")
+
+    : `<option>団員がいません</option>`;
+
+  if(
+    current &&
+    db.members.includes(current)
+  ){
+    $("historyMember").value=current;
+  }
+
+  renderHistory();
+}
+
+/* 個人履歴 */
+function renderHistory(){
+
+  const n=$("historyMember").value;
+
+  if(
+    !n ||
+    !db.members.includes(n)
+  ){
+    $("history").innerHTML="";
+    return;
+  }
+
+  const rows=db.trips
+    .filter(x=>x.members.includes(n))
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  const s=stats(n);
+
+  $("history").innerHTML=`
+
+    <div class="stats" style="margin-top:12px">
+
+      <div class="stat">
+        <b>${s.count}</b>
+        <span>配車回数</span>
+      </div>
+
+      <div class="stat">
+        <b>${fmt(s.km)}km</b>
+        <span>合計配車距離</span>
+      </div>
+
+    </div>
+
+  `+
+
+  (
+    rows.length
+
+    ? rows.map(t=>`
+
+      <div class="history">
+
+        <div class="row">
+
+          <b>
+            ${t.date.replaceAll("-","/")}
+          </b>
+
+          <span class="pill">
+            ${fmt(t.distance)}km
+          </span>
+
+        </div>
+
+        <div style="margin-top:5px">
+          ${esc(t.place)}
+        </div>
+
+        <div class="muted">
+          担当者：
+          ${t.members.map(esc).join("、")}
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="edit"
+            onclick="openEdit('${js(t.id)}')">
+            編集
+          </button>
+
+          <button
+            class="danger"
+            onclick="deleteTrip('${js(t.id)}')">
+            削除
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("")
+
+    : `<div class="empty">
+        配車履歴はありません
+       </div>`
+  );
+}
+
+/* 最新配車 */
+function renderRecent(){
+
+  const rows=[...db.trips]
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  $("recent").innerHTML=
+
+    rows.length
+
+    ? rows.map(t=>`
+
+      <div class="history">
+
+        <div class="row">
+
+          <b>
+            ${t.date.replaceAll("-","/")}
+            　${esc(t.place)}
+          </b>
+
+          <span>
+            ${fmt(t.distance)}km
+          </span>
+
+        </div>
+
+        <div class="muted">
+          ${t.members.map(esc).join("、")}
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="edit"
+            onclick="openEdit('${js(t.id)}')">
+            編集
+          </button>
+
+          <button
+            class="danger"
+            onclick="deleteTrip('${js(t.id)}')">
+            削除
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("")
+
+    : `<div class="empty">
+        まだ配車登録がありません
+       </div>`;
+}
+
+/* 団員一覧 */
+function renderMembers(){
+
+  $("memberList").innerHTML=
+
+    db.members.length
+
+    ? db.members.map(n=>`
+
+      <div class="row"
+           style="padding:10px 0;border-bottom:1px solid #eee">
+
+        <b>${esc(n)}</b>
+
+        <button
+          class="smallbtn danger"
+          onclick="deleteMember('${js(n)}')">
+          削除
+        </button>
+
+      </div>
+
+    `).join("")
+
+    : `<div class="empty">
+        団員がいません
+       </div>`;
+}
+
+/* 全画面更新 */
+function renderAll(){
+
+  checks("memberChecks");
+
+  if($("editChecks")){
+    checks("editChecks");
+  }
+
+  renderSummary();
+  renderRecent();
+  renderMembers();
+}
+
+/* 起動 */
+$("date").value=
+  new Date().toISOString().slice(0,10);
+
+loadMembers();
+</script>
 </body></html>
