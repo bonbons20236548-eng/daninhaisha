@@ -60,5 +60,23 @@ label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}input,selec
 </div></div>
 <div id="toast" class="toast" style="display: none;">変更を保存しました</div>
 
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
+  authDomain: "minibusdanin.firebaseapp.com",
+  projectId: "minibusdanin",
+  storageBucket: "minibusdanin.firebasestorage.app",
+  messagingSenderId: "1093555104011",
+  appId: "1:1093555104011:web:13dad177366dd5a9615a0e",
+  measurementId: "G-KCNZXML915"
+};
+
+firebase.initializeApp(firebaseConfig);
+const firestore = firebase.firestore();
+
+console.log("Firebase接続OK");
+</script>
 </body></html>
