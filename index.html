@@ -302,28 +302,28 @@ async function addTrip(){
 
   try{
 
-    await firestore.collection("trips").add({
+   try {
+  await firestore.collection("trips").add({
+    date: date,
+    place: place,
+    distance: distance,
+    members: members,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
 
-      date:date,
-      place:place,
-      distance:distance,
-      members:members,
+  $("place").value = "";
+  $("distance").value = "";
 
-      createdAt:
-        firebase.firestore.FieldValue.serverTimestamp()
+  $("memberChecks")
+    .querySelectorAll("input")
+    .forEach(x => x.checked = false);
 
-    });
+  toast("まとめて登録しました");
 
-    $("place").value="";
-    $("distance").value="";
-
-    $("memberChecks")
-      .querySelectorAll("input")
-      .forEach(x=>x.checked=false);
-
-    toast("まとめて登録しました");
-
-  }catch(e){
+} catch (error) {
+  console.error(error);
+  toast("保存エラー：" + error.message);
+} }catch(e){
 
     console.error(e);
     toast("登録できませんでした");
