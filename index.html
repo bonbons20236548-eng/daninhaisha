@@ -37,15 +37,16 @@
 
   <h2>🏀 ミニバス乗車管理</h2>
 
-  <input
-    id="memberName"
-    type="text"
-    placeholder="名前を入力"
-  >
+ <select id="memberName">
+  <option value="">メンバーを選択</option>
+  <option value="長女">長女</option>
+  <option value="次女">次女</option>
+  <option value="三女">三女</option>
+</select>
 
-  <button id="saveButton">
-    🚐 乗車記録を保存
-  </button>
+<button id="saveButton">
+  🚐 乗車登録
+</button>
 
   <p id="status">Firebase接続確認中……</p>
 
