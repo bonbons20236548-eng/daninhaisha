@@ -1,3 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ミニバス乗車管理</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      margin: 0;
+      padding: 15px;
+      background: #111;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff3f9f;
+      margin: 5px 0 20px;
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 0;
+      color: #ff3f9f;
+    }
+
+    .box {
+      background: #1d1d1d;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #ddd;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #555;
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #ff3f9f;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.7;
+    }
+
+    .main-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      font-size: 17px;
+    }
+
+    .member-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .member-check {
+      background: #292929;
+      padding: 10px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .member-check input {
+      width: auto;
+      transform: scale(1.2);
+    }
+
+    .member-management {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      padding: 9px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .member-management:last-child {
+      border-bottom: none;
+    }
+
+    .member-name {
+      flex: 1;
+      font-size: 15px;
+    }
+
+    .member-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .small-button {
+      padding: 7px 9px;
+      font-size: 12px;
+    }
+
+    .hidden-member {
+      opacity: 0.5;
+    }
+
+    .history-item {
+      background: #292929;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .history-date {
+      color: #ff3f9f;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .history-detail {
+      margin-top: 5px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .history-buttons {
+      display: flex;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .edit-area {
+      background: #222;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .summary-item {
+      background: #292929;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .summary-number {
+      font-size: 20px;
+      color: #ff3f9f;
+      font-weight: bold;
+    }
+
+    .status {
+      text-align: center;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .danger {
+      background: #a40050;
+    }
+
+    .gray {
+      background: #555;
+    }
+
+    .green {
+      background: #008f5a;
+    }
+
+    .member-add {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .member-add input {
+      flex: 1;
+    }
+
+    .member-add button {
+      white-space: nowrap;
+    }
+
+    .inactive-title {
+      color: #aaa;
+      font-size: 14px;
+      margin-top: 18px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🏀 ミニバス乗車管理</h1>
+
+  <div id="status" class="status">
+    Firebase接続中…
+  </div>
+
+  <!-- 乗車登録 -->
+  <div class="box">
+
+    <h2>🚐 乗車登録</h2>
+
+    <label>日付</label>
+    <input type="date" id="tripDate">
+
+    <label>会場名</label>
+    <input type="text" id="venueName" placeholder="例：○○小学校">
+
+    <label>距離（km）</label>
+    <input type="number" id="distance" placeholder="例：25">
+
+    <label>高速代（円）</label>
+    <input type="number" id="highwayFee" placeholder="0">
+
+    <label>乗車メンバー</label>
+    <div id="memberList" class="member-grid">
+      読み込み中…
+    </div>
+
+    <button class="main-button" onclick="saveTrip()">
+      🚐 乗車記録を保存
+    </button>
+
+  </div>
+
+
+  <!-- メンバー管理 -->
+  <div class="box">
+
+    <h2>👥 メンバー管理</h2>
+
+    <div class="member-add">
+      <input type="text" id="newMemberName" placeholder="新しいメンバー名">
+      <button onclick="addMember()">追加</button>
+    </div>
+
+    <div id="memberManagementList">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+  <!-- 月間集計 -->
+  <div class="box">
+
+    <h2>📊 月間集計</h2>
+
+    <div class="summary">
+
+      <div class="summary-item">
+        <div>乗車日数</div>
+        <div id="monthDays" class="summary-number">0</div>
+        <div>日</div>
+      </div>
+
+      <div class="summary-item">
+        <div>乗車人数</div>
+        <div id="monthRiders" class="summary-number">0</div>
+        <div>人</div>
+      </div>
+
+      <div class="summary-item">
+        <div>総距離</div>
+        <div id="monthDistance" class="summary-number">0</div>
+        <div>km</div>
+      </div>
+
+      <div class="summary-item">
+        <div>高速代</div>
+        <div id="monthHighway" class="summary-number">0</div>
+        <div>円</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- メンバー別集計 -->
+  <div class="box">
+
+    <h2>👤 メンバー別集計</h2>
+
+    <div id="memberSummary">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+  <!-- 履歴 -->
+  <div class="box">
+
+    <h2>📅 乗車履歴</h2>
+
+    <div id="history">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+<script type="module">
+
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+  import {
+    initializeFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    query,
+    orderBy,
+    arrayUnion
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
+    authDomain: "minibusdanin.firebaseapp.com",
+    projectId: "minibusdanin",
+    storageBucket: "minibusdanin.firebasestorage.app",
+    messagingSenderId: "1093555104011",
+    appId: "1:1093555104011:web:935cef97dd4bfee8615a0e",
+    measurementId: "G-XFSJQRLHQ2"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+
+  /* Enterprise版Firestoreの「default」データベースを明示 */
+  const db = initializeFirestore(app, {}, "default");
+
+
+  const initialMembers = [
+    "西濱",
+    "小澤",
+    "竹内",
+    "粉川",
+    "山口",
+    "藤本",
+    "萩",
+    "中田",
+    "西田",
+    "伊丹",
+    "高木",
+    "鈴木",
+    "加藤",
+    "長沼",
+    "舘"
+  ];
+
+
+  let membersData = [];
+  let tripGroupsData = [];
+  let legacyTripsData = [];
+
+
+  // --------------------------------
+  // 初期化
+  // --------------------------------
+
   async function initializeMembers() {
 
     const snapshot = await getDocs(collection(db, "members"));
@@ -19,3 +426,1322 @@
 
     await loadMembers();
   }
+
+
+  // --------------------------------
+  // メンバー読み込み
+  // --------------------------------
+
+  async function loadMembers() {
+
+    const snapshot = await getDocs(collection(db, "members"));
+
+    membersData = [];
+
+    snapshot.forEach((item) => {
+
+      membersData.push({
+        id: item.id,
+        ...item.data()
+      });
+
+    });
+
+    membersData.sort((a, b) => {
+
+      const ao = a.order ?? 9999;
+      const bo = b.order ?? 9999;
+
+      return ao - bo;
+
+    });
+
+    renderMemberList();
+    renderMemberManagement();
+    renderMemberSummary();
+
+  }
+
+
+  // --------------------------------
+  // 登録画面のメンバー表示
+  // --------------------------------
+
+  function renderMemberList() {
+
+    const area = document.getElementById("memberList");
+
+    area.innerHTML = "";
+
+    const activeMembers =
+      membersData.filter(member => member.active !== false);
+
+    if (activeMembers.length === 0) {
+
+      area.innerHTML = "メンバーがいません。";
+
+      return;
+
+    }
+
+    activeMembers.forEach(member => {
+
+      const label = document.createElement("label");
+
+      label.className = "member-check";
+
+      label.innerHTML = `
+        <input
+          type="checkbox"
+          value="${escapeHtml(member.name)}"
+          data-member-name="${escapeHtml(member.name)}"
+        >
+        <span>${escapeHtml(member.name)}</span>
+      `;
+
+      area.appendChild(label);
+
+    });
+
+  }
+
+
+  // --------------------------------
+  // メンバー管理画面
+  // --------------------------------
+
+  function renderMemberManagement() {
+
+    const area = document.getElementById("memberManagementList");
+
+    area.innerHTML = "";
+
+    const active =
+      membersData.filter(member => member.active !== false);
+
+    const inactive =
+      membersData.filter(member => member.active === false);
+
+
+    active.forEach((member, index) => {
+
+      const row = document.createElement("div");
+
+      row.className = "member-management";
+
+      row.innerHTML = `
+        <div class="member-name">
+          ${escapeHtml(member.name)}
+        </div>
+
+        <div class="member-buttons">
+
+          <button
+            class="small-button gray"
+            onclick="moveMember('${member.id}', -1)"
+            ${index === 0 ? "disabled" : ""}
+          >↑</button>
+
+          <button
+            class="small-button gray"
+            onclick="moveMember('${member.id}', 1)"
+            ${index === active.length - 1 ? "disabled" : ""}
+          >↓</button>
+
+          <button
+            class="small-button"
+            onclick="renameMember('${member.id}')"
+          >✏️</button>
+
+          <button
+            class="small-button danger"
+            onclick="hideMember('${member.id}')"
+          >🙈</button>
+
+        </div>
+      `;
+
+      area.appendChild(row);
+
+    });
+
+
+    if (inactive.length > 0) {
+
+      const title = document.createElement("div");
+
+      title.className = "inactive-title";
+
+      title.textContent = "非表示メンバー";
+
+      area.appendChild(title);
+
+
+      inactive.forEach(member => {
+
+        const row = document.createElement("div");
+
+        row.className =
+          "member-management hidden-member";
+
+        row.innerHTML = `
+          <div class="member-name">
+            ${escapeHtml(member.name)}
+          </div>
+
+          <div class="member-buttons">
+
+            <button
+              class="small-button green"
+              onclick="showMember('${member.id}')"
+            >👀 再表示</button>
+
+          </div>
+        `;
+
+        area.appendChild(row);
+
+      });
+
+    }
+
+  }
+
+
+  // --------------------------------
+  // メンバー追加
+  // --------------------------------
+
+  window.addMember = async function() {
+
+    const input =
+      document.getElementById("newMemberName");
+
+    const name =
+      input.value.trim();
+
+    if (!name) {
+
+      alert("メンバー名を入力してください。");
+
+      return;
+
+    }
+
+
+    const duplicate =
+      membersData.some(member =>
+        member.name === name
+      );
+
+    if (duplicate) {
+
+      alert("同じ名前のメンバーがすでにいます。");
+
+      return;
+
+    }
+
+
+    const maxOrder =
+      membersData.length > 0
+        ? Math.max(...membersData.map(m => m.order ?? 0))
+        : -1;
+
+
+    await addDoc(collection(db, "members"), {
+
+      name: name,
+      order: maxOrder + 1,
+      active: true,
+      createdAt: new Date()
+
+    });
+
+
+    input.value = "";
+
+    await loadMembers();
+
+    alert(`${name}さんを追加しました。`);
+
+  };
+
+
+  // --------------------------------
+  // 名前変更
+  // --------------------------------
+
+  window.renameMember = async function(id) {
+
+    const member =
+      membersData.find(m => m.id === id);
+
+    if (!member) return;
+
+
+    const newName =
+      prompt(
+        "新しい名前を入力してください。",
+        member.name
+      );
+
+
+    if (newName === null) return;
+
+    const trimmed =
+      newName.trim();
+
+
+    if (!trimmed) {
+
+      alert("名前を空欄にはできません。");
+
+      return;
+
+    }
+
+
+    if (trimmed === member.name) return;
+
+
+    const duplicate =
+      membersData.some(m =>
+        m.id !== id &&
+        m.name === trimmed
+      );
+
+
+    if (duplicate) {
+
+      alert("同じ名前のメンバーがいます。");
+
+      return;
+
+    }
+
+
+    if (!confirm(
+      `「${member.name}」を「${trimmed}」に変更します。\n\n過去の乗車記録も新しい名前に変更します。`
+    )) {
+
+      return;
+
+    }
+
+
+    // tripGroups の名前を変更
+    const groupSnapshot =
+      await getDocs(collection(db, "tripGroups"));
+
+
+    for (const item of groupSnapshot.docs) {
+
+      const data = item.data();
+
+      const oldMembers =
+        Array.isArray(data.members)
+          ? data.members
+          : [];
+
+
+      if (oldMembers.includes(member.name)) {
+
+        const newMembers =
+          oldMembers.map(name =>
+            name === member.name
+              ? trimmed
+              : name
+          );
+
+
+        await updateDoc(
+          doc(db, "tripGroups", item.id),
+          {
+            members: newMembers
+          }
+        );
+
+      }
+
+    }
+
+
+    // 旧 trips の名前も変更
+    const oldTripsSnapshot =
+      await getDocs(collection(db, "trips"));
+
+
+    for (const item of oldTripsSnapshot.docs) {
+
+      const data = item.data();
+
+      if (data.memberName === member.name) {
+
+        await updateDoc(
+          doc(db, "trips", item.id),
+          {
+            memberName: trimmed
+          }
+        );
+
+      }
+
+    }
+
+
+    // メンバー本体を変更
+    await updateDoc(
+      doc(db, "members", id),
+      {
+        name: trimmed
+      }
+    );
+
+
+    await loadMembers();
+    await loadTrips();
+
+    alert("名前を変更しました。");
+
+  };
+
+
+  // --------------------------------
+  // メンバー非表示
+  // --------------------------------
+
+  window.hideMember = async function(id) {
+
+    const member =
+      membersData.find(m => m.id === id);
+
+    if (!member) return;
+
+
+    if (!confirm(
+      `${member.name}さんをメンバー選択画面から非表示にしますか？\n\n過去の記録は残ります。`
+    )) {
+
+      return;
+
+    }
+
+
+    await updateDoc(
+      doc(db, "members", id),
+      {
+        active: false
+      }
+    );
+
+
+    await loadMembers();
+
+  };
+
+
+  // --------------------------------
+  // メンバー再表示
+  // --------------------------------
+
+  window.showMember = async function(id) {
+
+    await updateDoc(
+      doc(db, "members", id),
+      {
+        active: true
+      }
+    );
+
+
+    await loadMembers();
+
+  };
+
+
+  // --------------------------------
+  // 並び順変更
+  // --------------------------------
+
+  window.moveMember = async function(id, direction) {
+
+    const active =
+      membersData.filter(member =>
+        member.active !== false
+      );
+
+
+    const index =
+      active.findIndex(member =>
+        member.id === id
+      );
+
+
+    const targetIndex =
+      index + direction;
+
+
+    if (
+      index < 0 ||
+      targetIndex < 0 ||
+      targetIndex >= active.length
+    ) {
+
+      return;
+
+    }
+
+
+    const current =
+      active[index];
+
+    const target =
+      active[targetIndex];
+
+
+    const currentOrder =
+      current.order;
+
+    const targetOrder =
+      target.order;
+
+
+    await updateDoc(
+      doc(db, "members", current.id),
+      {
+        order: targetOrder
+      }
+    );
+
+
+    await updateDoc(
+      doc(db, "members", target.id),
+      {
+        order: currentOrder
+      }
+    );
+
+
+    await loadMembers();
+
+  };
+
+
+  // --------------------------------
+  // 乗車登録
+  // --------------------------------
+
+  window.saveTrip = async function() {
+
+    const tripDate =
+      document.getElementById("tripDate").value;
+
+    const venueName =
+      document.getElementById("venueName").value.trim();
+
+    const distanceValue =
+      document.getElementById("distance").value;
+
+    const highwayFeeValue =
+      document.getElementById("highwayFee").value;
+
+
+    if (!tripDate) {
+
+      alert("日付を入力してください。");
+
+      return;
+
+    }
+
+
+    if (!venueName) {
+
+      alert("会場名を入力してください。");
+
+      return;
+
+    }
+
+
+    if (distanceValue === "") {
+
+      alert("距離を入力してください。");
+
+      return;
+
+    }
+
+
+    if (highwayFeeValue === "") {
+
+      alert("高速代を入力してください。\n高速を使わない場合は0を入力してください。");
+
+      return;
+
+    }
+
+
+    const distance =
+      Number(distanceValue);
+
+    const highwayFee =
+      Number(highwayFeeValue);
+
+
+    const checkboxes =
+      document.querySelectorAll(
+        "#memberList input[type='checkbox']:checked"
+      );
+
+
+    const selectedMembers =
+      Array.from(checkboxes).map(
+        checkbox =>
+          checkbox.dataset.memberName
+      );
+
+
+    if (selectedMembers.length === 0) {
+
+      alert("乗車メンバーを1人以上選択してください。");
+
+      return;
+
+    }
+
+
+    await addDoc(
+      collection(db, "tripGroups"),
+      {
+
+        tripDate: tripDate,
+
+        venueName: venueName,
+
+        distance: distance,
+
+        highwayFee: highwayFee,
+
+        members: selectedMembers,
+
+        createdAt: new Date()
+
+      }
+    );
+
+
+    alert("乗車記録を保存しました！");
+
+
+    document
+      .querySelectorAll(
+        "#memberList input[type='checkbox']"
+      )
+      .forEach(input => {
+        input.checked = false;
+      });
+
+
+    document.getElementById("venueName").value = "";
+    document.getElementById("distance").value = "";
+    document.getElementById("highwayFee").value = "";
+
+
+    await loadTrips();
+
+  };
+
+
+  // --------------------------------
+  // データ読み込み
+  // --------------------------------
+
+  async function loadTrips() {
+
+    tripGroupsData = [];
+    legacyTripsData = [];
+
+
+    const groupSnapshot =
+      await getDocs(collection(db, "tripGroups"));
+
+
+    groupSnapshot.forEach(item => {
+
+      tripGroupsData.push({
+
+        id: item.id,
+
+        ...item.data()
+
+      });
+
+    });
+
+
+    const legacySnapshot =
+      await getDocs(collection(db, "trips"));
+
+
+    legacySnapshot.forEach(item => {
+
+      const data = item.data();
+
+
+      if (data.memberName) {
+
+        legacyTripsData.push({
+
+          id: item.id,
+
+          ...data
+
+        });
+
+      }
+
+    });
+
+
+    tripGroupsData.sort((a, b) =>
+      String(b.tripDate || "")
+        .localeCompare(
+          String(a.tripDate || "")
+        )
+    );
+
+
+    legacyTripsData.sort((a, b) =>
+      String(b.tripDate || "")
+        .localeCompare(
+          String(a.tripDate || "")
+        )
+    );
+
+
+    renderHistory();
+    renderMonthlySummary();
+    renderMemberSummary();
+
+  }
+
+
+  // --------------------------------
+  // 履歴表示
+  // --------------------------------
+
+  function renderHistory() {
+
+    const area =
+      document.getElementById("history");
+
+    area.innerHTML = "";
+
+
+    const groups = {};
+
+
+    // 新しいデータ
+    tripGroupsData.forEach(item => {
+
+      const key =
+        `${item.tripDate}_${item.id}`;
+
+      groups[key] = {
+
+        id: item.id,
+
+        tripDate: item.tripDate,
+
+        venueName: item.venueName || "",
+
+        distance: Number(item.distance || 0),
+
+        highwayFee: Number(item.highwayFee || 0),
+
+        members: Array.isArray(item.members)
+          ? item.members
+          : [],
+
+        isNew: true
+
+      };
+
+    });
+
+
+    // 古いデータ
+    const legacyGroups = {};
+
+
+    legacyTripsData.forEach(item => {
+
+      const key =
+        `${item.tripDate}_${item.distance}`;
+
+      if (!legacyGroups[key]) {
+
+        legacyGroups[key] = {
+
+          tripDate: item.tripDate,
+
+          distance: Number(item.distance || 0),
+
+          members: []
+
+        };
+
+      }
+
+
+      if (
+        !legacyGroups[key].members.includes(
+          item.memberName
+        )
+      ) {
+
+        legacyGroups[key].members.push(
+          item.memberName
+        );
+
+      }
+
+    });
+
+
+    Object.values(legacyGroups).forEach(item => {
+
+      const key =
+        `legacy_${item.tripDate}_${item.distance}`;
+
+      groups[key] = {
+
+        ...item,
+
+        id: null,
+
+        venueName: "",
+
+        highwayFee: 0,
+
+        isNew: false
+
+      };
+
+    });
+
+
+    const list =
+      Object.values(groups)
+        .sort((a, b) =>
+          String(b.tripDate || "")
+            .localeCompare(
+              String(a.tripDate || "")
+            )
+        );
+
+
+    if (list.length === 0) {
+
+      area.innerHTML =
+        "<div>まだ乗車記録がありません。</div>";
+
+      return;
+
+    }
+
+
+    list.forEach(item => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "history-item";
+
+
+      const memberText =
+        item.members.length > 0
+          ? item.members.join("、")
+          : "なし";
+
+
+      div.innerHTML = `
+
+        <div class="history-date">
+          ${escapeHtml(item.tripDate || "")}
+        </div>
+
+        <div class="history-detail">
+
+          🏫 会場：
+          ${escapeHtml(item.venueName || "未登録")}
+          <br>
+
+          📏 距離：
+          ${item.distance} km
+          <br>
+
+          🛣️ 高速代：
+          ${item.highwayFee.toLocaleString()} 円
+          <br>
+
+          👥 乗車：
+          ${escapeHtml(memberText)}
+
+        </div>
+
+      `;
+
+
+      if (item.isNew) {
+
+        const buttons =
+          document.createElement("div");
+
+        buttons.className =
+          "history-buttons";
+
+
+        const editButton =
+          document.createElement("button");
+
+        editButton.textContent =
+          "✏️ 編集";
+
+
+        editButton.onclick =
+          () => editTrip(item.id);
+
+
+        const deleteButton =
+          document.createElement("button");
+
+        deleteButton.textContent =
+          "🗑️ 削除";
+
+        deleteButton.className =
+          "danger";
+
+
+        deleteButton.onclick =
+          () => deleteTrip(item.id);
+
+
+        buttons.appendChild(editButton);
+        buttons.appendChild(deleteButton);
+
+        div.appendChild(buttons);
+
+      }
+
+
+      area.appendChild(div);
+
+    });
+
+  }
+
+
+  // --------------------------------
+  // 編集
+  // --------------------------------
+
+  window.editTrip = async function(id) {
+
+    const item =
+      tripGroupsData.find(
+        trip => trip.id === id
+      );
+
+
+    if (!item) return;
+
+
+    const newDate =
+      prompt(
+        "日付",
+        item.tripDate || ""
+      );
+
+
+    if (newDate === null) return;
+
+
+    const newVenue =
+      prompt(
+        "会場名",
+        item.venueName || ""
+      );
+
+
+    if (newVenue === null) return;
+
+
+    const newDistance =
+      prompt(
+        "距離（km）",
+        item.distance || 0
+      );
+
+
+    if (newDistance === null) return;
+
+
+    const newHighway =
+      prompt(
+        "高速代（円）",
+        item.highwayFee || 0
+      );
+
+
+    if (newHighway === null) return;
+
+
+    await updateDoc(
+      doc(db, "tripGroups", id),
+      {
+
+        tripDate: newDate,
+
+        venueName: newVenue,
+
+        distance: Number(newDistance),
+
+        highwayFee: Number(newHighway)
+
+      }
+    );
+
+
+    await loadTrips();
+
+    alert("変更しました。");
+
+  };
+
+
+  // --------------------------------
+  // 削除
+  // --------------------------------
+
+  window.deleteTrip = async function(id) {
+
+    if (!confirm(
+      "この乗車記録を削除しますか？"
+    )) {
+
+      return;
+
+    }
+
+
+    await deleteDoc(
+      doc(db, "tripGroups", id)
+    );
+
+
+    await loadTrips();
+
+    alert("削除しました。");
+
+  };
+
+
+  // --------------------------------
+  // 月間集計
+  // --------------------------------
+
+  function renderMonthlySummary() {
+
+    const now =
+      new Date();
+
+    const month =
+      String(now.getMonth() + 1)
+        .padStart(2, "0");
+
+    const year =
+      now.getFullYear();
+
+
+    const prefix =
+      `${year}-${month}`;
+
+
+    const groups =
+      tripGroupsData.filter(item =>
+        String(item.tripDate || "")
+          .startsWith(prefix)
+      );
+
+
+    const dates =
+      new Set(
+        groups.map(item =>
+          item.tripDate
+        )
+      );
+
+
+    let riders = 0;
+    let distance = 0;
+    let highway = 0;
+
+
+    groups.forEach(item => {
+
+      riders +=
+        Array.isArray(item.members)
+          ? item.members.length
+          : 0;
+
+      distance +=
+        Number(item.distance || 0);
+
+      highway +=
+        Number(item.highwayFee || 0);
+
+    });
+
+
+    // 古いデータも月間集計に含める
+    const legacy =
+      legacyTripsData.filter(item =>
+        String(item.tripDate || "")
+          .startsWith(prefix)
+      );
+
+
+    if (groups.length === 0 && legacy.length > 0) {
+
+      const legacyDates =
+        new Set(
+          legacy.map(item =>
+            item.tripDate
+          )
+        );
+
+
+      legacyDates.forEach(date =>
+        dates.add(date)
+      );
+
+
+      riders += legacy.length;
+
+
+      legacy.forEach(item => {
+
+        distance +=
+          Number(item.distance || 0);
+
+      });
+
+    }
+
+
+    document.getElementById("monthDays")
+      .textContent =
+        dates.size;
+
+
+    document.getElementById("monthRiders")
+      .textContent =
+        riders;
+
+
+    document.getElementById("monthDistance")
+      .textContent =
+        distance.toLocaleString();
+
+
+    document.getElementById("monthHighway")
+      .textContent =
+        highway.toLocaleString();
+
+  }
+
+
+  // --------------------------------
+  // メンバー別集計
+  // --------------------------------
+
+  function renderMemberSummary() {
+
+    const area =
+      document.getElementById("memberSummary");
+
+    area.innerHTML = "";
+
+
+    const counts = {};
+    const distances = {};
+
+
+    membersData.forEach(member => {
+
+      counts[member.name] = 0;
+      distances[member.name] = 0;
+
+    });
+
+
+    // 新しいデータ
+    tripGroupsData.forEach(item => {
+
+      const members =
+        Array.isArray(item.members)
+          ? item.members
+          : [];
+
+
+      members.forEach(name => {
+
+        if (counts[name] === undefined) {
+
+          counts[name] = 0;
+          distances[name] = 0;
+
+        }
+
+
+        counts[name]++;
+
+        distances[name] +=
+          Number(item.distance || 0);
+
+      });
+
+    });
+
+
+    // 古いデータ
+    legacyTripsData.forEach(item => {
+
+      const name =
+        item.memberName;
+
+      if (counts[name] === undefined) {
+
+        counts[name] = 0;
+        distances[name] = 0;
+
+      }
+
+
+      counts[name]++;
+
+      distances[name] +=
+        Number(item.distance || 0);
+
+    });
+
+
+    const names =
+      Object.keys(counts);
+
+
+    if (names.length === 0) {
+
+      area.innerHTML =
+        "まだデータがありません。";
+
+      return;
+
+    }
+
+
+    names.forEach(name => {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "history-item";
+
+
+      row.innerHTML = `
+
+        <strong>
+          ${escapeHtml(name)}
+        </strong>
+
+        <br>
+
+        🚐 乗車回数：
+        ${counts[name]} 回
+
+        <br>
+
+        📏 個人総距離：
+        ${distances[name].toLocaleString()} km
+
+      `;
+
+
+      area.appendChild(row);
+
+    });
+
+  }
+
+
+  // --------------------------------
+  // HTMLエスケープ
+  // --------------------------------
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  // --------------------------------
+  // Firebase接続開始
+  // --------------------------------
+
+  async function startApp() {
+
+    try {
+
+      await initializeMembers();
+
+      await loadTrips();
+
+      document.getElementById("status")
+        .textContent =
+          "Firebase接続OK ✅";
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("status")
+        .textContent =
+          "Firebase接続エラー ❌";
+
+      alert(
+        "Firebaseとの接続でエラーが発生しました。\n\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  startApp();
+
+</script>
+
+</body>
+</html>
