@@ -107,27 +107,40 @@ const saveButton = document.getElementById("saveButton");
 
 saveButton.addEventListener("click", async () => {
 
-  const name = memberName.value.trim();
+  const checkedMembers = Array.from(
+    document.querySelectorAll(
+      '#memberList input[type="checkbox"]:checked'
+    )
+  );
 
-  if (!name) {
-    status.textContent = "⚠️ 名前を入力してください。";
+  if (checkedMembers.length === 0) {
+    status.textContent =
+      "⚠️ 乗車するメンバーを選択してください。";
     return;
   }
 
   try {
 
-    await addDoc(
-      collection(db, "trips"),
-      {
-        memberName: name,
-        createdAt: serverTimestamp()
-      }
-    );
+    for (const checkbox of checkedMembers) {
+
+      await addDoc(
+        collection(db, "trips"),
+        {
+          memberName: checkbox.value,
+          createdAt: serverTimestamp()
+        }
+      );
+
+    }
 
     status.textContent =
-      "✅ " + name + " さんの乗車記録を保存しました！";
+      "✅ " +
+      checkedMembers.length +
+      "人の乗車記録を保存しました！";
 
-    memberName.value = "";
+    checkedMembers.forEach(checkbox => {
+      checkbox.checked = false;
+    });
 
   } catch (error) {
 
@@ -142,7 +155,6 @@ saveButton.addEventListener("click", async () => {
   }
 
 });
-
 </script>
 
 </body>
