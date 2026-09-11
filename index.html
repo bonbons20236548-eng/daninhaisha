@@ -3,12 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase接続テスト</title>
+
+  <title>ミニバス乗車管理</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    input, button {
+      font-size: 18px;
+      padding: 12px;
+      margin: 6px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>🏀 Firebase接続テスト</h2>
-  <p id="status">接続確認中……</p>
+
+  <h2>🏀 ミニバス乗車管理</h2>
+
+  <input
+    id="memberName"
+    type="text"
+    placeholder="名前を入力"
+  >
+
+  <button id="saveButton">
+    🚐 乗車記録を保存
+  </button>
+
+  <p id="status">Firebase接続確認中……</p>
+
 
 <script type="module">
 
@@ -17,8 +57,9 @@ import { initializeApp } from
 
 import {
   initializeFirestore,
-  doc,
-  getDoc
+  collection,
+  addDoc,
+  serverTimestamp
 } from
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
@@ -36,53 +77,53 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-/* Enterprise版Firestoreの「default」データベースを明示 */
 const db = initializeFirestore(app, {}, "default");
 
 
-async function testFirebase() {
+const status = document.getElementById("status");
+const memberName = document.getElementById("memberName");
+const saveButton = document.getElementById("saveButton");
 
-  const status = document.getElementById("status");
+
+saveButton.addEventListener("click", async () => {
+
+  const name = memberName.value.trim();
+
+  if (!name) {
+    status.textContent = "⚠️ 名前を入力してください。";
+    return;
+  }
 
   try {
 
-    const ref = doc(
-      db,
-      "trips",
-      "7DnjLoCLxhH6m06KHFkS"
+    await addDoc(
+      collection(db, "trips"),
+      {
+        memberName: name,
+        createdAt: serverTimestamp()
+      }
     );
 
-    const snapshot = await getDoc(ref);
+    status.textContent =
+      "✅ " + name + " さんの乗車記録を保存しました！";
 
-    if (snapshot.exists()) {
-
-      status.textContent =
-        "✅ Firebase接続成功！ testデータを取得できました。";
-
-    } else {
-
-      status.textContent =
-        "✅ Firebaseには接続できました。ただし指定したデータがありません。";
-
-    }
+    memberName.value = "";
 
   } catch (error) {
 
     console.error(error);
 
     status.textContent =
-      "❌ 接続失敗: " +
+      "❌ 保存失敗: " +
       error.code +
       " / " +
       error.message;
 
   }
 
-}
-
-
-testFirebase();
+});
 
 </script>
+
 </body>
 </html>
