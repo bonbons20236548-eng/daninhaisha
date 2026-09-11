@@ -162,6 +162,51 @@ saveButton.addEventListener("click", async () => {
   }
 
 });
+async function loadTripHistory() {
+
+  const history = document.getElementById("tripHistory");
+
+  try {
+
+    const snapshot = await getDocs(
+      collection(db, "trips")
+    );
+
+    if (snapshot.empty) {
+      history.textContent = "まだ乗車記録がありません。";
+      return;
+    }
+
+    history.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      const item = document.createElement("div");
+
+      item.textContent =
+        "🚐 " + (data.memberName || "名前なし");
+
+      item.style.padding = "8px 0";
+      item.style.borderBottom = "1px solid #ddd";
+
+      history.appendChild(item);
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    history.textContent =
+      "❌ 履歴の読み込みに失敗しました。";
+
+  }
+
+}
+
+loadTripHistory();
 </script>
 
 </body>
