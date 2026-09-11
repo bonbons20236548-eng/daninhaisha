@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ミニバス乗車管理</title>
-
   <style>
     body {
       font-family: sans-serif;
@@ -14,16 +12,13 @@
       margin: auto;
       background: #f7f7f7;
     }
-
     h2 {
       text-align: center;
       margin-bottom: 25px;
     }
-
     h3 {
       margin-top: 25px;
     }
-
     .box {
       background: white;
       padding: 15px;
@@ -31,36 +26,44 @@
       margin-bottom: 15px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-
     input[type="date"],
     input[type="number"],
     button {
-      font-size: 18px;
-      padding: 12px;
-      margin: 6px 0;
-      width: 100%;
+      font-size: 17px;
+      padding: 10px;
+      margin: 5px 0;
       box-sizing: border-box;
       border-radius: 8px;
     }
-
     input[type="date"],
     input[type="number"] {
       border: 1px solid #ccc;
       background: white;
+      width: 100%;
     }
-
     button {
       cursor: pointer;
       border: none;
-      background: #333;
       color: white;
       font-weight: bold;
     }
-
+    .save-button {
+      width: 100%;
+      background: #333;
+      padding: 12px;
+    }
+    .edit-button {
+      background: #777;
+      padding: 7px 12px;
+      margin-right: 5px;
+    }
+    .delete-button {
+      background: #c62828;
+      padding: 7px 12px;
+    }
     button:active {
       opacity: 0.7;
     }
-
     #memberList label {
       display: block;
       background: #f1f1f1;
@@ -68,23 +71,26 @@
       margin: 5px 0;
       border-radius: 8px;
     }
-
     #memberList input {
       width: auto;
       margin-right: 8px;
     }
-
     #status {
       margin-top: 15px;
       font-weight: bold;
       text-align: center;
     }
-
     .history-item {
-      padding: 10px 5px;
+      padding: 12px 5px;
       border-bottom: 1px solid #ddd;
     }
-
+    .history-info {
+      margin-bottom: 8px;
+    }
+    .history-actions {
+      display: flex;
+      gap: 5px;
+    }
     .count-item {
       display: flex;
       justify-content: space-between;
@@ -92,11 +98,6 @@
       border-bottom: 1px solid #ddd;
       font-size: 17px;
     }
-
-    .count-number {
-      font-weight: bold;
-    }
-
     .total-box {
       background: #f1f1f1;
       padding: 12px;
@@ -104,170 +105,90 @@
       border-radius: 8px;
       font-weight: bold;
     }
-
-    .small {
-      font-size: 13px;
-      color: #666;
+    .edit-area {
+      background: #f1f1f1;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+    }
+    .edit-area button {
+      width: 100%;
+      background: #333;
     }
   </style>
 </head>
-
 <body>
-
   <h2>🏀 ミニバス乗車管理</h2>
-
   <!-- 乗車登録 -->
   <div class="box">
-
-    <h3>🚐 乗車登録</h3>
-
-    <label>
-      📅 乗車日
-      <input type="date" id="tripDate">
-    </label>
-
-    <label>
-      🛣️ 走行距離（km）
-      <input
-        type="number"
-        id="tripDistance"
-        min="0"
-        step="0.1"
-        placeholder="例：25"
-      >
-    </label>
-
-    <h3>👥 乗車メンバー</h3>
-
-    <div id="memberList">
-
-      <label>
-        <input type="checkbox" value="西濱">
-        西濱
-      </label>
-
-      <label>
-        <input type="checkbox" value="小澤">
-        小澤
-      </label>
-
-      <label>
-        <input type="checkbox" value="竹内">
-        竹内
-      </label>
-
-      <label>
-        <input type="checkbox" value="粉川">
-        粉川
-      </label>
-
-      <label>
-        <input type="checkbox" value="山口">
-        山口
-      </label>
-
-      <label>
-        <input type="checkbox" value="藤本">
-        藤本
-      </label>
-
-      <label>
-        <input type="checkbox" value="萩">
-        萩
-      </label>
-
-      <label>
-        <input type="checkbox" value="中田">
-        中田
-      </label>
-
-      <label>
-        <input type="checkbox" value="西田">
-        西田
-      </label>
-
-      <label>
-        <input type="checkbox" value="伊丹">
-        伊丹
-      </label>
-
-      <label>
-        <input type="checkbox" value="高木">
-        高木
-      </label>
-
-      <label>
-        <input type="checkbox" value="鈴木">
-        鈴木
-      </label>
-
-      <label>
-        <input type="checkbox" value="加藤">
-        加藤
-      </label>
-
-      <label>
-        <input type="checkbox" value="長沼">
-        長沼
-      </label>
-
-      <label>
-        <input type="checkbox" value="舘">
-        舘
-      </label>
-
-    </div>
-
-    <button id="saveButton">
-      🚐 選択したメンバーを登録
-    </button>
-
-    <p id="status">準備中……</p>
-
+<h3>🚐 乗車登録</h3>
+<label>
+  📅 乗車日
+  <input type="date" id="tripDate">
+</label>
+<label>
+  🛣️ 走行距離（km）
+  <input
+    type="number"
+    id="tripDistance"
+    min="0"
+    step="0.1"
+    placeholder="例：25"
+  >
+</label>
+<h3>👥 乗車メンバー</h3>
+<div id="memberList">
+  <label><input type="checkbox" value="西濱"> 西濱</label>
+  <label><input type="checkbox" value="小澤"> 小澤</label>
+  <label><input type="checkbox" value="竹内"> 竹内</label>
+  <label><input type="checkbox" value="粉川"> 粉川</label>
+  <label><input type="checkbox" value="山口"> 山口</label>
+  <label><input type="checkbox" value="藤本"> 藤本</label>
+  <label><input type="checkbox" value="萩"> 萩</label>
+  <label><input type="checkbox" value="中田"> 中田</label>
+  <label><input type="checkbox" value="西田"> 西田</label>
+  <label><input type="checkbox" value="伊丹"> 伊丹</label>
+  <label><input type="checkbox" value="高木"> 高木</label>
+  <label><input type="checkbox" value="鈴木"> 鈴木</label>
+  <label><input type="checkbox" value="加藤"> 加藤</label>
+  <label><input type="checkbox" value="長沼"> 長沼</label>
+  <label><input type="checkbox" value="舘"> 舘</label>
+</div>
+<button id="saveButton" class="save-button">
+  🚐 選択したメンバーを登録
+</button>
+<p id="status">準備中……</p>
   </div>
-
-
   <!-- 乗車履歴 -->
   <div class="box">
-
-    <h3>📋 乗車履歴</h3>
-
-    <div id="tripHistory">
-      読み込み中……
-    </div>
-
+<h3>📋 乗車履歴</h3>
+<div id="tripHistory">
+  読み込み中……
+</div>
   </div>
-
-
   <!-- メンバー別集計 -->
   <div class="box">
-
-    <h3>📊 メンバー別集計</h3>
-
-    <div id="memberCounts">
-      集計中……
-    </div>
-
+<h3>📊 メンバー別集計</h3>
+<div id="memberCounts">
+  集計中……
+</div>
   </div>
-
-
 <script type="module">
-
 import { initializeApp } from
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-
 import {
   initializeFirestore,
   collection,
   addDoc,
   serverTimestamp,
-  getDocs
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc
 } from
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-
-
 const firebaseConfig = {
-  apiKey: "AIzaSYBRKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
+  apiKey: "AIzaSYBRKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
   authDomain: "minibusdanin.firebaseapp.com",
   projectId: "minibusdanin",
   storageBucket: "minibusdanin.firebasestorage.app",
@@ -275,78 +196,45 @@ const firebaseConfig = {
   appId: "1:1093555104011:web:935cef97dd4bfee8615a0e",
   measurementId: "G-XFSJQRLHQ2"
 };
-
-
 const app = initializeApp(firebaseConfig);
-
 const db = initializeFirestore(app, {}, "default");
-
-
 const status = document.getElementById("status");
 const saveButton = document.getElementById("saveButton");
-
-
-
 /* =========================
    乗車登録
 ========================= */
-
 saveButton.addEventListener("click", async () => {
-
   const tripDate =
     document.getElementById("tripDate").value;
-
   const distanceValue =
     document.getElementById("tripDistance").value;
-
   const checkedMembers = Array.from(
     document.querySelectorAll(
       '#memberList input[type="checkbox"]:checked'
     )
   );
-
-
   if (!tripDate) {
-
     status.textContent =
       "⚠️ 乗車日を選択してください。";
-
     return;
   }
-
-
   if (distanceValue === "") {
-
     status.textContent =
       "⚠️ 走行距離を入力してください。";
-
     return;
   }
-
-
   if (checkedMembers.length === 0) {
-
     status.textContent =
       "⚠️ 乗車するメンバーを選択してください。";
-
     return;
   }
-
-
   const distance =
     Number(distanceValue);
-
-
   try {
-
     saveButton.disabled = true;
-
     saveButton.textContent =
       "保存中……";
-
-
     for (const checkbox of checkedMembers) {
-
       await addDoc(
         collection(db, "trips"),
         {
@@ -356,165 +244,237 @@ saveButton.addEventListener("click", async () => {
           createdAt: serverTimestamp()
         }
       );
-
     }
-
-
     status.textContent =
       "✅ " +
       checkedMembers.length +
       "人の乗車記録を保存しました！";
-
-
     checkedMembers.forEach(checkbox => {
       checkbox.checked = false;
     });
-
-
     document.getElementById("tripDistance").value = "";
-
-
     await loadTripHistory();
-
-
     saveButton.disabled = false;
-
     saveButton.textContent =
       "🚐 選択したメンバーを登録";
-
-
   } catch (error) {
-
     console.error(error);
-
     status.textContent =
       "❌ 保存失敗: " +
       error.code +
       " / " +
       error.message;
-
-
     saveButton.disabled = false;
-
     saveButton.textContent =
       "🚐 選択したメンバーを登録";
-
   }
-
 });
-
-
-
 /* =========================
    乗車履歴
 ========================= */
-
 async function loadTripHistory() {
-
   const history =
     document.getElementById("tripHistory");
-
-
   try {
-
     const snapshot =
       await getDocs(
         collection(db, "trips")
       );
-
-
     if (snapshot.empty) {
-
       history.textContent =
         "まだ乗車記録がありません。";
-
       updateMemberCounts([]);
-
       return;
     }
-
-
     const trips = [];
-
-
-    snapshot.forEach((doc) => {
-
-      const data = doc.data();
-
+    snapshot.forEach((docSnapshot) => {
+      const data =
+        docSnapshot.data();
       trips.push({
-        id: doc.id,
+        id: docSnapshot.id,
         ...data
       });
-
     });
-
-
-    /* 日付の新しい順 */
     trips.sort((a, b) => {
-
       return (b.tripDate || "")
         .localeCompare(a.tripDate || "");
-
     });
-
-
     history.innerHTML = "";
-
-
     trips.forEach((data) => {
-
       const item =
         document.createElement("div");
-
       item.className =
         "history-item";
-
-
+      const info =
+        document.createElement("div");
+      info.className =
+        "history-info";
       const distanceText =
         data.distance !== undefined
           ? "　🛣️ " + data.distance + "km"
           : "";
-
-
-      item.textContent =
+      info.textContent =
         "📅 " +
         (data.tripDate || "日付なし") +
         "　🚐 " +
         (data.memberName || "名前なし") +
         distanceText;
-
-
+      item.appendChild(info);
+      const actions =
+        document.createElement("div");
+      actions.className =
+        "history-actions";
+      const editButton =
+        document.createElement("button");
+      editButton.className =
+        "edit-button";
+      editButton.textContent =
+        "✏️ 編集";
+      editButton.addEventListener(
+        "click",
+        () => {
+          showEditArea(
+            item,
+            data
+          );
+        }
+      );
+      const deleteButton =
+        document.createElement("button");
+      deleteButton.className =
+        "delete-button";
+      deleteButton.textContent =
+        "🗑️ 削除";
+      deleteButton.addEventListener(
+        "click",
+        () => {
+          deleteTrip(
+            data.id
+          );
+        }
+      );
+      actions.appendChild(editButton);
+      actions.appendChild(deleteButton);
+      item.appendChild(actions);
       history.appendChild(item);
-
     });
-
-
     updateMemberCounts(trips);
-
-
   } catch (error) {
-
     console.error(error);
-
     history.textContent =
       "❌ 履歴の読み込みに失敗しました。";
-
   }
-
 }
-
-
-
+/* =========================
+   編集画面
+========================= */
+function showEditArea(item, data) {
+  const oldArea =
+    item.querySelector(".edit-area");
+  if (oldArea) {
+    oldArea.remove();
+    return;
+  }
+  const area =
+    document.createElement("div");
+  area.className =
+    "edit-area";
+  const dateInput =
+    document.createElement("input");
+  dateInput.type =
+    "date";
+  dateInput.value =
+    data.tripDate || "";
+  const distanceInput =
+    document.createElement("input");
+  distanceInput.type =
+    "number";
+  distanceInput.min =
+    "0";
+  distanceInput.step =
+    "0.1";
+  distanceInput.value =
+    data.distance !== undefined
+      ? data.distance
+      : "";
+  const saveEditButton =
+    document.createElement("button");
+  saveEditButton.textContent =
+    "💾 変更を保存";
+  saveEditButton.addEventListener(
+    "click",
+    async () => {
+      if (!dateInput.value) {
+        alert("乗車日を選択してください。");
+        return;
+      }
+      if (distanceInput.value === "") {
+        alert("走行距離を入力してください。");
+        return;
+      }
+      try {
+        await updateDoc(
+          doc(db, "trips", data.id),
+          {
+            tripDate: dateInput.value,
+            distance: Number(
+              distanceInput.value
+            )
+          }
+        );
+        alert("✅ 変更しました！");
+        await loadTripHistory();
+      } catch (error) {
+        console.error(error);
+        alert(
+          "❌ 編集に失敗しました。\n" +
+          error.message
+        );
+      }
+    }
+  );
+  area.appendChild(
+    document.createTextNode("📅 乗車日")
+  );
+  area.appendChild(dateInput);
+  area.appendChild(
+    document.createTextNode("🛣️ 走行距離（km）")
+  );
+  area.appendChild(distanceInput);
+  area.appendChild(saveEditButton);
+  item.appendChild(area);
+}
+/* =========================
+   削除
+========================= */
+async function deleteTrip(id) {
+  const result =
+    confirm(
+      "この乗車記録を削除しますか？"
+    );
+  if (!result) {
+    return;
+  }
+  try {
+    await deleteDoc(
+      doc(db, "trips", id)
+    );
+    alert("🗑️ 削除しました！");
+    await loadTripHistory();
+  } catch (error) {
+    console.error(error);
+    alert(
+      "❌ 削除に失敗しました。\n" +
+      error.message
+    );
+  }
+}
 /* =========================
    メンバー別集計
 ========================= */
-
 function updateMemberCounts(trips) {
-
   const memberCounts =
     document.getElementById("memberCounts");
-
-
   const members = [
     "西濱",
     "小澤",
@@ -532,127 +492,75 @@ function updateMemberCounts(trips) {
     "長沼",
     "舘"
   ];
-
-
   const counts = {};
-
-
   members.forEach(member => {
-
     counts[member] = {
       count: 0,
       distance: 0
     };
-
   });
-
-
   trips.forEach(trip => {
-
     const name =
       trip.memberName;
-
-
     if (!counts[name]) {
-
       counts[name] = {
         count: 0,
         distance: 0
       };
-
     }
-
-
     counts[name].count++;
-
-
-    if (typeof trip.distance === "number") {
-
+    if (
+      typeof trip.distance === "number"
+    ) {
       counts[name].distance +=
         trip.distance;
-
     }
-
   });
-
-
   memberCounts.innerHTML = "";
-
-
   Object.keys(counts).forEach(member => {
-
     const item =
       document.createElement("div");
-
     item.className =
       "count-item";
-
-
-    const distance =
-      counts[member].distance;
-
-
     item.innerHTML =
       "<span>👤 " +
       member +
       "</span>" +
-
       "<span>" +
       counts[member].count +
       "回　" +
-      distance +
+      counts[member].distance +
       "km" +
       "</span>";
-
-
     memberCounts.appendChild(item);
-
   });
-
-
   const totalTrips =
     trips.length;
-
-
   const totalDistance =
     trips.reduce((sum, trip) => {
-
       return sum +
-        (typeof trip.distance === "number"
-          ? trip.distance
-          : 0);
-
+        (
+          typeof trip.distance === "number"
+            ? trip.distance
+            : 0
+        );
     }, 0);
-
-
   const totalBox =
     document.createElement("div");
-
   totalBox.className =
     "total-box";
-
-
   totalBox.textContent =
     "🚐 登録人数合計：" +
     totalTrips +
     "人分　／　🛣️ 距離合計：" +
     totalDistance +
     "km";
-
-
   memberCounts.appendChild(totalBox);
-
 }
-
-
-
 /* =========================
    起動時に読み込み
 ========================= */
-
 loadTripHistory();
-
 </script>
-
 </body>
 </html>
