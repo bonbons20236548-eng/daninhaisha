@@ -37,24 +37,33 @@
 
   <h2>🏀 ミニバス乗車管理</h2>
 
-<select id="memberName">
-  <option value="">メンバーを選択</option>
-  <option value="西濱">西濱</option>
-  <option value="小澤">小澤</option>
-  <option value="竹内">竹内</option>
-  <option value="粉川">粉川</option>
-  <option value="山口">山口</option>
-  <option value="藤本">藤本</option>
-  <option value="萩">萩</option>
-  <option value="中田">中田</option>
-  <option value="西田">西田</option>
-  <option value="伊丹">伊丹</option>
-  <option value="高木">高木</option>
-  <option value="鈴木">鈴木</option>
-  <option value="加藤">加藤</option>
-  <option value="長沼">長沼</option>
-  <option value="舘">舘</option>
-</select>
+<h3>🚐 乗車メンバーを選択</h3>
+
+<div id="memberList">
+
+  <label><input type="checkbox" value="西濱"> 西濱</label>
+  <label><input type="checkbox" value="小澤"> 小澤</label>
+  <label><input type="checkbox" value="竹内"> 竹内</label>
+  <label><input type="checkbox" value="粉川"> 粉川</label>
+  <label><input type="checkbox" value="山口"> 山口</label>
+  <label><input type="checkbox" value="藤本"> 藤本</label>
+  <label><input type="checkbox" value="萩"> 萩</label>
+  <label><input type="checkbox" value="中田"> 中田</label>
+  <label><input type="checkbox" value="西田"> 西田</label>
+  <label><input type="checkbox" value="伊丹"> 伊丹</label>
+  <label><input type="checkbox" value="高木"> 高木</label>
+  <label><input type="checkbox" value="鈴木"> 鈴木</label>
+  <label><input type="checkbox" value="加藤"> 加藤</label>
+  <label><input type="checkbox" value="長沼"> 長沼</label>
+  <label><input type="checkbox" value="舘"> 舘</label>
+
+</div>
+
+<button id="saveButton">
+  🚐 選択したメンバーを登録
+</button>
+
+<p id="status">準備中……</p>
 
 <button id="saveButton">
   🚐 乗車登録
