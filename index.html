@@ -7,215 +7,310 @@
   <title>ミニバス乗車管理</title>
 
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      margin: 0;
+      padding: 20px 15px 40px;
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 520px;
       margin: auto;
-      background: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 25px;
+      margin: 5px 0 25px;
+      color: #ff3f9f;
     }
 
     h2 {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    h3 {
-      margin-top: 25px;
+      font-size: 19px;
+      margin: 0 0 15px;
+      color: #ff3f9f;
     }
 
     .box {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      background: #1c1c1c;
+      border: 1px solid #333333;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
     }
 
-    input[type="date"],
-    input[type="number"],
-    button {
-      font-size: 17px;
-      padding: 10px;
-      margin: 5px 0;
-      box-sizing: border-box;
-      border-radius: 8px;
+    label.title {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: bold;
     }
 
     input[type="date"],
     input[type="number"] {
-      border: 1px solid #ccc;
-      background: white;
       width: 100%;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-      color: white;
-      font-weight: bold;
-    }
-
-    .save-button {
-      width: 100%;
-      background: #333;
       padding: 12px;
+      font-size: 17px;
+      border-radius: 10px;
+      border: 1px solid #555;
+      background: #ffffff;
+      color: #111111;
     }
 
-    .edit-button {
-      background: #777;
-      padding: 7px 12px;
-      margin-right: 5px;
-    }
-
-    .delete-button {
-      background: #c62828;
-      padding: 7px 12px;
-    }
-
-    button:active {
-      opacity: 0.7;
+    #memberList {
+      margin-top: 10px;
     }
 
     #memberList label {
       display: block;
-      background: #f1f1f1;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 8px;
+      background: #292929;
+      padding: 11px;
+      margin: 6px 0;
+      border-radius: 9px;
+      border: 1px solid #3b3b3b;
     }
 
     #memberList input {
-      width: auto;
-      margin-right: 8px;
+      transform: scale(1.2);
+      margin-right: 9px;
+      accent-color: #ff3f9f;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .save-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      background: #ff3f9f;
+      color: #ffffff;
+      font-size: 18px;
+    }
+
+    .save-button:disabled {
+      opacity: 0.5;
     }
 
     #status {
-      margin-top: 15px;
-      font-weight: bold;
       text-align: center;
+      font-weight: bold;
+      margin: 15px 0 0;
+      color: #ff8ac5;
     }
 
     .date-group {
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      background: #191919;
+      border: 1px solid #383838;
+      border-radius: 13px;
       overflow: hidden;
+      margin-bottom: 15px;
     }
 
-    .date-title {
-      background: #333;
-      color: white;
-      padding: 12px;
-      font-size: 18px;
+    .date-header {
+      background: #ff3f9f;
+      color: #ffffff;
+      padding: 13px;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .day-summary {
+      background: #242424;
+      padding: 10px 13px;
+      color: #eeeeee;
+      font-size: 14px;
+    }
+
+    .member-row {
+      padding: 12px 13px;
+      border-top: 1px solid #333333;
+    }
+
+    .member-name {
+      font-size: 16px;
       font-weight: bold;
     }
 
-    .history-item {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
+    .distance {
+      color: #ff79b8;
+      margin-left: 5px;
     }
 
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .history-info {
-      margin-bottom: 8px;
-      font-size: 16px;
-    }
-
-    .history-actions {
+    .actions {
       display: flex;
-      gap: 5px;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .edit-button {
+      background: #555555;
+      color: #ffffff;
+      flex: 1;
+    }
+
+    .delete-button {
+      background: #c62828;
+      color: #ffffff;
+      flex: 1;
+    }
+
+    .edit-area {
+      background: #292929;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+
+    .edit-area input {
+      margin-bottom: 8px;
+    }
+
+    .edit-save {
+      width: 100%;
+      background: #ff3f9f;
+      color: white;
+    }
+
+    .summary-card {
+      background: #242424;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 4px solid #ff3f9f;
+    }
+
+    .summary-title {
+      color: #ff3f9f;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .summary-line {
+      padding: 4px 0;
     }
 
     .count-item {
       display: flex;
       justify-content: space-between;
-      padding: 10px 5px;
-      border-bottom: 1px solid #ddd;
-      font-size: 17px;
+      padding: 11px 4px;
+      border-bottom: 1px solid #333333;
     }
 
-    .total-box {
-      background: #f1f1f1;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
+    .count-item:last-child {
+      border-bottom: none;
+    }
+
+    .pink {
+      color: #ff3f9f;
       font-weight: bold;
     }
 
-    .edit-area {
-      background: #f1f1f1;
-      padding: 10px;
-      margin-top: 8px;
-      border-radius: 8px;
+    .empty {
+      color: #aaa;
+      text-align: center;
+      padding: 15px;
     }
 
-    .edit-area button {
-      width: 100%;
-      background: #333;
-    }
   </style>
 </head>
 
 <body>
 
-  <h2>🏀 ミニバス乗車管理</h2>
+<div class="container">
+
+  <h1>🏀 ミニバス乗車管理</h1>
+
+
+  <!-- 乗車登録 -->
 
   <div class="box">
 
-    <h3>🚐 乗車登録</h3>
+    <h2>🚐 乗車登録</h2>
 
-    <label>
+    <label class="title">
       📅 乗車日
-      <input type="date" id="tripDate">
     </label>
 
-    <label>
+    <input
+      type="date"
+      id="tripDate"
+    >
+
+
+    <label class="title">
       🛣️ 走行距離（km）
-      <input
-        type="number"
-        id="tripDistance"
-        min="0"
-        step="0.1"
-        placeholder="例：25"
-      >
     </label>
 
-    <h3>👥 乗車メンバー</h3>
+    <input
+      type="number"
+      id="tripDistance"
+      min="0"
+      step="0.1"
+      placeholder="例：25"
+    >
+
+
+    <label class="title">
+      👥 乗車メンバー
+    </label>
 
     <div id="memberList">
-      <label><input type="checkbox" value="西濱"> 西濱</label>
-      <label><input type="checkbox" value="小澤"> 小澤</label>
-      <label><input type="checkbox" value="竹内"> 竹内</label>
-      <label><input type="checkbox" value="粉川"> 粉川</label>
-      <label><input type="checkbox" value="山口"> 山口</label>
-      <label><input type="checkbox" value="藤本"> 藤本</label>
-      <label><input type="checkbox" value="萩"> 萩</label>
-      <label><input type="checkbox" value="中田"> 中田</label>
-      <label><input type="checkbox" value="西田"> 西田</label>
-      <label><input type="checkbox" value="伊丹"> 伊丹</label>
-      <label><input type="checkbox" value="高木"> 高木</label>
-      <label><input type="checkbox" value="鈴木"> 鈴木</label>
-      <label><input type="checkbox" value="加藤"> 加藤</label>
-      <label><input type="checkbox" value="長沼"> 長沼</label>
-      <label><input type="checkbox" value="舘"> 舘</label>
+
+      <label><input type="checkbox" value="西濱">西濱</label>
+      <label><input type="checkbox" value="小澤">小澤</label>
+      <label><input type="checkbox" value="竹内">竹内</label>
+      <label><input type="checkbox" value="粉川">粉川</label>
+      <label><input type="checkbox" value="山口">山口</label>
+      <label><input type="checkbox" value="藤本">藤本</label>
+      <label><input type="checkbox" value="萩">萩</label>
+      <label><input type="checkbox" value="中田">中田</label>
+      <label><input type="checkbox" value="西田">西田</label>
+      <label><input type="checkbox" value="伊丹">伊丹</label>
+      <label><input type="checkbox" value="高木">高木</label>
+      <label><input type="checkbox" value="鈴木">鈴木</label>
+      <label><input type="checkbox" value="加藤">加藤</label>
+      <label><input type="checkbox" value="長沼">長沼</label>
+      <label><input type="checkbox" value="舘">舘</label>
+
     </div>
 
-    <button id="saveButton" class="save-button">
-      🚐 選択したメンバーを登録
+
+    <button
+      id="saveButton"
+      class="save-button"
+    >
+      🩷 乗車を登録
     </button>
 
-    <p id="status">準備中……</p>
+
+    <p id="status">
+      準備中……
+    </p>
 
   </div>
 
 
+
+  <!-- 履歴 -->
+
   <div class="box">
 
-    <h3>📋 乗車履歴</h3>
+    <h2>📋 乗車履歴</h2>
 
     <div id="tripHistory">
       読み込み中……
@@ -224,9 +319,26 @@
   </div>
 
 
+
+  <!-- 月別集計 -->
+
   <div class="box">
 
-    <h3>📊 メンバー別集計</h3>
+    <h2>📊 月別集計</h2>
+
+    <div id="monthlySummary">
+      集計中……
+    </div>
+
+  </div>
+
+
+
+  <!-- 個人別集計 -->
+
+  <div class="box">
+
+    <h2>👤 メンバー別集計</h2>
 
     <div id="memberCounts">
       集計中……
@@ -234,11 +346,19 @@
 
   </div>
 
+</div>
+
+
 
 <script type="module">
 
-import { initializeApp } from
+
+import {
+  initializeApp
+}
+from
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
 
 import {
   initializeFirestore,
@@ -249,203 +369,322 @@ import {
   updateDoc,
   deleteDoc,
   doc
-} from
+}
+from
   "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
+
 const firebaseConfig = {
+
   apiKey: "AIzaSYBRKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
-  authDomain: "minibusdanin.firebaseapp.com",
-  projectId: "minibusdanin",
-  storageBucket: "minibusdanin.firebasestorage.app",
-  messagingSenderId: "1093555104011",
-  appId: "1:1093555104011:web:935cef97dd4bfee8615a0e",
-  measurementId: "G-XFSJQRLHQ2"
+
+  authDomain:
+    "minibusdanin.firebaseapp.com",
+
+  projectId:
+    "minibusdanin",
+
+  storageBucket:
+    "minibusdanin.firebasestorage.app",
+
+  messagingSenderId:
+    "1093555104011",
+
+  appId:
+    "1:1093555104011:web:935cef97dd4bfee8615a0e",
+
+  measurementId:
+    "G-XFSJQRLHQ2"
+
 };
 
 
-const app = initializeApp(firebaseConfig);
 
-const db = initializeFirestore(
-  app,
-  {},
-  "default"
-);
+const app =
+  initializeApp(firebaseConfig);
 
 
-const status = document.getElementById("status");
+const db =
+  initializeFirestore(
+    app,
+    {},
+    "default"
+  );
+
+
+
+const members = [
+
+  "西濱",
+  "小澤",
+  "竹内",
+  "粉川",
+  "山口",
+  "藤本",
+  "萩",
+  "中田",
+  "西田",
+  "伊丹",
+  "高木",
+  "鈴木",
+  "加藤",
+  "長沼",
+  "舘"
+
+];
+
+
+
+const status =
+  document.getElementById(
+    "status"
+  );
+
 
 const saveButton =
-  document.getElementById("saveButton");
+  document.getElementById(
+    "saveButton"
+  );
 
 
 
 /* =========================
-   乗車登録
+   新規登録
 ========================= */
 
-saveButton.addEventListener("click", async () => {
+saveButton.addEventListener(
+  "click",
+  async () => {
 
-  const tripDate =
-    document.getElementById("tripDate").value;
-
-  const distanceValue =
-    document.getElementById("tripDistance").value;
-
-  const checkedMembers =
-    Array.from(
-      document.querySelectorAll(
-        '#memberList input[type="checkbox"]:checked'
-      )
-    );
+    const tripDate =
+      document.getElementById(
+        "tripDate"
+      ).value;
 
 
-  if (!tripDate) {
-
-    status.textContent =
-      "⚠️ 乗車日を選択してください。";
-
-    return;
-  }
+    const distanceValue =
+      document.getElementById(
+        "tripDistance"
+      ).value;
 
 
-  if (distanceValue === "") {
-
-    status.textContent =
-      "⚠️ 走行距離を入力してください。";
-
-    return;
-  }
-
-
-  if (checkedMembers.length === 0) {
-
-    status.textContent =
-      "⚠️ 乗車するメンバーを選択してください。";
-
-    return;
-  }
-
-
-  const distance =
-    Number(distanceValue);
-
-
-  try {
-
-    saveButton.disabled = true;
-
-    saveButton.textContent =
-      "保存中……";
-
-
-    for (const checkbox of checkedMembers) {
-
-      await addDoc(
-        collection(db, "trips"),
-        {
-          memberName: checkbox.value,
-          tripDate: tripDate,
-          distance: distance,
-          createdAt: serverTimestamp()
-        }
-      );
-
-    }
-
-
-    status.textContent =
-      "✅ " +
-      checkedMembers.length +
-      "人の乗車記録を保存しました！";
-
-
-    checkedMembers.forEach(
-      checkbox => {
-        checkbox.checked = false;
-      }
-    );
-
-
-    document.getElementById(
-      "tripDistance"
-    ).value = "";
-
-
-    await loadTripHistory();
-
-
-    saveButton.disabled = false;
-
-    saveButton.textContent =
-      "🚐 選択したメンバーを登録";
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      "❌ 保存失敗: " +
-      error.code +
-      " / " +
-      error.message;
-
-
-    saveButton.disabled = false;
-
-    saveButton.textContent =
-      "🚐 選択したメンバーを登録";
-  }
-
-});
-
-
-
-/* =========================
-   履歴読み込み
-========================= */
-
-async function loadTripHistory() {
-
-  const history =
-    document.getElementById("tripHistory");
-
-
-  try {
-
-    const snapshot =
-      await getDocs(
-        collection(db, "trips")
+    const selectedMembers =
+      Array.from(
+        document.querySelectorAll(
+          '#memberList input[type="checkbox"]:checked'
+        )
+      ).map(
+        checkbox =>
+          checkbox.value
       );
 
 
-    if (snapshot.empty) {
+    if (!tripDate) {
 
-      history.textContent =
-        "まだ乗車記録がありません。";
-
-      updateMemberCounts([]);
+      status.textContent =
+        "⚠️ 乗車日を選択してください。";
 
       return;
     }
 
 
-    const trips = [];
+    if (distanceValue === "") {
+
+      status.textContent =
+        "⚠️ 走行距離を入力してください。";
+
+      return;
+    }
 
 
-    snapshot.forEach(
-      (docSnapshot) => {
+    if (
+      selectedMembers.length === 0
+    ) {
+
+      status.textContent =
+        "⚠️ 乗車メンバーを選択してください。";
+
+      return;
+    }
+
+
+    try {
+
+      saveButton.disabled = true;
+
+      saveButton.textContent =
+        "保存中……";
+
+
+      /*
+        1回の乗車を
+        1つのFirestoreレコードとして保存
+      */
+
+      await addDoc(
+        collection(
+          db,
+          "tripGroups"
+        ),
+        {
+
+          tripDate:
+            tripDate,
+
+          distance:
+            Number(
+              distanceValue
+            ),
+
+          members:
+            selectedMembers,
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      status.textContent =
+        "✅ 乗車記録を保存しました！";
+
+
+      document.getElementById(
+        "tripDistance"
+      ).value = "";
+
+
+      document.querySelectorAll(
+        '#memberList input[type="checkbox"]'
+      ).forEach(
+        checkbox => {
+          checkbox.checked = false;
+        }
+      );
+
+
+      await loadAll();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ 保存失敗: " +
+        error.code +
+        " / " +
+        error.message;
+
+    }
+
+
+    saveButton.disabled = false;
+
+    saveButton.textContent =
+      "🩷 乗車を登録";
+
+  }
+);
+
+
+
+/* =========================
+   全データ読み込み
+========================= */
+
+async function loadAll() {
+
+  await loadTripHistory();
+
+}
+
+
+
+/* =========================
+   履歴
+========================= */
+
+async function loadTripHistory() {
+
+  const history =
+    document.getElementById(
+      "tripHistory"
+    );
+
+
+  const monthlySummary =
+    document.getElementById(
+      "monthlySummary"
+    );
+
+
+  const memberCounts =
+    document.getElementById(
+      "memberCounts"
+    );
+
+
+  try {
+
+    /*
+      新しい1日1記録
+    */
+
+    const groupSnapshot =
+      await getDocs(
+        collection(
+          db,
+          "tripGroups"
+        )
+      );
+
+
+    /*
+      今までのデータ
+    */
+
+    const oldSnapshot =
+      await getDocs(
+        collection(
+          db,
+          "trips"
+        )
+      );
+
+
+    const groups = [];
+
+
+    groupSnapshot.forEach(
+      snapshot => {
 
         const data =
-          docSnapshot.data();
+          snapshot.data();
 
 
-        trips.push({
+        groups.push({
 
-          id: docSnapshot.id,
+          id:
+            snapshot.id,
 
-          ...data
+          type:
+            "group",
+
+          tripDate:
+            data.tripDate || "",
+
+          distance:
+            typeof data.distance === "number"
+              ? data.distance
+              : 0,
+
+          members:
+            Array.isArray(data.members)
+              ? data.members
+              : []
 
         });
 
@@ -453,191 +692,447 @@ async function loadTripHistory() {
     );
 
 
-    trips.sort(
-      (a, b) => {
+    /*
+      古いデータを日付＋距離で
+      まとめて表示する
+    */
 
-        return (b.tripDate || "")
-          .localeCompare(
-            a.tripDate || ""
+    const oldGrouped = {};
+
+
+    oldSnapshot.forEach(
+      snapshot => {
+
+        const data =
+          snapshot.data();
+
+
+        if (!data.memberName) {
+          return;
+        }
+
+
+        const key =
+          (data.tripDate || "日付なし") +
+          "_" +
+          (
+            typeof data.distance === "number"
+              ? data.distance
+              : 0
           );
+
+
+        if (!oldGrouped[key]) {
+
+          oldGrouped[key] = {
+
+            tripDate:
+              data.tripDate || "",
+
+            distance:
+              typeof data.distance === "number"
+                ? data.distance
+                : 0,
+
+            members:
+              [],
+
+            ids:
+              []
+
+          };
+
+        }
+
+
+        oldGrouped[key].members.push(
+          data.memberName
+        );
+
+
+        oldGrouped[key].ids.push(
+          snapshot.id
+        );
 
       }
     );
 
 
+    Object.values(
+      oldGrouped
+    ).forEach(
+      old => {
+
+        groups.push({
+
+          id:
+            old.ids.join(","),
+
+          type:
+            "old",
+
+          tripDate:
+            old.tripDate,
+
+          distance:
+            old.distance,
+
+          members:
+            old.members,
+
+          oldIds:
+            old.ids
+
+        });
+
+      }
+    );
+
+
+
+    if (groups.length === 0) {
+
+      history.innerHTML =
+        '<div class="empty">まだ乗車記録がありません。</div>';
+
+      monthlySummary.innerHTML =
+        '<div class="empty">まだ集計データがありません。</div>';
+
+      memberCounts.innerHTML =
+        '<div class="empty">まだ集計データがありません。</div>';
+
+      return;
+    }
+
+
+
+    groups.sort(
+      (a, b) =>
+        (b.tripDate || "")
+          .localeCompare(
+            a.tripDate || ""
+          )
+    );
+
+
+
     history.innerHTML = "";
 
 
-    /* 日付ごとにまとめる */
 
-    const grouped = {};
+    /*
+      日付ごとにまとめる
+    */
 
-
-    trips.forEach(trip => {
-
-      const date =
-        trip.tripDate || "日付なし";
+    const groupedByDate = {};
 
 
-      if (!grouped[date]) {
+    groups.forEach(
+      group => {
 
-        grouped[date] = [];
+        const date =
+          group.tripDate ||
+          "日付なし";
+
+
+        if (
+          !groupedByDate[date]
+        ) {
+
+          groupedByDate[date] = [];
+
+        }
+
+
+        groupedByDate[date].push(
+          group
+        );
 
       }
+    );
 
 
-      grouped[date].push(trip);
 
-    });
-
-
-    Object.keys(grouped)
+    Object.keys(
+      groupedByDate
+    )
       .sort()
       .reverse()
-      .forEach(date => {
+      .forEach(
+        date => {
 
 
-        const dateGroup =
-          document.createElement("div");
-
-        dateGroup.className =
-          "date-group";
-
-
-        const dateTitle =
-          document.createElement("div");
-
-        dateTitle.className =
-          "date-title";
-
-        dateTitle.textContent =
-          "📅 " + date;
+          const dateGroup =
+            document.createElement(
+              "div"
+            );
 
 
-        dateGroup.appendChild(
-          dateTitle
-        );
+          dateGroup.className =
+            "date-group";
 
 
-        grouped[date].forEach(
-          data => {
+          const dateHeader =
+            document.createElement(
+              "div"
+            );
 
 
-            const item =
-              document.createElement("div");
-
-            item.className =
-              "history-item";
+          dateHeader.className =
+            "date-header";
 
 
-            const info =
-              document.createElement("div");
-
-            info.className =
-              "history-info";
+          dateHeader.textContent =
+            "📅 " + date;
 
 
-            const distanceText =
-              data.distance !== undefined
-                ? "　🛣️ " +
-                  data.distance +
-                  "km"
-                : "";
+          dateGroup.appendChild(
+            dateHeader
+          );
 
 
-            info.textContent =
-              "🚐 " +
-              (data.memberName ||
-                "名前なし") +
-              distanceText;
+
+          const allMembers =
+            groupedByDate[date]
+              .flatMap(
+                group =>
+                  group.members
+              );
 
 
-            item.appendChild(info);
+          const daySummary =
+            document.createElement(
+              "div"
+            );
 
 
-            const actions =
-              document.createElement("div");
-
-            actions.className =
-              "history-actions";
+          daySummary.className =
+            "day-summary";
 
 
-            const editButton =
-              document.createElement("button");
-
-            editButton.className =
-              "edit-button";
-
-            editButton.textContent =
-              "✏️ 編集";
+          daySummary.textContent =
+            "👥 乗車人数："
+            +
+            allMembers.length
+            +
+            "人　";
 
 
-            editButton.addEventListener(
-              "click",
-              () => {
-                showEditArea(
-                  item,
-                  data
+          if (
+            groupedByDate[date].length === 1
+          ) {
+
+            daySummary.textContent +=
+              "🛣️ "
+              +
+              groupedByDate[date][0].distance
+              +
+              "km";
+
+          } else {
+
+            const dayDistance =
+              groupedByDate[date]
+                .reduce(
+                  (sum, group) =>
+                    sum +
+                    group.distance,
+                  0
                 );
-              }
-            );
 
 
-            const deleteButton =
-              document.createElement("button");
-
-            deleteButton.className =
-              "delete-button";
-
-            deleteButton.textContent =
-              "🗑️ 削除";
-
-
-            deleteButton.addEventListener(
-              "click",
-              () => {
-                deleteTrip(
-                  data.id
-                );
-              }
-            );
-
-
-            actions.appendChild(
-              editButton
-            );
-
-            actions.appendChild(
-              deleteButton
-            );
-
-            item.appendChild(actions);
-
-
-            dateGroup.appendChild(
-              item
-            );
+            daySummary.textContent +=
+              "🛣️ 合計 "
+              +
+              dayDistance
+              +
+              "km";
 
           }
-        );
 
 
-        history.appendChild(
-          dateGroup
-        );
-
-      });
+          dateGroup.appendChild(
+            daySummary
+          );
 
 
-    updateMemberCounts(trips);
+
+          groupedByDate[date]
+            .forEach(
+              group => {
+
+
+                group.members
+                  .forEach(
+                    member => {
+
+
+                      const row =
+                        document.createElement(
+                          "div"
+                        );
+
+
+                      row.className =
+                        "member-row";
+
+
+                      const info =
+                        document.createElement(
+                          "div"
+                        );
+
+
+                      info.className =
+                        "member-name";
+
+
+                      info.innerHTML =
+                        "🚐 "
+                        +
+                        member
+                        +
+                        ' <span class="distance">🛣️ '
+                        +
+                        group.distance
+                        +
+                        "km</span>";
+
+
+                      row.appendChild(
+                        info
+                      );
+
+
+                      /*
+                        新しいデータだけ
+                        編集・削除可能
+                      */
+
+                      if (
+                        group.type ===
+                        "group"
+                      ) {
+
+
+                        const actions =
+                          document.createElement(
+                            "div"
+                          );
+
+
+                        actions.className =
+                          "actions";
+
+
+                        const editButton =
+                          document.createElement(
+                            "button"
+                          );
+
+
+                        editButton.className =
+                          "edit-button";
+
+
+                        editButton.textContent =
+                          "✏️ 編集";
+
+
+                        editButton.addEventListener(
+                          "click",
+                          () => {
+
+                            showEditArea(
+                              dateGroup,
+                              group
+                            );
+
+                          }
+                        );
+
+
+                        const deleteButton =
+                          document.createElement(
+                            "button"
+                          );
+
+
+                        deleteButton.className =
+                          "delete-button";
+
+
+                        deleteButton.textContent =
+                          "🗑️ 削除";
+
+
+                        deleteButton.addEventListener(
+                          "click",
+                          () => {
+
+                            deleteGroup(
+                              group.id
+                            );
+
+                          }
+                        );
+
+
+                        actions.appendChild(
+                          editButton
+                        );
+
+
+                        actions.appendChild(
+                          deleteButton
+                        );
+
+
+                        row.appendChild(
+                          actions
+                        );
+
+                      }
+
+
+                      dateGroup.appendChild(
+                        row
+                      );
+
+                    }
+                  );
+
+              }
+            );
+
+
+          history.appendChild(
+            dateGroup
+          );
+
+        }
+      );
+
+
+
+    createMonthlySummary(
+      groups,
+      monthlySummary
+    );
+
+
+    createMemberSummary(
+      groups,
+      memberCounts
+    );
 
 
   } catch (error) {
 
     console.error(error);
 
-    history.textContent =
-      "❌ 履歴の読み込みに失敗しました。";
+    history.innerHTML =
+      '<div class="empty">❌ 履歴の読み込みに失敗しました。</div>';
 
   }
 
@@ -646,66 +1141,93 @@ async function loadTripHistory() {
 
 
 /* =========================
-   編集
+   編集エリア
 ========================= */
 
-function showEditArea(item, data) {
+function showEditArea(
+  parent,
+  group
+) {
 
-  const oldArea =
-    item.querySelector(".edit-area");
+
+  const existing =
+    parent.querySelector(
+      ".edit-area"
+    );
 
 
-  if (oldArea) {
+  if (existing) {
 
-    oldArea.remove();
+    existing.remove();
 
     return;
   }
 
 
   const area =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   area.className =
     "edit-area";
 
 
   const dateInput =
-    document.createElement("input");
+    document.createElement(
+      "input"
+    );
+
 
   dateInput.type =
     "date";
 
+
   dateInput.value =
-    data.tripDate || "";
+    group.tripDate;
+
 
 
   const distanceInput =
-    document.createElement("input");
+    document.createElement(
+      "input"
+    );
+
 
   distanceInput.type =
     "number";
 
+
   distanceInput.min =
     "0";
+
 
   distanceInput.step =
     "0.1";
 
+
   distanceInput.value =
-    data.distance !== undefined
-      ? data.distance
-      : "";
+    group.distance;
 
 
-  const saveEditButton =
-    document.createElement("button");
 
-  saveEditButton.textContent =
+  const save =
+    document.createElement(
+      "button"
+    );
+
+
+  save.className =
+    "edit-save";
+
+
+  save.textContent =
     "💾 変更を保存";
 
 
-  saveEditButton.addEventListener(
+
+  save.addEventListener(
     "click",
     async () => {
 
@@ -713,14 +1235,16 @@ function showEditArea(item, data) {
       if (!dateInput.value) {
 
         alert(
-          "乗車日を選択してください。"
+          "乗車日を入力してください。"
         );
 
         return;
       }
 
 
-      if (distanceInput.value === "") {
+      if (
+        distanceInput.value === ""
+      ) {
 
         alert(
           "走行距離を入力してください。"
@@ -735,10 +1259,11 @@ function showEditArea(item, data) {
         await updateDoc(
           doc(
             db,
-            "trips",
-            data.id
+            "tripGroups",
+            group.id
           ),
           {
+
             tripDate:
               dateInput.value,
 
@@ -746,6 +1271,7 @@ function showEditArea(item, data) {
               Number(
                 distanceInput.value
               )
+
           }
         );
 
@@ -755,7 +1281,7 @@ function showEditArea(item, data) {
         );
 
 
-        await loadTripHistory();
+        await loadAll();
 
 
       } catch (error) {
@@ -764,7 +1290,8 @@ function showEditArea(item, data) {
 
 
         alert(
-          "❌ 編集に失敗しました。\n" +
+          "❌ 編集に失敗しました。\n"
+          +
           error.message
         );
 
@@ -775,21 +1302,9 @@ function showEditArea(item, data) {
 
 
   area.appendChild(
-    document.createTextNode(
-      "📅 乗車日"
-    )
-  );
-
-  area.appendChild(
     dateInput
   );
 
-
-  area.appendChild(
-    document.createTextNode(
-      "🛣️ 走行距離（km）"
-    )
-  );
 
   area.appendChild(
     distanceInput
@@ -797,11 +1312,11 @@ function showEditArea(item, data) {
 
 
   area.appendChild(
-    saveEditButton
+    save
   );
 
 
-  item.appendChild(
+  parent.appendChild(
     area
   );
 
@@ -813,15 +1328,16 @@ function showEditArea(item, data) {
    削除
 ========================= */
 
-async function deleteTrip(id) {
+async function deleteGroup(
+  id
+) {
 
-  const result =
-    confirm(
+
+  if (
+    !confirm(
       "この乗車記録を削除しますか？"
-    );
-
-
-  if (!result) {
+    )
+  ) {
 
     return;
 
@@ -833,7 +1349,7 @@ async function deleteTrip(id) {
     await deleteDoc(
       doc(
         db,
-        "trips",
+        "tripGroups",
         id
       )
     );
@@ -844,7 +1360,7 @@ async function deleteTrip(id) {
     );
 
 
-    await loadTripHistory();
+    await loadAll();
 
 
   } catch (error) {
@@ -853,7 +1369,8 @@ async function deleteTrip(id) {
 
 
     alert(
-      "❌ 削除に失敗しました。\n" +
+      "❌ 削除に失敗しました。\n"
+      +
       error.message
     );
 
@@ -864,68 +1381,40 @@ async function deleteTrip(id) {
 
 
 /* =========================
-   メンバー別集計
+   月別集計
 ========================= */
 
-function updateMemberCounts(trips) {
-
-  const memberCounts =
-    document.getElementById(
-      "memberCounts"
-    );
+function createMonthlySummary(
+  groups,
+  element
+) {
 
 
-  const members = [
-
-    "西濱",
-    "小澤",
-    "竹内",
-    "粉川",
-    "山口",
-    "藤本",
-    "萩",
-    "中田",
-    "西田",
-    "伊丹",
-    "高木",
-    "鈴木",
-    "加藤",
-    "長沼",
-    "舘"
-
-  ];
+  const monthly = {};
 
 
-  const counts = {};
+  groups.forEach(
+    group => {
+
+      if (!group.tripDate) {
+        return;
+      }
 
 
-  members.forEach(
-    member => {
-
-      counts[member] = {
-
-        count: 0,
-
-        distance: 0
-
-      };
-
-    }
-  );
+      const month =
+        group.tripDate.substring(
+          0,
+          7
+        );
 
 
-  trips.forEach(
-    trip => {
+      if (!monthly[month]) {
 
-      const name =
-        trip.memberName;
+        monthly[month] = {
 
+          days: new Set(),
 
-      if (!counts[name]) {
-
-        counts[name] = {
-
-          count: 0,
+          people: 0,
 
           distance: 0
 
@@ -934,103 +1423,209 @@ function updateMemberCounts(trips) {
       }
 
 
-      counts[name].count++;
+      monthly[month].days.add(
+        group.tripDate
+      );
 
 
-      if (
-        typeof trip.distance ===
-        "number"
-      ) {
+      monthly[month].people +=
+        group.members.length;
 
-        counts[name].distance +=
-          trip.distance;
 
-      }
+      monthly[month].distance +=
+        group.distance;
 
     }
   );
 
 
-  memberCounts.innerHTML = "";
+  element.innerHTML = "";
 
 
-  Object.keys(counts).forEach(
-    member => {
+  Object.keys(monthly)
+    .sort()
+    .reverse()
+    .forEach(
+      month => {
 
 
-      const item =
-        document.createElement(
-          "div"
+        const data =
+          monthly[month];
+
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+
+        card.className =
+          "summary-card";
+
+
+        card.innerHTML =
+
+          '<div class="summary-title">'
+          +
+          "📅 "
+          +
+          month
+          +
+          "</div>"
+
+          +
+
+          '<div class="summary-line">'
+          +
+          "🚐 乗車日数："
+          +
+          '<span class="pink">'
+          +
+          data.days.size
+          +
+          "日"
+          +
+          "</span>"
+          +
+          "</div>"
+
+          +
+
+          '<div class="summary-line">'
+          +
+          "👥 延べ乗車人数："
+          +
+          '<span class="pink">'
+          +
+          data.people
+          +
+          "人"
+          +
+          "</span>"
+          +
+          "</div>"
+
+          +
+
+          '<div class="summary-line">'
+          +
+          "🛣️ 総走行距離："
+          +
+          '<span class="pink">'
+          +
+          data.distance
+          +
+          "km"
+          +
+          "</span>"
+          +
+          "</div>";
+
+
+        element.appendChild(
+          card
         );
 
-
-      item.className =
-        "count-item";
-
-
-      item.innerHTML =
-        "<span>👤 " +
-        member +
-        "</span>" +
-
-        "<span>" +
-        counts[member].count +
-        "回　" +
-        counts[member].distance +
-        "km" +
-        "</span>";
+      }
+    );
 
 
-      memberCounts.appendChild(
-        item
+}
+
+
+
+/* =========================
+   個人別集計
+========================= */
+
+function createMemberSummary(
+  groups,
+  element
+) {
+
+
+  const counts = {};
+
+
+  members.forEach(
+    member => {
+
+      counts[member] = 0;
+
+    }
+  );
+
+
+  groups.forEach(
+    group => {
+
+      group.members.forEach(
+        member => {
+
+          if (
+            counts[member] ===
+            undefined
+          ) {
+
+            counts[member] = 0;
+
+          }
+
+
+          counts[member]++;
+
+        }
       );
 
     }
   );
 
 
-  const totalTrips =
-    trips.length;
+  element.innerHTML = "";
 
 
-  const totalDistance =
-    trips.reduce(
-      (sum, trip) => {
+  Object.keys(counts)
+    .forEach(
+      member => {
 
-        return sum +
-          (
-            typeof trip.distance ===
-            "number"
-              ? trip.distance
-              : 0
+
+        const row =
+          document.createElement(
+            "div"
           );
 
-      },
-      0
+
+        row.className =
+          "count-item";
+
+
+        row.innerHTML =
+          "<span>👤 "
+          +
+          member
+          +
+          "</span>"
+          +
+
+          "<span>"
+          +
+          '<span class="pink">'
+          +
+          counts[member]
+          +
+          "</span>"
+          +
+          "回"
+          +
+          "</span>";
+
+
+        element.appendChild(
+          row
+        );
+
+      }
     );
-
-
-  const totalBox =
-    document.createElement(
-      "div"
-    );
-
-
-  totalBox.className =
-    "total-box";
-
-
-  totalBox.textContent =
-    "🚐 登録人数合計：" +
-    totalTrips +
-    "人分　／　🛣️ 距離合計：" +
-    totalDistance +
-    "km";
-
-
-  memberCounts.appendChild(
-    totalBox
-  );
 
 }
 
@@ -1040,7 +1635,7 @@ function updateMemberCounts(trips) {
    起動
 ========================= */
 
-loadTripHistory();
+loadAll();
 
 </script>
 
