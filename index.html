@@ -197,8 +197,9 @@ async function loadTripHistory() {
       const item = document.createElement("div");
 
       item.textContent =
-        "🚐 " + (data.memberName || "名前なし");
-
+  "📅 " + (data.tripDate || "日付なし") +
+  "　🚐 " + (data.memberName || "名前なし");
+  
       item.style.padding = "8px 0";
       item.style.borderBottom = "1px solid #ddd";
 
