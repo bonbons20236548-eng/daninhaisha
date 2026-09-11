@@ -38,6 +38,10 @@
   <h2>🏀 ミニバス乗車管理</h2>
 
 <h3>🚐 乗車メンバーを選択</h3>
+<label>
+  📅 乗車日：
+  <input type="date" id="tripDate">
+</label>
 
 <div id="memberList">
 
@@ -114,6 +118,12 @@ const saveButton = document.getElementById("saveButton");
 
 saveButton.addEventListener("click", async () => {
 
+  const tripDate = document.getElementById("tripDate").value;
+  if (!tripDate) {
+  status.textContent =
+    "⚠️ 乗車日を選択してください。";
+  return;
+}
   const checkedMembers = Array.from(
     document.querySelectorAll(
       '#memberList input[type="checkbox"]:checked'
@@ -134,7 +144,8 @@ saveButton.addEventListener("click", async () => {
         collection(db, "trips"),
         {
           memberName: checkbox.value,
-          createdAt: serverTimestamp()
+tripDate: tripDate,
+createdAt: serverTimestamp()
         }
       );
 
