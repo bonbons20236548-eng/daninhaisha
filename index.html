@@ -3,431 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ミニバス配車管理</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-  margin:0;
-  padding:12px;
-  background:#111;
-  color:#fff;
-  line-height:1.5;
+font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+margin:0;padding:12px;background:#111;color:#fff;line-height:1.5
 }
-
-h1{
-  text-align:center;
-  color:#ff3f9f;
-  margin:5px 0 8px;
-  font-size:24px;
-  font-weight:800;
-}
-
-h2{
-  font-size:18px;
-  margin:0 0 14px;
-  color:#ff3f9f;
-}
-
-h3{
-  font-size:15px;
-  margin:15px 0 8px;
-}
-
-.box{
-  background:#1d1d1d;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-  border:1px solid #333;
-}
-
-label{
-  display:block;
-  margin-top:13px;
-  margin-bottom:6px;
-  font-size:14px;
-  color:#ddd;
-  font-weight:600;
-}
-
+h1{text-align:center;color:#ff3f9f;margin:5px 0 8px;font-size:24px;font-weight:800}
+h2{font-size:18px;margin:0 0 14px;color:#ff3f9f}
+h3{font-size:15px;margin:15px 0 8px}
+.box{background:#1d1d1d;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid #333}
+label{display:block;margin-top:13px;margin-bottom:6px;font-size:14px;color:#ddd;font-weight:600}
 input,textarea,select{
-  width:100%;
-  padding:13px;
-  border-radius:11px;
-  border:1px solid #555;
-  background:#111;
-  color:#fff;
-  font-size:16px;
-  min-height:48px;
+width:100%;padding:13px;border-radius:11px;border:1px solid #555;
+background:#111;color:#fff;font-size:16px;min-height:48px
 }
-
-textarea{
-  min-height:80px;
-  resize:vertical;
-}
-
+textarea{min-height:80px;resize:vertical}
 button{
-  border:none;
-  border-radius:11px;
-  padding:11px 14px;
-  background:#ff3f9f;
-  color:#fff;
-  font-weight:bold;
-  font-size:14px;
-  min-height:42px;
+border:none;border-radius:11px;padding:11px 14px;background:#ff3f9f;
+color:#fff;font-weight:bold;font-size:14px;min-height:42px
 }
-
-button:disabled{
-  opacity:.3;
-}
-
-.main-button{
-  width:100%;
-  margin-top:16px;
-  padding:15px;
-  font-size:17px;
-  min-height:52px;
-}
-
-/* 3人横並び */
-.member-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:8px;
-}
-
+button:disabled{opacity:.3}
+.main-button{width:100%;margin-top:16px;padding:15px;font-size:17px;min-height:52px}
+.member-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .member-check{
-  background:#292929;
-  padding:12px 8px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  min-height:48px;
-  margin:0;
-  font-weight:normal;
+background:#292929;padding:12px 8px;border-radius:10px;display:flex;
+align-items:center;gap:6px;min-height:48px;margin:0;font-weight:normal
 }
-
-.member-check input{
-  width:auto;
-  min-height:auto;
-  transform:scale(1.15);
-  margin:0;
-  flex-shrink:0;
-}
-
-.member-check span{
-  font-size:14px;
-  word-break:break-all;
-}
-
+.member-check input{width:auto;min-height:auto;transform:scale(1.15);margin:0;flex-shrink:0}
+.member-check span{font-size:14px;word-break:break-all}
 .member-management{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:7px;
-  padding:10px 0;
-  border-bottom:1px solid #333;
+display:flex;align-items:center;justify-content:space-between;gap:7px;
+padding:10px 0;border-bottom:1px solid #333
 }
-
-.member-name{
-  flex:1;
-  font-size:15px;
-  font-weight:600;
-}
-
-.member-buttons{
-  display:flex;
-  gap:4px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-
-.small-button{
-  padding:7px 8px;
-  font-size:12px;
-  min-height:36px;
-}
-
-.hidden-member{
-  opacity:.5;
-}
-
+.member-name{flex:1;font-size:15px;font-weight:600}
+.member-buttons{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.small-button{padding:7px 8px;font-size:12px;min-height:36px}
+.hidden-member{opacity:.5}
 .history-item{
-  background:#292929;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:10px;
-  border:1px solid #383838;
+background:#292929;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #383838
 }
-
-.history-date{
-  color:#ff3f9f;
-  font-weight:800;
-  font-size:16px;
-}
-
-.history-detail{
-  margin-top:7px;
-  line-height:1.8;
-  font-size:14px;
-}
-
-.history-buttons{
-  display:flex;
-  gap:7px;
-  margin-top:12px;
-}
-
-.history-buttons button{
-  flex:1;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-
+.history-date{color:#ff3f9f;font-weight:800;font-size:16px}
+.history-detail{margin-top:7px;line-height:1.8;font-size:14px}
+.history-buttons{display:flex;gap:7px;margin-top:12px}
+.history-buttons button{flex:1}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .summary-item{
-  background:#292929;
-  padding:13px 8px;
-  border-radius:12px;
-  text-align:center;
-  border:1px solid #383838;
+background:#292929;padding:13px 8px;border-radius:12px;text-align:center;border:1px solid #383838
 }
-
-.summary-label{
-  font-size:13px;
-  color:#ddd;
-}
-
-.summary-number{
-  font-size:23px;
-  color:#ff3f9f;
-  font-weight:800;
-}
-
-.summary-unit{
-  font-size:12px;
-  color:#aaa;
-}
-
-.status{
-  text-align:center;
-  color:#aaa;
-  font-size:12px;
-  margin-bottom:10px;
-}
-
+.summary-label{font-size:13px;color:#ddd}
+.summary-number{font-size:23px;color:#ff3f9f;font-weight:800}
+.summary-unit{font-size:12px;color:#aaa}
+.status{text-align:center;color:#aaa;font-size:12px;margin-bottom:10px}
 .error-box{
-  display:none;
-  background:#3a1111;
-  border:1px solid #a33;
-  color:#ffb0b0;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:13px;
-  word-break:break-word;
+display:none;background:#3a1111;border:1px solid #a33;color:#ffb0b0;
+padding:12px;border-radius:10px;margin-bottom:12px;font-size:13px;word-break:break-word
 }
-
-.danger{
-  background:#a40050;
-}
-
-.gray{
-  background:#555;
-}
-
-.green{
-  background:#008f5a;
-}
-
-.member-add{
-  display:flex;
-  gap:7px;
-  margin-bottom:10px;
-}
-
-.member-add input{
-  flex:1;
-}
-
-.member-add button{
-  white-space:nowrap;
-}
-
-.inactive-title{
-  color:#aaa;
-  font-size:14px;
-  margin-top:18px;
-  margin-bottom:5px;
-  font-weight:bold;
-}
-
-.empty{
-  color:#aaa;
-  text-align:center;
-  padding:14px 5px;
-  font-size:14px;
-}
-
+.danger{background:#a40050}
+.gray{background:#555}
+.green{background:#008f5a}
+.member-add{display:flex;gap:7px;margin-bottom:10px}
+.member-add input{flex:1}
+.member-add button{white-space:nowrap}
+.inactive-title{color:#aaa;font-size:14px;margin-top:18px;margin-bottom:5px;font-weight:bold}
+.empty{color:#aaa;text-align:center;padding:14px 5px;font-size:14px}
 .management-toggle{
-  width:100%;
-  background:#292929;
-  border:1px solid #444;
-  color:#fff;
-  text-align:left;
-  padding:14px;
-  font-size:15px;
+width:100%;background:#292929;border:1px solid #444;color:#fff;
+text-align:left;padding:14px;font-size:15px
 }
-
-.management-area{
-  margin-top:14px;
-}
-
-.section-note{
-  color:#999;
-  font-size:12px;
-  margin-bottom:10px;
-}
-
-.coach-car{
-  background:#191919;
-  border-radius:10px;
-  padding:12px;
-  margin-top:10px;
-  border:1px solid #333;
-}
-
-.car-title{
-  color:#ff3f9f;
-  font-weight:bold;
-  font-size:15px;
-}
-
-.remove-car{
-  background:#555;
-  margin-top:10px;
-  width:100%;
-}
-
-.add-car-button{
-  width:100%;
-  margin-top:10px;
-  background:#444;
-}
-
+.management-area{margin-top:14px}
+.section-note{color:#999;font-size:12px;margin-bottom:10px}
+.coach-car{background:#191919;border-radius:10px;padding:12px;margin-top:10px;border:1px solid #333}
+.car-title{color:#ff3f9f;font-weight:bold;font-size:15px}
+.remove-car{background:#555;margin-top:10px;width:100%}
+.add-car-button{width:100%;margin-top:10px;background:#444}
 .total-box{
-  background:#222;
-  border:1px solid #444;
-  border-radius:10px;
-  padding:12px;
-  margin-top:12px;
-  font-size:14px;
-  line-height:1.8;
+background:#222;border:1px solid #444;border-radius:10px;padding:12px;
+margin-top:12px;font-size:14px;line-height:1.8
 }
-
-.passenger-box{
-  background:#222;
-  border-radius:9px;
-  padding:10px;
-  margin-top:8px;
-}
-
+.passenger-box{background:#222;border-radius:9px;padding:10px;margin-top:8px}
 .coach-history-car{
-  background:#202020;
-  border-radius:9px;
-  padding:9px;
-  margin-top:8px;
-  border-left:3px solid #ff3f9f;
+background:#202020;border-radius:9px;padding:9px;margin-top:8px;border-left:3px solid #ff3f9f
 }
-
-.gas-setting{
-  background:#292929;
-  border-radius:12px;
-  padding:13px;
-  margin-top:12px;
-}
-
-.gas-setting-title{
-  color:#ff3f9f;
-  font-weight:bold;
-  font-size:14px;
-}
-
-.gas-current{
-  color:#fff;
-  font-size:18px;
-  font-weight:bold;
-  margin-top:5px;
-}
-
-.car-cost{
-  background:#292929;
-  border-radius:9px;
-  padding:10px;
-  margin-top:10px;
-  line-height:1.8;
-  font-size:13px;
-}
-
-.cost-total{
-  color:#ff3f9f;
-  font-size:15px;
-  font-weight:bold;
-}
-
-.setting-button{
-  width:100%;
-  background:#444;
-  margin-top:8px;
-}
-
+.gas-setting{background:#292929;border-radius:12px;padding:13px;margin-top:12px}
+.gas-setting-title{color:#ff3f9f;font-weight:bold;font-size:14px}
+.gas-current{color:#fff;font-size:18px;font-weight:bold;margin-top:5px}
+.car-cost{background:#292929;border-radius:9px;padding:10px;margin-top:10px;line-height:1.8;font-size:13px}
+.cost-total{color:#ff3f9f;font-size:15px;font-weight:bold}
+.setting-button{width:100%;background:#444;margin-top:8px}
 .personal-summary-row{
-  background:#292929;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:10px;
-  border:1px solid #383838;
+background:#292929;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #383838
 }
-
-.personal-summary-name{
-  color:#ff3f9f;
-  font-size:17px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.personal-summary-detail{
-  font-size:14px;
-  line-height:1.8;
-}
+.personal-summary-name{color:#ff3f9f;font-size:17px;font-weight:800;margin-bottom:6px}
+.personal-summary-detail{font-size:14px;line-height:1.8}
 
 @media(max-width:380px){
-
-  .member-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-
-  .member-check{
-    padding:10px 5px;
-    gap:4px;
-  }
-
-  .member-check span{
-    font-size:12px;
-  }
-
-  .member-check input{
-    transform:scale(1.05);
-  }
+.member-grid{grid-template-columns:repeat(3,1fr)}
+.member-check{padding:10px 5px;gap:4px}
+.member-check span{font-size:12px}
+.member-check input{transform:scale(1.05)}
 }
 </style>
 </head>
@@ -436,10 +112,7 @@ button:disabled{
 
 <h1>🏀 ミニバス配車管理</h1>
 
-<div id="status" class="status">
-Firebase接続中…
-</div>
-
+<div id="status" class="status">Firebase接続中…</div>
 <div id="errorBox" class="error-box"></div>
 
 
@@ -458,19 +131,10 @@ Firebase接続中…
 <input type="text" id="venueName" placeholder="例：○○小学校">
 
 <label>距離（km）</label>
-<input
-  type="number"
-  id="distance"
-  placeholder="例：25"
-  min="0"
-  inputmode="decimal"
->
+<input type="number" id="distance" placeholder="例：25" min="0" inputmode="decimal">
 
 <label>高速料金・ETCメモ</label>
-<textarea
-  id="highwayMemo"
-  placeholder="例：往復2,400円 / 帰りのみ高速"
-></textarea>
+<textarea id="highwayMemo" placeholder="例：往復2,400円 / 帰りのみ高速"></textarea>
 
 <label>乗車メンバー</label>
 
@@ -481,6 +145,34 @@ Firebase接続中…
 <button class="main-button" onclick="saveTrip()">
 🚐 配車記録を保存
 </button>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- 通常メンバー個別集計 -->
+<!-- ここへ移動しました -->
+<!-- ========================= -->
+
+<div class="box">
+
+<button class="management-toggle" onclick="togglePersonalSummary()">
+👥 通常メンバー個別集計を開く　▼
+</button>
+
+<div id="personalSummaryArea" class="management-area" style="display:none">
+
+<h2>👥 通常メンバー個別集計</h2>
+
+<div class="section-note">
+通常配車で選択されたメンバーごとの配車回数と走行距離を集計します。
+</div>
+
+<div id="personalSummary">
+読み込み中…
+</div>
+
+</div>
 
 </div>
 
@@ -502,26 +194,17 @@ Firebase接続中…
 <input type="date" id="coachTripDate">
 
 <label>会場名</label>
-<input
-  type="text"
-  id="coachVenueName"
-  placeholder="例：○○小学校"
->
+<input type="text" id="coachVenueName" placeholder="例：○○小学校">
 
 <div class="gas-setting">
 
-<div class="gas-setting-title">
-⛽ 現在のガソリン単価
-</div>
+<div class="gas-setting-title">⛽ 現在のガソリン単価</div>
 
 <div class="gas-current">
 <span id="gasRateDisplay">20</span> 円 / km
 </div>
 
-<button
-  class="setting-button"
-  onclick="changeGasRate()"
->
+<button class="setting-button" onclick="changeGasRate()">
 ⚙️ ガソリン単価を変更
 </button>
 
@@ -531,10 +214,7 @@ Firebase接続中…
 
 <div id="coachCars"></div>
 
-<button
-  class="add-car-button"
-  onclick="addCoachCar()"
->
+<button class="add-car-button" onclick="addCoachCar()">
 ＋ 車を追加
 </button>
 
@@ -545,10 +225,7 @@ Firebase接続中…
 <strong>交通費合計：0 円</strong>
 </div>
 
-<button
-  class="main-button"
-  onclick="saveCoachTrip()"
->
+<button class="main-button" onclick="saveCoachTrip()">
 🏀 監督・コーチ配車を保存
 </button>
 
@@ -590,7 +267,6 @@ Firebase接続中…
 </div>
 
 </div>
-
 </div>
 
 
@@ -600,18 +276,11 @@ Firebase接続中…
 
 <div class="box">
 
-<button
-  class="management-toggle"
-  onclick="toggleCoachSummary()"
->
+<button class="management-toggle" onclick="toggleCoachSummary()">
 👤 監督・コーチ個別集計を開く　▼
 </button>
 
-<div
-  id="coachSummaryArea"
-  class="management-area"
-  style="display:none"
->
+<div id="coachSummaryArea" class="management-area" style="display:none">
 
 <h2>👤 監督・コーチ個別集計</h2>
 
@@ -624,7 +293,6 @@ Firebase接続中…
 </div>
 
 </div>
-
 </div>
 
 
@@ -640,51 +308,13 @@ Firebase接続中…
 読み込み中…
 </div>
 
-
-<!-- ========================= -->
-<!-- 通常メンバー個別集計 -->
-<!-- ========================= -->
-
-<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px">
-
-<button
-  class="management-toggle"
-  onclick="togglePersonalSummary()"
->
-👥 通常メンバー個別集計を開く　▼
-</button>
-
-<div
-  id="personalSummaryArea"
-  class="management-area"
-  style="display:none"
->
-
-<h2>👥 通常メンバー個別集計</h2>
-
-<div class="section-note">
-通常配車で選択されたメンバーごとの配車回数と走行距離を集計します。
-</div>
-
-<div id="personalSummary">
-読み込み中…
-</div>
-
-</div>
-
-</div>
-
-
 <div style="margin-top:20px;border-top:1px solid #333;padding-top:14px">
 
 <div style="color:#ff7fba;font-size:13px;font-weight:bold">
 ⚠️ データ管理
 </div>
 
-<button
-  class="main-button danger"
-  onclick="deleteAllHistory()"
->
+<button class="main-button danger" onclick="deleteAllHistory()">
 🗑️ 配車履歴を全部削除
 </button>
 
@@ -699,18 +329,11 @@ Firebase接続中…
 
 <div class="box">
 
-<button
-  class="management-toggle"
-  onclick="toggleCoachManagement()"
->
+<button class="management-toggle" onclick="toggleCoachManagement()">
 ⚙️ 監督・コーチ管理を開く　▼
 </button>
 
-<div
-  id="coachManagementArea"
-  class="management-area"
-  style="display:none"
->
+<div id="coachManagementArea" class="management-area" style="display:none">
 
 <h2>🏀 監督・コーチ管理</h2>
 
@@ -720,15 +343,9 @@ Firebase接続中…
 
 <div class="member-add">
 
-<input
-  type="text"
-  id="newCoachName"
-  placeholder="監督・コーチ名"
->
+<input type="text" id="newCoachName" placeholder="監督・コーチ名">
 
-<button onclick="addCoach()">
-追加
-</button>
+<button onclick="addCoach()">追加</button>
 
 </div>
 
@@ -737,7 +354,6 @@ Firebase接続中…
 </div>
 
 </div>
-
 </div>
 
 
@@ -747,32 +363,19 @@ Firebase接続中…
 
 <div class="box">
 
-<button
-  class="management-toggle"
-  onclick="toggleMemberManagement()"
->
+<button class="management-toggle" onclick="toggleMemberManagement()">
 ⚙️ メンバー管理を開く　▼
 </button>
 
-<div
-  id="managementArea"
-  class="management-area"
-  style="display:none"
->
+<div id="managementArea" class="management-area" style="display:none">
 
 <h2>👥 メンバー管理</h2>
 
 <div class="member-add">
 
-<input
-  type="text"
-  id="newMemberName"
-  placeholder="新しいメンバー名"
->
+<input type="text" id="newMemberName" placeholder="新しいメンバー名">
 
-<button onclick="addMember()">
-追加
-</button>
+<button onclick="addMember()">追加</button>
 
 </div>
 
@@ -781,88 +384,55 @@ Firebase接続中…
 </div>
 
 </div>
-
 </div>
 
 
 <script type="module">
 
-/* =====================================
-Firebase
-===================================== */
-
 import {
-  initializeApp
+initializeApp
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 import {
-  initializeFirestore,
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc
+initializeFirestore,
+collection,
+getDocs,
+addDoc,
+updateDoc,
+deleteDoc,
+doc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
-const firebaseConfig = {
-  apiKey:"AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
-  authDomain:"minibusdanin.firebaseapp.com",
-  projectId:"minibusdanin",
-  storageBucket:"minibusdanin.firebasestorage.app",
-  messagingSenderId:"1093555104011",
-  appId:"1:1093555104011:web:935cef97dd4bfee8615a0e",
-  measurementId:"G-XFSJQRLHQ2"
+const firebaseConfig={
+apiKey:"AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
+authDomain:"minibusdanin.firebaseapp.com",
+projectId:"minibusdanin",
+storageBucket:"minibusdanin.firebasestorage.app",
+messagingSenderId:"1093555104011",
+appId:"1:1093555104011:web:935cef97dd4bfee8615a0e",
+measurementId:"G-XFSJQRLHQ2"
 };
 
-
 const app=initializeApp(firebaseConfig);
+const db=initializeFirestore(app,{},"default");
 
-const db=initializeFirestore(app,{}, "default");
-
-
-/* =====================================
-初期メンバー
-===================================== */
 
 const initialMembers=[
-"西濱",
-"小澤",
-"竹内",
-"粉川",
-"山口",
-"藤本",
-"萩",
-"中田",
-"西田",
-"伊丹",
-"高木",
-"鈴木",
-"加藤",
-"長沼",
-"舘"
+"西濱","小澤","竹内","粉川","山口",
+"藤本","萩","中田","西田","伊丹",
+"高木","鈴木","加藤","長沼","舘"
 ];
-
-
-/* =====================================
-初期ガソリン単価
-===================================== */
 
 const DEFAULT_GAS_RATE=20;
 
 let gasRate=DEFAULT_GAS_RATE;
-
 let membersData=[];
 let coachesData=[];
 let tripGroupsData=[];
 let legacyTripsData=[];
 let coachTripsData=[];
 
-
-/* =====================================
-共通
-===================================== */
 
 function todayString(){
 
@@ -878,7 +448,6 @@ String(d.getDate()).padStart(2,"0");
 function setToday(){
 
 document.getElementById("tripDate").value=todayString();
-
 document.getElementById("coachTripDate").value=todayString();
 
 }
@@ -886,7 +455,7 @@ document.getElementById("coachTripDate").value=todayString();
 
 function escapeHtml(value){
 
-return String(value ?? "")
+return String(value??"")
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -906,7 +475,7 @@ box.style.display="block";
 
 box.innerHTML=
 "Firebaseエラー：<br><br>"+
-escapeHtml(error?.message || error);
+escapeHtml(error?.message||error);
 
 document.getElementById("status").textContent=
 "Firebase接続エラー ❌";
@@ -914,17 +483,15 @@ document.getElementById("status").textContent=
 }
 
 
-/* =====================================
-ガソリン単価読み込み
-===================================== */
+/* =========================
+ガソリン単価
+========================= */
 
 async function loadGasRate(){
 
 try{
 
-const snapshot=await getDocs(
-collection(db,"settings")
-);
+const snapshot=await getDocs(collection(db,"settings"));
 
 let found=null;
 
@@ -933,23 +500,17 @@ snapshot.forEach(item=>{
 const data=item.data();
 
 if(data.key==="gasRate"){
-found={
-id:item.id,
-...data
-};
+found={id:item.id,...data};
 }
 
 });
-
 
 if(found){
 
 const rate=Number(found.value);
 
 if(Number.isFinite(rate)&&rate>0){
-
 gasRate=rate;
-
 }
 
 }else{
@@ -967,7 +528,6 @@ gasRate=DEFAULT_GAS_RATE;
 
 }
 
-
 updateGasRateDisplay();
 
 }catch(error){
@@ -983,29 +543,16 @@ updateGasRateDisplay();
 }
 
 
-/* =====================================
-ガソリン単価表示
-===================================== */
-
 function updateGasRateDisplay(){
 
-const display=document.getElementById(
-"gasRateDisplay"
-);
+const display=document.getElementById("gasRateDisplay");
 
 if(display){
-
-display.textContent=
-Number(gasRate).toLocaleString();
-
+display.textContent=Number(gasRate).toLocaleString();
 }
 
 }
 
-
-/* =====================================
-ガソリン単価変更
-===================================== */
 
 window.changeGasRate=async function(){
 
@@ -1021,32 +568,23 @@ const rate=Number(newRate);
 if(!Number.isFinite(rate)||rate<=0){
 
 alert("0より大きい数字を入力してください。");
-
 return;
 
 }
 
-
 try{
 
-const snapshot=await getDocs(
-collection(db,"settings")
-);
+const snapshot=await getDocs(collection(db,"settings"));
 
 let found=null;
 
 snapshot.forEach(item=>{
 
-const data=item.data();
-
-if(data.key==="gasRate"){
-
+if(item.data().key==="gasRate"){
 found=item;
-
 }
 
 });
-
 
 if(found){
 
@@ -1074,13 +612,10 @@ updatedAt:new Date()
 gasRate=rate;
 
 updateGasRateDisplay();
-
 updateCoachCarTotal();
 
 alert(
-"ガソリン単価を"+
-rate+
-"円/kmに変更しました。"
+"ガソリン単価を"+rate+"円/kmに変更しました。"
 );
 
 }catch(error){
@@ -1092,31 +627,24 @@ showError(error);
 };
 
 
-/* =====================================
+/* =========================
 開閉
-===================================== */
+========================= */
 
 window.toggleMemberManagement=function(){
 
-const area=document.getElementById(
-"managementArea"
-);
-
+const area=document.getElementById("managementArea");
 const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
-
-button.textContent=
-"⚙️ メンバー管理を閉じる　▲";
+button.textContent="⚙️ メンバー管理を閉じる　▲";
 
 }else{
 
 area.style.display="none";
-
-button.textContent=
-"⚙️ メンバー管理を開く　▼";
+button.textContent="⚙️ メンバー管理を開く　▼";
 
 }
 
@@ -1125,121 +653,82 @@ button.textContent=
 
 window.toggleCoachManagement=function(){
 
-const area=document.getElementById(
-"coachManagementArea"
-);
-
+const area=document.getElementById("coachManagementArea");
 const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
-
-button.textContent=
-"⚙️ 監督・コーチ管理を閉じる　▲";
+button.textContent="⚙️ 監督・コーチ管理を閉じる　▲";
 
 }else{
 
 area.style.display="none";
-
-button.textContent=
-"⚙️ 監督・コーチ管理を開く　▼";
+button.textContent="⚙️ 監督・コーチ管理を開く　▼";
 
 }
 
 };
 
 
-/* =====================================
-コーチ個別集計 開閉
-===================================== */
-
 window.toggleCoachSummary=function(){
 
-const area=document.getElementById(
-"coachSummaryArea"
-);
-
+const area=document.getElementById("coachSummaryArea");
 const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
-
-button.textContent=
-"👤 監督・コーチ個別集計を閉じる　▲";
-
+button.textContent="👤 監督・コーチ個別集計を閉じる　▲";
 renderCoachSummary();
 
 }else{
 
 area.style.display="none";
-
-button.textContent=
-"👤 監督・コーチ個別集計を開く　▼";
+button.textContent="👤 監督・コーチ個別集計を開く　▼";
 
 }
 
 };
 
 
-/* =====================================
-通常メンバー個別集計 開閉
-===================================== */
-
 window.togglePersonalSummary=function(){
 
-const area=document.getElementById(
-"personalSummaryArea"
-);
-
+const area=document.getElementById("personalSummaryArea");
 const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
-
-button.textContent=
-"👥 通常メンバー個別集計を閉じる　▲";
-
+button.textContent="👥 通常メンバー個別集計を閉じる　▲";
 renderPersonalSummary();
 
 }else{
 
 area.style.display="none";
-
-button.textContent=
-"👥 通常メンバー個別集計を開く　▼";
+button.textContent="👥 通常メンバー個別集計を開く　▼";
 
 }
 
 };
 
 
-/* =====================================
-メンバー初期化
-===================================== */
+/* =========================
+メンバー
+========================= */
 
 async function initializeMembers(){
 
-const snapshot=await getDocs(
-collection(db,"members")
-);
-
+const snapshot=await getDocs(collection(db,"members"));
 const existing=[];
 
 snapshot.forEach(item=>{
 
 const data=item.data();
 
-if(data.name){
-
-existing.push(data.name);
-
-}
+if(data.name)existing.push(data.name);
 
 });
-
 
 for(let i=0;i<initialMembers.length;i++){
 
@@ -1266,15 +755,9 @@ await loadMembers();
 }
 
 
-/* =====================================
-メンバー読み込み
-===================================== */
-
 async function loadMembers(){
 
-const snapshot=await getDocs(
-collection(db,"members")
-);
+const snapshot=await getDocs(collection(db,"members"));
 
 membersData=[];
 
@@ -1287,34 +770,23 @@ id:item.id,
 
 });
 
-
 membersData.sort(
-(a,b)=>
-(a.order??9999)-(b.order??9999)
+(a,b)=>(a.order??9999)-(b.order??9999)
 );
 
 renderMemberList();
-
 renderMemberManagement();
 
 }
 
 
-/* =====================================
-メンバー一覧
-===================================== */
-
 function renderMemberList(){
 
-const area=document.getElementById(
-"memberList"
-);
+const area=document.getElementById("memberList");
 
 area.innerHTML="";
 
-const active=membersData.filter(
-m=>m.active!==false
-);
+const active=membersData.filter(m=>m.active!==false);
 
 if(active.length===0){
 
@@ -1325,7 +797,6 @@ return;
 
 }
 
-
 active.forEach(member=>{
 
 const label=document.createElement("label");
@@ -1334,12 +805,9 @@ label.className="member-check";
 
 label.innerHTML=
 '<input type="checkbox" class="member-check-input">'+
-'<span>'+
-escapeHtml(member.name)+
-'</span>';
+'<span>'+escapeHtml(member.name)+'</span>';
 
-label.querySelector("input")
-.dataset.name=member.name;
+label.querySelector("input").dataset.name=member.name;
 
 area.appendChild(label);
 
@@ -1348,26 +816,14 @@ area.appendChild(label);
 }
 
 
-/* =====================================
-メンバー管理
-===================================== */
-
 function renderMemberManagement(){
 
-const area=document.getElementById(
-"memberManagementList"
-);
+const area=document.getElementById("memberManagementList");
 
 area.innerHTML="";
 
-const active=membersData.filter(
-m=>m.active!==false
-);
-
-const inactive=membersData.filter(
-m=>m.active===false
-);
-
+const active=membersData.filter(m=>m.active!==false);
+const inactive=membersData.filter(m=>m.active===false);
 
 active.forEach((member,index)=>{
 
@@ -1382,68 +838,48 @@ escapeHtml(member.name)+
 '<div class="member-buttons">'+
 
 '<button class="small-button gray" '+
-'onclick="moveMember(\''+
-member.id+
-'\',-1)" '+
-(index===0?"disabled":"")+
-'>↑</button>'+
+'onclick="moveMember(\''+member.id+'\',-1)" '+
+(index===0?"disabled":"")+'>↑</button>'+
 
 '<button class="small-button gray" '+
-'onclick="moveMember(\''+
-member.id+
-'\',1)" '+
-(index===active.length-1?"disabled":"")+
-'>↓</button>'+
+'onclick="moveMember(\''+member.id+'\',1)" '+
+(index===active.length-1?"disabled":"")+'>↓</button>'+
 
 '<button class="small-button" '+
-'onclick="renameMember(\''+
-member.id+
-'\')">'+
-'✏️</button>'+
+'onclick="renameMember(\''+member.id+'\')">✏️</button>'+
 
 '<button class="small-button danger" '+
-'onclick="hideMember(\''+
-member.id+
-'\')">'+
-'🙈</button>'+
+'onclick="hideMember(\''+member.id+'\')">🙈</button>'+
 
 '</div>';
 
 area.appendChild(row);
 
 });
-
 
 if(inactive.length){
 
 const title=document.createElement("div");
 
 title.className="inactive-title";
-
 title.textContent="非表示メンバー";
 
 area.appendChild(title);
-
 
 inactive.forEach(member=>{
 
 const row=document.createElement("div");
 
-row.className=
-"member-management hidden-member";
+row.className="member-management hidden-member";
 
 row.innerHTML=
 '<div class="member-name">'+
 escapeHtml(member.name)+
 '</div>'+
 '<div class="member-buttons">'+
-
 '<button class="small-button green" '+
-'onclick="showMember(\''+
-member.id+
-'\')">'+
+'onclick="showMember(\''+member.id+'\')">'+
 '👀 再表示</button>'+
-
 '</div>';
 
 area.appendChild(row);
@@ -1455,44 +891,28 @@ area.appendChild(row);
 }
 
 
-/* =====================================
-メンバー追加
-===================================== */
-
 window.addMember=async function(){
 
-const input=document.getElementById(
-"newMemberName"
-);
-
+const input=document.getElementById("newMemberName");
 const name=input.value.trim();
 
 if(!name){
 
 alert("メンバー名を入力してください。");
-
 return;
 
 }
-
 
 if(membersData.some(m=>m.name===name)){
 
 alert("同じ名前があります。");
-
 return;
 
 }
 
-
 const maxOrder=membersData.length
-?Math.max(
-...membersData.map(
-m=>m.order??0
-)
-)
+?Math.max(...membersData.map(m=>m.order??0))
 :-1;
-
 
 await addDoc(
 collection(db,"members"),
@@ -1513,15 +933,9 @@ alert(name+"さんを追加しました。");
 };
 
 
-/* =====================================
-メンバー名前変更
-===================================== */
-
 window.renameMember=async function(id){
 
-const member=membersData.find(
-m=>m.id===id
-);
+const member=membersData.find(m=>m.id===id);
 
 if(!member)return;
 
@@ -1537,61 +951,44 @@ const name=newName.trim();
 if(!name){
 
 alert("名前を空欄にはできません。");
-
 return;
 
 }
 
-
-if(membersData.some(
-m=>m.id!==id&&m.name===name
-)){
+if(membersData.some(m=>m.id!==id&&m.name===name)){
 
 alert("同じ名前があります。");
-
 return;
 
 }
 
-
-const snapshot=await getDocs(
-collection(db,"tripGroups")
-);
-
+const snapshot=await getDocs(collection(db,"tripGroups"));
 
 for(const item of snapshot.docs){
 
 const data=item.data();
 
-const old=Array.isArray(data.members)
-?data.members
-:[];
+const old=Array.isArray(data.members)?data.members:[];
 
 if(old.includes(member.name)){
 
 await updateDoc(
 doc(db,"tripGroups",item.id),
 {
-members:old.map(
-x=>x===member.name?name:x
-)
+members:old.map(x=>x===member.name?name:x)
 }
 );
 
 }
 
 }
-
 
 await updateDoc(
 doc(db,"members",id),
-{
-name:name
-}
+{name:name}
 );
 
 await loadMembers();
-
 await loadTrips();
 
 alert("名前を変更しました。");
@@ -1599,28 +996,17 @@ alert("名前を変更しました。");
 };
 
 
-/* =====================================
-メンバー非表示
-===================================== */
-
 window.hideMember=async function(id){
 
-const member=membersData.find(
-m=>m.id===id
-);
+const member=membersData.find(m=>m.id===id);
 
 if(!member)return;
 
-if(!confirm(
-member.name+
-"さんを非表示にしますか？"
-))return;
+if(!confirm(member.name+"さんを非表示にしますか？"))return;
 
 await updateDoc(
 doc(db,"members",id),
-{
-active:false
-}
+{active:false}
 );
 
 await loadMembers();
@@ -1632,9 +1018,7 @@ window.showMember=async function(id){
 
 await updateDoc(
 doc(db,"members",id),
-{
-active:true
-}
+{active:true}
 );
 
 await loadMembers();
@@ -1642,47 +1026,26 @@ await loadMembers();
 };
 
 
-/* =====================================
-メンバー並び替え
-===================================== */
+window.moveMember=async function(id,direction){
 
-window.moveMember=async function(
-id,
-direction
-){
+const active=membersData.filter(m=>m.active!==false);
 
-const active=membersData.filter(
-m=>m.active!==false
-);
-
-const index=active.findIndex(
-m=>m.id===id
-);
-
+const index=active.findIndex(m=>m.id===id);
 const targetIndex=index+direction;
 
-if(
-index<0||
-targetIndex<0||
-targetIndex>=active.length
-)return;
+if(index<0||targetIndex<0||targetIndex>=active.length)return;
 
 const current=active[index];
-
 const target=active[targetIndex];
 
 await updateDoc(
 doc(db,"members",current.id),
-{
-order:target.order
-}
+{order:target.order}
 );
 
 await updateDoc(
 doc(db,"members",target.id),
-{
-order:current.order
-}
+{order:current.order}
 );
 
 await loadMembers();
@@ -1690,40 +1053,22 @@ await loadMembers();
 };
 
 
-/* =====================================
+/* =========================
 通常配車保存
-===================================== */
+========================= */
 
 window.saveTrip=async function(){
 
 try{
 
-const tripDate=
-document.getElementById(
-"tripDate"
-).value;
-
-const venue=
-document.getElementById(
-"venueName"
-).value.trim();
-
-const distance=Number(
-document.getElementById(
-"distance"
-).value
-);
-
-const memo=
-document.getElementById(
-"highwayMemo"
-).value.trim();
-
+const tripDate=document.getElementById("tripDate").value;
+const venue=document.getElementById("venueName").value.trim();
+const distance=Number(document.getElementById("distance").value);
+const memo=document.getElementById("highwayMemo").value.trim();
 
 if(!tripDate){
 
-alert("日付を入力してください。");
-
+alert("日付を入力してください.");
 return;
 
 }
@@ -1731,40 +1076,27 @@ return;
 if(!venue){
 
 alert("会場名を入力してください。");
-
 return;
 
 }
 
-if(
-!Number.isFinite(distance)||
-distance<0
-){
+if(!Number.isFinite(distance)||distance<0){
 
 alert("距離を正しく入力してください。");
-
 return;
 
 }
 
-
 const selected=Array.from(
-document.querySelectorAll(
-"#memberList input:checked"
-)
-).map(
-input=>input.dataset.name
-);
-
+document.querySelectorAll("#memberList input:checked")
+).map(input=>input.dataset.name);
 
 if(!selected.length){
 
 alert("乗車メンバーを選択してください。");
-
 return;
 
 }
-
 
 await addDoc(
 collection(db,"tripGroups"),
@@ -1778,27 +1110,14 @@ createdAt:new Date()
 }
 );
 
-
 alert("配車記録を保存しました！");
 
-document.getElementById(
-"venueName"
-).value="";
+document.getElementById("venueName").value="";
+document.getElementById("distance").value="";
+document.getElementById("highwayMemo").value="";
 
-document.getElementById(
-"distance"
-).value="";
-
-document.getElementById(
-"highwayMemo"
-).value="";
-
-
-document.querySelectorAll(
-"#memberList input"
-).forEach(
-x=>x.checked=false
-);
+document.querySelectorAll("#memberList input")
+.forEach(x=>x.checked=false);
 
 await loadTrips();
 
@@ -1811,15 +1130,13 @@ showError(error);
 };
 
 
-/* =====================================
-コーチ読み込み
-===================================== */
+/* =========================
+コーチ
+========================= */
 
 async function loadCoaches(){
 
-const snapshot=await getDocs(
-collection(db,"coaches")
-);
+const snapshot=await getDocs(collection(db,"coaches"));
 
 coachesData=[];
 
@@ -1832,43 +1149,30 @@ id:item.id,
 
 });
 
-
 coachesData.sort(
-(a,b)=>
-(a.order??9999)-(b.order??9999)
+(a,b)=>(a.order??9999)-(b.order??9999)
 );
 
 renderCoachManagement();
-
 renderCoachSummary();
 
 }
 
 
-/* =====================================
-車HTML
-===================================== */
-
 function createCoachCarHTML(index){
 
-const active=coachesData.filter(
-c=>c.active!==false
-);
+const active=coachesData.filter(c=>c.active!==false);
 
-let driverOptions=
-'<option value="">運転者を選択</option>';
+let driverOptions='<option value="">運転者を選択</option>';
 
 active.forEach(coach=>{
 
 driverOptions+=
-'<option value="'+
-escapeHtml(coach.name)+
-'">'+
+'<option value="'+escapeHtml(coach.name)+'">'+
 escapeHtml(coach.name)+
 '</option>';
 
 });
-
 
 let passengerHTML="";
 
@@ -1876,19 +1180,13 @@ active.forEach(coach=>{
 
 passengerHTML+=
 '<label class="member-check">'+
-'<input type="checkbox" '+
-'class="car-passenger" '+
-'value="'+
-escapeHtml(coach.name)+
-'" '+
+'<input type="checkbox" class="car-passenger" '+
+'value="'+escapeHtml(coach.name)+'" '+
 'onchange="updateCoachCarTotal()">'+
-'<span>'+
-escapeHtml(coach.name)+
-'</span>'+
+'<span>'+escapeHtml(coach.name)+'</span>'+
 '</label>';
 
 });
-
 
 return `
 <div class="coach-car">
@@ -1899,13 +1197,8 @@ return `
 
 <label>運転者・車を出した人</label>
 
-<select
-class="coach-driver"
-onchange="updateCoachCarTotal()"
->
-
+<select class="coach-driver" onchange="updateCoachCarTotal()">
 ${driverOptions}
-
 </select>
 
 <label>この車に乗った監督・コーチ</label>
@@ -1976,68 +1269,42 @@ onclick="removeCoachCar(this)"
 }
 
 
-/* =====================================
-車追加
-===================================== */
-
 window.addCoachCar=function(){
 
-const area=document.getElementById(
-"coachCars"
-);
+const area=document.getElementById("coachCars");
 
 area.insertAdjacentHTML(
 "beforeend",
-createCoachCarHTML(
-area.children.length
-)
+createCoachCarHTML(area.children.length)
 );
 
 renumberCars();
-
 updateCoachCarTotal();
 
 };
 
 
-/* =====================================
-車削除
-===================================== */
-
 window.removeCoachCar=function(button){
 
-const car=button.closest(
-".coach-car"
-);
+const car=button.closest(".coach-car");
 
 if(car)car.remove();
 
 renumberCars();
-
 updateCoachCarTotal();
 
 };
 
 
-/* =====================================
-車番号
-===================================== */
-
 function renumberCars(){
 
-document.querySelectorAll(
-"#coachCars .coach-car"
-).forEach(
-(car,index)=>{
+document.querySelectorAll("#coachCars .coach-car")
+.forEach((car,index)=>{
 
-const title=
-car.querySelector(".car-title");
+const title=car.querySelector(".car-title");
 
 if(title){
-
-title.textContent=
-"🚗 "+(index+1)+"台目";
-
+title.textContent="🚗 "+(index+1)+"台目";
 }
 
 });
@@ -2045,33 +1312,18 @@ title.textContent=
 }
 
 
-/* =====================================
-車ごとの交通費計算
-===================================== */
-
 function calculateCarCost(car){
 
 const distance=Number(
-car.querySelector(
-".coach-distance"
-)?.value||0
+car.querySelector(".coach-distance")?.value||0
 );
 
 const highwayFee=Number(
-car.querySelector(
-".coach-highway-fee"
-)?.value||0
+car.querySelector(".coach-highway-fee")?.value||0
 );
 
-
-const gasCost=
-Math.round(
-distance*gasRate
-);
-
-const total=
-gasCost+highwayFee;
-
+const gasCost=Math.round(distance*gasRate);
+const total=gasCost+highwayFee;
 
 return {
 distance:distance,
@@ -2083,83 +1335,39 @@ total:total
 }
 
 
-/* =====================================
-車合計表示
-===================================== */
-
 window.updateCoachCarTotal=function(){
 
 let totalDistance=0;
-
 let totalGas=0;
-
 let totalHighway=0;
-
 let totalCost=0;
 
+document.querySelectorAll("#coachCars .coach-car")
+.forEach(car=>{
 
-document.querySelectorAll(
-"#coachCars .coach-car"
-).forEach(car=>{
-
-const cost=
-calculateCarCost(car);
+const cost=calculateCarCost(car);
 
 totalDistance+=cost.distance;
-
 totalGas+=cost.gasCost;
-
 totalHighway+=cost.highwayFee;
-
 totalCost+=cost.total;
 
+const gasElement=car.querySelector(".coach-gas-cost");
+const highwayElement=car.querySelector(".coach-highway-cost");
+const totalElement=car.querySelector(".coach-total-cost");
 
-const gasElement=
-car.querySelector(
-".coach-gas-cost"
-);
+if(gasElement)
+gasElement.textContent=cost.gasCost.toLocaleString()+" 円";
 
-const highwayElement=
-car.querySelector(
-".coach-highway-cost"
-);
+if(highwayElement)
+highwayElement.textContent=cost.highwayFee.toLocaleString()+" 円";
 
-const totalElement=
-car.querySelector(
-".coach-total-cost"
-);
-
-
-if(gasElement){
-
-gasElement.textContent=
-cost.gasCost.toLocaleString()+
-" 円";
-
-}
-
-if(highwayElement){
-
-highwayElement.textContent=
-cost.highwayFee.toLocaleString()+
-" 円";
-
-}
-
-if(totalElement){
-
-totalElement.textContent=
-cost.total.toLocaleString()+
-" 円";
-
-}
+if(totalElement)
+totalElement.textContent=cost.total.toLocaleString()+" 円";
 
 });
 
-
-document.getElementById(
-"coachCarTotal"
-).innerHTML=
+document.getElementById("coachCarTotal").innerHTML=
 
 "合計距離：<strong>"+
 totalDistance.toLocaleString()+
@@ -2180,39 +1388,21 @@ totalCost.toLocaleString()+
 };
 
 
-/* =====================================
-コーチ参加者自動取得
-===================================== */
-
 function getCoachParticipants(cars){
 
 const names=[];
 
 cars.forEach(car=>{
 
-if(car.driver){
-
-if(!names.includes(car.driver)){
-
+if(car.driver&&!names.includes(car.driver))
 names.push(car.driver);
-
-}
-
-}
-
 
 if(Array.isArray(car.passengers)){
 
 car.passengers.forEach(name=>{
 
-if(
-name &&
-!names.includes(name)
-){
-
+if(name&&!names.includes(name))
 names.push(name);
-
-}
 
 });
 
@@ -2225,29 +1415,20 @@ return names;
 }
 
 
-/* =====================================
+/* =========================
 コーチ配車保存
-===================================== */
+========================= */
 
 window.saveCoachTrip=async function(){
 
 try{
 
-const date=
-document.getElementById(
-"coachTripDate"
-).value;
-
-const venue=
-document.getElementById(
-"coachVenueName"
-).value.trim();
-
+const date=document.getElementById("coachTripDate").value;
+const venue=document.getElementById("coachVenueName").value.trim();
 
 if(!date){
 
 alert("日付を入力してください。");
-
 return;
 
 }
@@ -2255,243 +1436,130 @@ return;
 if(!venue){
 
 alert("会場名を入力してください。");
-
 return;
 
 }
-
 
 const cars=[];
 
 let totalDistance=0;
-
 let totalGas=0;
-
 let totalHighway=0;
-
 let totalCost=0;
 
-
-const carElements=
-document.querySelectorAll(
+const carElements=document.querySelectorAll(
 "#coachCars .coach-car"
 );
 
-
 if(!carElements.length){
 
-alert(
-"車を1台以上追加してください。"
-);
-
+alert("車を1台以上追加してください。");
 return;
 
 }
 
+for(let i=0;i<carElements.length;i++){
 
-for(
-let i=0;
-i<carElements.length;
-i++
-){
+const car=carElements[i];
 
-const car=
-carElements[i];
+const driver=car.querySelector(".coach-driver").value;
 
-const driver=
-car.querySelector(
-".coach-driver"
-).value;
-
-const distance=
-Number(
-car.querySelector(
-".coach-distance"
-).value||0
+const distance=Number(
+car.querySelector(".coach-distance").value||0
 );
 
-const highwayFee=
-Number(
-car.querySelector(
-".coach-highway-fee"
-).value||0
+const highwayFee=Number(
+car.querySelector(".coach-highway-fee").value||0
 );
 
-const memo=
-car.querySelector(
+const memo=car.querySelector(
 ".coach-highway-memo"
 ).value.trim();
 
-const passengers=
-Array.from(
-car.querySelectorAll(
-".car-passenger:checked"
-)
-).map(
-x=>x.value
-);
-
+const passengers=Array.from(
+car.querySelectorAll(".car-passenger:checked")
+).map(x=>x.value);
 
 if(!driver){
 
-alert(
-(i+1)+
-"台目の運転者を選択してください。"
-);
-
+alert((i+1)+"台目の運転者を選択してください。");
 return;
 
 }
 
+if(!Number.isFinite(distance)||distance<0){
 
-if(
-!Number.isFinite(distance)||
-distance<0
-){
-
-alert(
-(i+1)+
-"台目の距離を確認してください。"
-);
-
+alert((i+1)+"台目の距離を確認してください。");
 return;
 
 }
 
+if(!Number.isFinite(highwayFee)||highwayFee<0){
 
-if(
-!Number.isFinite(highwayFee)||
-highwayFee<0
-){
-
-alert(
-(i+1)+
-"台目の高速料金を確認してください。"
-);
-
+alert((i+1)+"台目の高速料金を確認してください。");
 return;
 
 }
 
-
-const gasCost=
-Math.round(
-distance*gasRate
-);
-
-const carTotal=
-gasCost+highwayFee;
-
+const gasCost=Math.round(distance*gasRate);
+const carTotal=gasCost+highwayFee;
 
 cars.push({
 
 driver:driver,
-
 passengers:passengers,
-
 distance:distance,
-
 gasRate:gasRate,
-
 gasCost:gasCost,
-
 highwayFee:highwayFee,
-
 highwayMemo:memo,
-
 totalCost:carTotal
 
 });
 
-
 totalDistance+=distance;
-
 totalGas+=gasCost;
-
 totalHighway+=highwayFee;
-
 totalCost+=carTotal;
 
 }
 
-
-/* 運転者＋同乗者を自動で参加者にする */
-
-const participants=
-getCoachParticipants(cars);
-
+const participants=getCoachParticipants(cars);
 
 if(!participants.length){
 
-alert(
-"参加する監督・コーチが登録されていません。"
-);
-
+alert("参加する監督・コーチが登録されていません。");
 return;
 
 }
 
-
 await addDoc(
 collection(db,"coachTrips"),
 {
-
 tripDate:date,
-
 venueName:venue,
-
 participants:participants,
-
 cars:cars,
-
-drivers:
-cars.map(
-x=>x.driver
-),
-
-carCount:
-cars.length,
-
-totalDistance:
-totalDistance,
-
-gasRate:
-gasRate,
-
-totalGasCost:
-totalGas,
-
-totalHighwayFee:
-totalHighway,
-
-totalCost:
-totalCost,
-
+drivers:cars.map(x=>x.driver),
+carCount:cars.length,
+totalDistance:totalDistance,
+gasRate:gasRate,
+totalGasCost:totalGas,
+totalHighwayFee:totalHighway,
+totalCost:totalCost,
 createdAt:new Date()
-
 }
 );
 
-
 alert(
 "監督・コーチ配車を保存しました！\n\n"+
-"交通費合計："+
-totalCost.toLocaleString()+
-"円"
+"交通費合計："+totalCost.toLocaleString()+"円"
 );
 
+document.getElementById("coachVenueName").value="";
+document.getElementById("coachCars").innerHTML="";
 
-document.getElementById(
-"coachVenueName"
-).value="";
-
-document.getElementById(
-"coachCars"
-).innerHTML="";
-
-document.getElementById(
-"coachCarTotal"
-).innerHTML=
+document.getElementById("coachCarTotal").innerHTML=
 "合計距離：0 km<br>"+
 "合計ガソリン代：0 円<br>"+
 "合計高速料金：0 円<br>"+
@@ -2508,41 +1576,26 @@ showError(error);
 };
 
 
-/* =====================================
+/* =========================
 コーチ管理
-===================================== */
+========================= */
 
 function renderCoachManagement(){
 
-const area=
-document.getElementById(
-"coachManagementList"
-);
+const area=document.getElementById("coachManagementList");
 
 area.innerHTML="";
 
-const active=
-coachesData.filter(
-c=>c.active!==false
-);
+const active=coachesData.filter(c=>c.active!==false);
+const inactive=coachesData.filter(c=>c.active===false);
 
-const inactive=
-coachesData.filter(
-c=>c.active===false
-);
+active.forEach((coach,index)=>{
 
+const row=document.createElement("div");
 
-active.forEach(
-(coach,index)=>{
-
-const row=
-document.createElement("div");
-
-row.className=
-"member-management";
+row.className="member-management";
 
 row.innerHTML=
-
 '<div class="member-name">'+
 escapeHtml(coach.name)+
 '</div>'+
@@ -2550,31 +1603,18 @@ escapeHtml(coach.name)+
 '<div class="member-buttons">'+
 
 '<button class="small-button gray" '+
-'onclick="moveCoach(\''+
-coach.id+
-'\',-1)" '+
-(index===0?"disabled":"")+
-'>↑</button>'+
+'onclick="moveCoach(\''+coach.id+'\',-1)" '+
+(index===0?"disabled":"")+'>↑</button>'+
 
 '<button class="small-button gray" '+
-'onclick="moveCoach(\''+
-coach.id+
-'\',1)" '+
-(index===active.length-1
-?"disabled":"")+
-'>↓</button>'+
+'onclick="moveCoach(\''+coach.id+'\',1)" '+
+(index===active.length-1?"disabled":"")+'>↓</button>'+
 
 '<button class="small-button" '+
-'onclick="renameCoach(\''+
-coach.id+
-'\')">'+
-'✏️</button>'+
+'onclick="renameCoach(\''+coach.id+'\')">✏️</button>'+
 
 '<button class="small-button danger" '+
-'onclick="hideCoach(\''+
-coach.id+
-'\')">'+
-'🙈</button>'+
+'onclick="hideCoach(\''+coach.id+'\')">🙈</button>'+
 
 '</div>';
 
@@ -2582,32 +1622,22 @@ area.appendChild(row);
 
 });
 
-
 if(inactive.length){
 
-const title=
-document.createElement("div");
+const title=document.createElement("div");
 
-title.className=
-"inactive-title";
-
-title.textContent=
-"非表示の監督・コーチ";
+title.className="inactive-title";
+title.textContent="非表示の監督・コーチ";
 
 area.appendChild(title);
 
+inactive.forEach(coach=>{
 
-inactive.forEach(
-coach=>{
+const row=document.createElement("div");
 
-const row=
-document.createElement("div");
-
-row.className=
-"member-management hidden-member";
+row.className="member-management hidden-member";
 
 row.innerHTML=
-
 '<div class="member-name">'+
 escapeHtml(coach.name)+
 '</div>'+
@@ -2615,9 +1645,7 @@ escapeHtml(coach.name)+
 '<div class="member-buttons">'+
 
 '<button class="small-button green" '+
-'onclick="showCoach(\''+
-coach.id+
-'\')">'+
+'onclick="showCoach(\''+coach.id+'\')">'+
 '👀 再表示</button>'+
 
 '</div>';
@@ -2631,53 +1659,28 @@ area.appendChild(row);
 }
 
 
-/* =====================================
-コーチ追加
-===================================== */
-
 window.addCoach=async function(){
 
-const input=
-document.getElementById(
-"newCoachName"
-);
-
-const name=
-input.value.trim();
+const input=document.getElementById("newCoachName");
+const name=input.value.trim();
 
 if(!name){
 
-alert(
-"監督・コーチ名を入力してください。"
-);
-
+alert("監督・コーチ名を入力してください。");
 return;
 
 }
 
-
-if(
-coachesData.some(
-c=>c.name===name
-)
-){
+if(coachesData.some(c=>c.name===name)){
 
 alert("同じ名前があります。");
-
 return;
 
 }
 
-
-const maxOrder=
-coachesData.length
-?Math.max(
-...coachesData.map(
-c=>c.order??0
-)
-)
+const maxOrder=coachesData.length
+?Math.max(...coachesData.map(c=>c.order??0))
 :-1;
-
 
 await addDoc(
 collection(db,"coaches"),
@@ -2693,198 +1696,121 @@ input.value="";
 
 await loadCoaches();
 
-alert(
-name+
-"さんを追加しました。"
-);
+alert(name+"さんを追加しました。");
 
 };
 
 
-/* =====================================
-コーチ名前変更
-===================================== */
-
 window.renameCoach=async function(id){
 
-const coach=
-coachesData.find(
-c=>c.id===id
-);
+const coach=coachesData.find(c=>c.id===id);
 
 if(!coach)return;
 
-const newName=
-prompt(
+const newName=prompt(
 "新しい名前を入力してください。",
 coach.name
 );
 
 if(newName===null)return;
 
-const name=
-newName.trim();
+const name=newName.trim();
 
 if(!name){
 
-alert(
-"名前を空欄にはできません。"
-);
-
+alert("名前を空欄にはできません。");
 return;
 
 }
 
-
-if(
-coachesData.some(
-c=>c.id!==id&&c.name===name
-)
-){
+if(coachesData.some(c=>c.id!==id&&c.name===name)){
 
 alert("同じ名前があります。");
-
 return;
 
 }
 
+const snapshot=await getDocs(collection(db,"coachTrips"));
 
-const snapshot=
-await getDocs(
-collection(db,"coachTrips")
-);
-
-
-for(
-const item of snapshot.docs
-){
+for(const item of snapshot.docs){
 
 const data=item.data();
 
 let changed=false;
 
-
 const participants=
-Array.isArray(
-data.participants
-)
+Array.isArray(data.participants)
 ?data.participants
 :[];
 
-
-const newParticipants=
-participants.map(
-x=>{
+const newParticipants=participants.map(x=>{
 
 if(x===coach.name){
 
 changed=true;
-
 return name;
 
 }
 
 return x;
 
-}
-);
+});
 
+const cars=Array.isArray(data.cars)?data.cars:[];
 
-const cars=
-Array.isArray(data.cars)
-?data.cars
-:[];
+const newCars=cars.map(car=>{
 
+const copy={...car};
 
-const newCars=
-cars.map(
-car=>{
-
-const copy={
-...car
-};
-
-
-if(
-copy.driver===coach.name
-){
+if(copy.driver===coach.name){
 
 copy.driver=name;
-
 changed=true;
 
 }
 
+if(Array.isArray(copy.passengers)){
 
-if(
-Array.isArray(
-copy.passengers
-)
-){
+copy.passengers=copy.passengers.map(x=>{
 
-copy.passengers=
-copy.passengers.map(
-x=>{
-
-if(
-x===coach.name
-){
+if(x===coach.name){
 
 changed=true;
-
 return name;
 
 }
 
 return x;
 
-}
-);
+});
 
 }
 
 return copy;
 
-}
-);
-
+});
 
 if(changed){
 
 await updateDoc(
-doc(
-db,
-"coachTrips",
-item.id
-),
+doc(db,"coachTrips",item.id),
 {
-participants:
-newParticipants,
-
-cars:
-newCars,
-
-drivers:
-newCars.map(
-x=>x.driver
-)
+participants:newParticipants,
+cars:newCars,
+drivers:newCars.map(x=>x.driver)
 }
 );
 
 }
 
 }
-
 
 await updateDoc(
 doc(db,"coaches",id),
-{
-name:name
-}
+{name:name}
 );
 
 await loadCoaches();
-
 await loadCoachTrips();
 
 alert("名前を変更しました。");
@@ -2892,29 +1818,17 @@ alert("名前を変更しました。");
 };
 
 
-/* =====================================
-コーチ非表示・再表示
-===================================== */
-
 window.hideCoach=async function(id){
 
-const coach=
-coachesData.find(
-c=>c.id===id
-);
+const coach=coachesData.find(c=>c.id===id);
 
 if(!coach)return;
 
-if(!confirm(
-coach.name+
-"さんを非表示にしますか？"
-))return;
+if(!confirm(coach.name+"さんを非表示にしますか？"))return;
 
 await updateDoc(
 doc(db,"coaches",id),
-{
-active:false
-}
+{active:false}
 );
 
 await loadCoaches();
@@ -2926,9 +1840,7 @@ window.showCoach=async function(id){
 
 await updateDoc(
 doc(db,"coaches",id),
-{
-active:true
-}
+{active:true}
 );
 
 await loadCoaches();
@@ -2936,53 +1848,26 @@ await loadCoaches();
 };
 
 
-/* =====================================
-コーチ並び替え
-===================================== */
+window.moveCoach=async function(id,direction){
 
-window.moveCoach=async function(
-id,
-direction
-){
+const active=coachesData.filter(c=>c.active!==false);
 
-const active=
-coachesData.filter(
-c=>c.active!==false
-);
+const index=active.findIndex(c=>c.id===id);
+const targetIndex=index+direction;
 
-const index=
-active.findIndex(
-c=>c.id===id
-);
+if(index<0||targetIndex<0||targetIndex>=active.length)return;
 
-const targetIndex=
-index+direction;
-
-if(
-index<0||
-targetIndex<0||
-targetIndex>=active.length
-)return;
-
-const current=
-active[index];
-
-const target=
-active[targetIndex];
-
+const current=active[index];
+const target=active[targetIndex];
 
 await updateDoc(
 doc(db,"coaches",current.id),
-{
-order:target.order
-}
+{order:target.order}
 );
 
 await updateDoc(
 doc(db,"coaches",target.id),
-{
-order:current.order
-}
+{order:current.order}
 );
 
 await loadCoaches();
@@ -2990,44 +1875,35 @@ await loadCoaches();
 };
 
 
-/* =====================================
-通常履歴読み込み
-===================================== */
+/* =========================
+履歴読み込み
+========================= */
 
 async function loadTrips(){
 
 tripGroupsData=[];
 legacyTripsData=[];
 
-
-const groupSnapshot=
-await getDocs(
+const groupSnapshot=await getDocs(
 collection(db,"tripGroups")
 );
 
-
-groupSnapshot.forEach(
-item=>{
+groupSnapshot.forEach(item=>{
 
 tripGroupsData.push({
 id:item.id,
 ...item.data()
 });
 
-}
-);
-
+});
 
 try{
 
-const legacySnapshot=
-await getDocs(
+const legacySnapshot=await getDocs(
 collection(db,"trips")
 );
 
-
-legacySnapshot.forEach(
-item=>{
+legacySnapshot.forEach(item=>{
 
 const data=item.data();
 
@@ -3044,30 +1920,19 @@ id:item.id,
 
 }catch(error){
 
-console.log(
-"旧trips読み込みなし"
-);
+console.log("旧trips読み込みなし");
 
 }
 
-
 tripGroupsData.sort(
 (a,b)=>
-String(b.tripDate||"")
-.localeCompare(
-String(a.tripDate||"")
-)
+String(b.tripDate||"").localeCompare(String(a.tripDate||""))
 );
 
 renderHistory();
 
-
-/* 個別集計を開いている場合は更新 */
-
 if(
-document.getElementById(
-"personalSummaryArea"
-)?.style.display==="block"
+document.getElementById("personalSummaryArea")?.style.display==="block"
 ){
 
 renderPersonalSummary();
@@ -3077,52 +1942,34 @@ renderPersonalSummary();
 }
 
 
-/* =====================================
-コーチ履歴読み込み
-===================================== */
-
 async function loadCoachTrips(){
 
 coachTripsData=[];
 
-const snapshot=
-await getDocs(
+const snapshot=await getDocs(
 collection(db,"coachTrips")
 );
 
-snapshot.forEach(
-item=>{
+snapshot.forEach(item=>{
 
 coachTripsData.push({
 id:item.id,
 ...item.data()
 });
 
-}
-);
-
+});
 
 coachTripsData.sort(
 (a,b)=>
-String(b.tripDate||"")
-.localeCompare(
-String(a.tripDate||"")
-)
+String(b.tripDate||"").localeCompare(String(a.tripDate||""))
 );
 
 renderHistory();
-
 renderCoachSummary();
-
 renderCoachMonthlySummary();
 
-
-/* 個別集計を開いている場合は更新 */
-
 if(
-document.getElementById(
-"coachSummaryArea"
-)?.style.display==="block"
+document.getElementById("coachSummaryArea")?.style.display==="block"
 ){
 
 renderCoachSummary();
@@ -3132,46 +1979,31 @@ renderCoachSummary();
 }
 
 
-/* =====================================
+/* =========================
 履歴表示
-===================================== */
+========================= */
 
 function renderHistory(){
 
-const area=
-document.getElementById(
-"history"
-);
+const area=document.getElementById("history");
 
 area.innerHTML="";
 
-
-if(
-tripGroupsData.length===0
-){
+if(tripGroupsData.length===0){
 
 area.innerHTML=
-'<div class="empty">'+
-'まだ通常配車記録がありません。'+
-'</div>';
+'<div class="empty">まだ通常配車記録がありません。</div>';
 
 }else{
 
-tripGroupsData.forEach(
-item=>{
+tripGroupsData.forEach(item=>{
 
-const div=
-document.createElement("div");
+const div=document.createElement("div");
 
-div.className=
-"history-item";
-
+div.className="history-item";
 
 const members=
-Array.isArray(item.members)
-?item.members
-:[];
-
+Array.isArray(item.members)?item.members:[];
 
 div.innerHTML=
 
@@ -3184,64 +2016,41 @@ escapeHtml(item.tripDate||"")+
 '🚐 <strong>通常配車</strong><br>'+
 
 '🏫 会場：'+
-escapeHtml(
-item.venueName||"未登録"
-)+
+escapeHtml(item.venueName||"未登録")+
 '<br>'+
 
 '📏 距離：'+
-Number(
-item.distance||0
-)+
+Number(item.distance||0)+
 ' km<br>'+
 
 '👥 乗車：'+
-escapeHtml(
-members.join("、")||"なし"
-)+
+escapeHtml(members.join("、")||"なし")+
 '<br>'+
 
 '🛣️ 高速・ETC：'+
-escapeHtml(
-item.highwayMemo||"なし"
-)+
+escapeHtml(item.highwayMemo||"なし")+
 
 '</div>';
 
+const buttons=document.createElement("div");
 
-const buttons=
-document.createElement("div");
+buttons.className="history-buttons";
 
-buttons.className=
-"history-buttons";
-
-
-const edit=
-document.createElement("button");
+const edit=document.createElement("button");
 
 edit.textContent="✏️ 編集";
+edit.onclick=()=>editTrip(item.id);
 
-edit.onclick=
-()=>editTrip(item.id);
-
-
-const del=
-document.createElement("button");
+const del=document.createElement("button");
 
 del.textContent="🗑️ 削除";
-
 del.className="danger";
-
-del.onclick=
-()=>deleteTrip(item.id);
-
+del.onclick=()=>deleteTrip(item.id);
 
 buttons.appendChild(edit);
-
 buttons.appendChild(del);
 
 div.appendChild(buttons);
-
 area.appendChild(div);
 
 });
@@ -3251,154 +2060,82 @@ area.appendChild(div);
 
 if(coachTripsData.length){
 
-const title=
-document.createElement("h3");
+const title=document.createElement("h3");
 
-title.textContent=
-"🏀 監督・コーチ配車履歴";
+title.textContent="🏀 監督・コーチ配車履歴";
 
 area.appendChild(title);
 
+coachTripsData.forEach(item=>{
 
-coachTripsData.forEach(
-item=>{
+const div=document.createElement("div");
 
-const div=
-document.createElement("div");
-
-div.className=
-"history-item";
-
+div.className="history-item";
 
 const participants=
-Array.isArray(
-item.participants
-)
+Array.isArray(item.participants)
 ?item.participants
 :[];
 
-
 let cars=
-Array.isArray(item.cars)
-?item.cars
-:[];
+Array.isArray(item.cars)?item.cars:[];
 
+if(!cars.length&&Array.isArray(item.drivers)){
 
-if(
-!cars.length &&
-Array.isArray(item.drivers)
-){
-
-cars=
-item.drivers.map(
-driver=>({
+cars=item.drivers.map(driver=>({
 
 driver:driver,
-
 passengers:[],
-
-distance:
-Number(
-item.distance||0
+distance:Number(item.distance||0),
+gasRate:Number(item.gasRate||gasRate),
+gasCost:Math.round(
+Number(item.distance||0)*Number(item.gasRate||gasRate)
 ),
-
-gasRate:
-Number(
-item.gasRate||gasRate
-),
-
-gasCost:
-Math.round(
-Number(
-item.distance||0
-)*
-Number(
-item.gasRate||gasRate
-)
-),
-
 highwayFee:0,
-
 highwayMemo:"",
-
-totalCost:
-Math.round(
-Number(
-item.distance||0
-)*
-Number(
-item.gasRate||gasRate
-)
+totalCost:Math.round(
+Number(item.distance||0)*Number(item.gasRate||gasRate)
 )
 
-})
-);
+}));
 
 }
 
-
 let totalDistance=0;
-
 let totalGas=0;
-
 let totalFee=0;
-
 let totalCost=0;
-
 let carHTML="";
 
+cars.forEach((car,index)=>{
 
-cars.forEach(
-(car,index)=>{
+const distance=Number(car.distance||0);
 
-const distance=
-Number(car.distance||0);
-
-const savedGasRate=
-Number(
-car.gasRate||
-item.gasRate||
-gasRate
+const savedGasRate=Number(
+car.gasRate||item.gasRate||gasRate
 );
 
 const gasCost=
-Number.isFinite(
-Number(car.gasCost)
-)
+Number.isFinite(Number(car.gasCost))
 ?Number(car.gasCost)
-:Math.round(
-distance*savedGasRate
-);
+:Math.round(distance*savedGasRate);
 
-const highwayFee=
-Number(
-car.highwayFee||0
-);
+const highwayFee=Number(car.highwayFee||0);
 
 const carTotal=
-Number.isFinite(
-Number(car.totalCost)
-)
+Number.isFinite(Number(car.totalCost))
 ?Number(car.totalCost)
 :gasCost+highwayFee;
 
-
 totalDistance+=distance;
-
 totalGas+=gasCost;
-
 totalFee+=highwayFee;
-
 totalCost+=carTotal;
 
-
 const passengers=
-Array.isArray(
-car.passengers
-)
+Array.isArray(car.passengers)
 ?car.passengers
 :[];
-
 
 carHTML+=
 
@@ -3409,15 +2146,11 @@ carHTML+=
 '台目</strong><br>'+
 
 '👤 運転者：'+
-escapeHtml(
-car.driver||"未登録"
-)+
+escapeHtml(car.driver||"未登録")+
 '<br>'+
 
 '👥 同乗：'+
-escapeHtml(
-passengers.join("、")||"なし"
-)+
+escapeHtml(passengers.join("、")||"なし")+
 '<br>'+
 
 '📏 距離：'+
@@ -3426,8 +2159,7 @@ distance.toLocaleString()+
 
 '⛽ ガソリン：'+
 gasCost.toLocaleString()+
-' 円 '+
-'（'+
+' 円（'+
 savedGasRate+
 '円/km）<br>'+
 
@@ -3439,40 +2171,24 @@ highwayFee.toLocaleString()+
 carTotal.toLocaleString()+
 ' 円</strong>'+
 
-(
-car.highwayMemo
-?
-'<br>📝 '+
-escapeHtml(
-car.highwayMemo
-)
-:""
-)+
+(car.highwayMemo
+?'<br>📝 '+escapeHtml(car.highwayMemo)
+:"")+
 
 '</div>';
 
 });
 
+if(!totalCost&&Number(item.totalCost||0)){
 
-/* 古い記録との互換用 */
-
-if(
-!totalCost &&
-Number(item.totalCost||0)
-){
-
-totalCost=
-Number(item.totalCost||0);
+totalCost=Number(item.totalCost||0);
 
 }
-
 
 div.innerHTML=
 
 '<div class="history-date">'+
-escapeHtml(
-item.tripDate||""
-)+
+escapeHtml(item.tripDate||"")+
 '</div>'+
 
 '<div class="history-detail">'+
@@ -3480,15 +2196,11 @@ item.tripDate||""
 '🏀 <strong>監督・コーチ配車</strong><br>'+
 
 '🏫 会場：'+
-escapeHtml(
-item.venueName||"未登録"
-)+
+escapeHtml(item.venueName||"未登録")+
 '<br>'+
 
 '👥 参加者：'+
-escapeHtml(
-participants.join("、")||"なし"
-)+
+escapeHtml(participants.join("、")||"なし")+
 '<br>'+
 
 '🚗 配車台数：'+
@@ -3515,40 +2227,25 @@ carHTML+
 
 '</div>';
 
+const buttons=document.createElement("div");
 
-const buttons=
-document.createElement("div");
+buttons.className="history-buttons";
 
-buttons.className=
-"history-buttons";
-
-
-const edit=
-document.createElement("button");
+const edit=document.createElement("button");
 
 edit.textContent="✏️ 編集";
+edit.onclick=()=>editCoachTrip(item.id);
 
-edit.onclick=
-()=>editCoachTrip(item.id);
-
-
-const del=
-document.createElement("button");
+const del=document.createElement("button");
 
 del.textContent="🗑️ 削除";
-
 del.className="danger";
-
-del.onclick=
-()=>deleteCoachTrip(item.id);
-
+del.onclick=()=>deleteCoachTrip(item.id);
 
 buttons.appendChild(edit);
-
 buttons.appendChild(del);
 
 div.appendChild(buttons);
-
 area.appendChild(div);
 
 });
@@ -3558,48 +2255,32 @@ area.appendChild(div);
 }
 
 
-/* =====================================
+/* =========================
 通常メンバー個別集計
-===================================== */
+========================= */
 
 function renderPersonalSummary(){
 
-const area=
-document.getElementById(
-"personalSummary"
-);
+const area=document.getElementById("personalSummary");
 
 if(!area)return;
 
 area.innerHTML="";
 
-
 const data={};
-
-
-/*
-通常配車の「乗車メンバー」を
-メンバーごとに集計する
-
-1回の配車に選択されていれば1回
-その配車の距離をその人の距離として加算
-*/
 
 tripGroupsData.forEach(item=>{
 
-const distance=
-Number(item.distance||0);
+const distance=Number(item.distance||0);
 
 const members=
 Array.isArray(item.members)
 ?item.members
 :[];
 
-
 members.forEach(name=>{
 
 if(!name)return;
-
 
 if(!data[name]){
 
@@ -3610,73 +2291,44 @@ distance:0
 
 }
 
-
 data[name].count++;
-
 data[name].distance+=distance;
 
 });
 
 });
 
-
-/*
-現在登録されているメンバーを
-表示対象にする
-
-非表示メンバーも過去記録があれば
-集計結果から消さない
-*/
-
-const names=
-membersData
+const names=membersData
 .map(member=>member.name)
 .filter(Boolean);
-
 
 Object.keys(data).forEach(name=>{
 
 if(!names.includes(name)){
-
 names.push(name);
-
 }
 
 });
 
-
 if(!names.length){
 
 area.innerHTML=
-'<div class="empty">'+
-'まだメンバーが登録されていません。'+
-'</div>';
+'<div class="empty">まだメンバーが登録されていません。</div>';
 
 return;
 
 }
 
-
-/*
-並び順はメンバー管理と同じ
-*/
-
 names.forEach(name=>{
 
-const item=
-data[name]||
-{
+const item=data[name]||{
 count:0,
 distance:0
 };
 
+const row=document.createElement("div");
 
-const row=
-document.createElement("div");
-
-row.className=
-"personal-summary-row";
-
+row.className="personal-summary-row";
 
 row.innerHTML=
 
@@ -3696,7 +2348,6 @@ Number(item.distance).toLocaleString()+
 
 '</div>';
 
-
 area.appendChild(row);
 
 });
@@ -3704,69 +2355,39 @@ area.appendChild(row);
 }
 
 
-/* =====================================
+/* =========================
 通常履歴編集
-===================================== */
+========================= */
 
 window.editTrip=async function(id){
 
-const item=
-tripGroupsData.find(
-x=>x.id===id
-);
+const item=tripGroupsData.find(x=>x.id===id);
 
 if(!item)return;
 
-
-const date=
-prompt(
-"日付",
-item.tripDate||""
-);
-
+const date=prompt("日付",item.tripDate||"");
 if(date===null)return;
 
-
-const venue=
-prompt(
-"会場名",
-item.venueName||""
-);
-
+const venue=prompt("会場名",item.venueName||"");
 if(venue===null)return;
 
-
-const distance=
-prompt(
-"距離（km）",
-item.distance||0
-);
-
+const distance=prompt("距離（km）",item.distance||0);
 if(distance===null)return;
 
-
-const memo=
-prompt(
+const memo=prompt(
 "高速料金・ETCメモ",
 item.highwayMemo||""
 );
 
 if(memo===null)return;
 
-
 await updateDoc(
 doc(db,"tripGroups",id),
 {
-
 tripDate:date,
-
 venueName:venue,
-
-distance:
-Number(distance)||0,
-
+distance:Number(distance)||0,
 highwayMemo:memo
-
 }
 );
 
@@ -3777,15 +2398,9 @@ alert("変更しました。");
 };
 
 
-/* =====================================
-通常削除
-===================================== */
-
 window.deleteTrip=async function(id){
 
-if(!confirm(
-"この配車記録を削除しますか？"
-))return;
+if(!confirm("この配車記録を削除しますか？"))return;
 
 await deleteDoc(
 doc(db,"tripGroups",id)
@@ -3798,308 +2413,174 @@ alert("削除しました。");
 };
 
 
-/* =====================================
+/* =========================
 コーチ履歴編集
-===================================== */
+========================= */
 
 window.editCoachTrip=async function(id){
 
-const item=
-coachTripsData.find(
-x=>x.id===id
-);
+const item=coachTripsData.find(x=>x.id===id);
 
 if(!item)return;
 
-
-const date=
-prompt(
-"日付",
-item.tripDate||""
-);
-
+const date=prompt("日付",item.tripDate||"");
 if(date===null)return;
 
-
-const venue=
-prompt(
-"会場名",
-item.venueName||""
-);
-
+const venue=prompt("会場名",item.venueName||"");
 if(venue===null)return;
 
-
-let cars=
-Array.isArray(item.cars)
-?item.cars
-:[];
-
+let cars=Array.isArray(item.cars)?item.cars:[];
 
 if(!cars.length){
 
 const drivers=
-Array.isArray(item.drivers)
-?item.drivers
-:[];
+Array.isArray(item.drivers)?item.drivers:[];
 
-cars=
-drivers.map(
-driver=>({
+cars=drivers.map(driver=>({
 
 driver:driver,
-
 passengers:[],
-
-distance:
-Number(item.distance||0),
-
-gasRate:
-Number(item.gasRate||gasRate),
-
-gasCost:
-Math.round(
+distance:Number(item.distance||0),
+gasRate:Number(item.gasRate||gasRate),
+gasCost:Math.round(
 Number(item.distance||0)*
 Number(item.gasRate||gasRate)
 ),
-
 highwayFee:0,
-
 highwayMemo:"",
-
-totalCost:
-Math.round(
+totalCost:Math.round(
 Number(item.distance||0)*
 Number(item.gasRate||gasRate)
 )
 
-})
-);
+}));
 
 }
 
-
 const newCars=[];
 
-
-for(
-let i=0;
-i<cars.length;
-i++
-){
+for(let i=0;i<cars.length;i++){
 
 const old=cars[i];
 
-
-const driver=
-prompt(
-(i+1)+
-"台目・運転者",
+const driver=prompt(
+(i+1)+"台目・運転者",
 old.driver||""
 );
 
 if(driver===null)return;
 
-
-const passengers=
-prompt(
-(i+1)+
-"台目・同乗者\n\nカンマ区切り",
-Array.isArray(
-old.passengers
-)
+const passengers=prompt(
+(i+1)+"台目・同乗者\n\nカンマ区切り",
+Array.isArray(old.passengers)
 ?old.passengers.join(",")
 :""
 );
 
 if(passengers===null)return;
 
-
-const distance=
-prompt(
-(i+1)+
-"台目・距離（km）",
+const distance=prompt(
+(i+1)+"台目・距離（km）",
 old.distance||0
 );
 
 if(distance===null)return;
 
-
-const oldGasRate=
-Number(
-old.gasRate||
-item.gasRate||
-gasRate
+const oldGasRate=Number(
+old.gasRate||item.gasRate||gasRate
 );
 
-
-const gasRateInput=
-prompt(
-(i+1)+
-"台目・ガソリン単価（円/km）",
+const gasRateInput=prompt(
+(i+1)+"台目・ガソリン単価（円/km）",
 oldGasRate
 );
 
 if(gasRateInput===null)return;
 
+const carGasRate=Number(gasRateInput);
 
-const carGasRate=
-Number(gasRateInput);
+if(!Number.isFinite(carGasRate)||carGasRate<=0){
 
-if(
-!Number.isFinite(carGasRate)||
-carGasRate<=0
-){
-
-alert(
-"ガソリン単価は0より大きい数字にしてください。"
-);
-
+alert("ガソリン単価は0より大きい数字にしてください。");
 return;
 
 }
 
-
-const fee=
-prompt(
-(i+1)+
-"台目・高速料金（円）",
+const fee=prompt(
+(i+1)+"台目・高速料金（円）",
 old.highwayFee||0
 );
 
 if(fee===null)return;
 
-
-const memo=
-prompt(
-(i+1)+
-"台目・ETCメモ",
+const memo=prompt(
+(i+1)+"台目・ETCメモ",
 old.highwayMemo||""
 );
 
 if(memo===null)return;
 
-
-const distanceNumber=
-Number(distance)||0;
-
-const highwayFee=
-Number(fee)||0;
-
-const gasCost=
-Math.round(
-distanceNumber*carGasRate
-);
-
-const carTotal=
-gasCost+highwayFee;
-
+const distanceNumber=Number(distance)||0;
+const highwayFee=Number(fee)||0;
+const gasCost=Math.round(distanceNumber*carGasRate);
+const carTotal=gasCost+highwayFee;
 
 newCars.push({
 
-driver:
-driver.trim(),
+driver:driver.trim(),
 
-passengers:
-passengers
+passengers:passengers
 .split(",")
 .map(x=>x.trim())
 .filter(Boolean),
 
-distance:
-distanceNumber,
-
-gasRate:
-carGasRate,
-
-gasCost:
-gasCost,
-
-highwayFee:
-highwayFee,
-
-highwayMemo:
-memo.trim(),
-
-totalCost:
-carTotal
+distance:distanceNumber,
+gasRate:carGasRate,
+gasCost:gasCost,
+highwayFee:highwayFee,
+highwayMemo:memo.trim(),
+totalCost:carTotal
 
 });
 
 }
 
+const participants=getCoachParticipants(newCars);
 
-const participants=
-getCoachParticipants(
-newCars
-);
-
-
-const totalDistance=
-newCars.reduce(
-(sum,x)=>
-sum+Number(x.distance||0),
+const totalDistance=newCars.reduce(
+(sum,x)=>sum+Number(x.distance||0),
 0
 );
 
-
-const totalGas=
-newCars.reduce(
-(sum,x)=>
-sum+Number(x.gasCost||0),
+const totalGas=newCars.reduce(
+(sum,x)=>sum+Number(x.gasCost||0),
 0
 );
 
-
-const totalFee=
-newCars.reduce(
-(sum,x)=>
-sum+Number(x.highwayFee||0),
+const totalFee=newCars.reduce(
+(sum,x)=>sum+Number(x.highwayFee||0),
 0
 );
 
-
-const totalCost=
-newCars.reduce(
-(sum,x)=>
-sum+Number(x.totalCost||0),
+const totalCost=newCars.reduce(
+(sum,x)=>sum+Number(x.totalCost||0),
 0
 );
-
 
 await updateDoc(
 doc(db,"coachTrips",id),
 {
 
 tripDate:date,
-
 venueName:venue,
-
-participants:
-participants,
-
-cars:
-newCars,
-
-drivers:
-newCars.map(
-x=>x.driver
-),
-
-carCount:
-newCars.length,
-
-totalDistance:
-totalDistance,
-
-totalGasCost:
-totalGas,
-
-totalHighwayFee:
-totalFee,
-
-totalCost:
-totalCost
+participants:participants,
+cars:newCars,
+drivers:newCars.map(x=>x.driver),
+carCount:newCars.length,
+totalDistance:totalDistance,
+totalGasCost:totalGas,
+totalHighwayFee:totalFee,
+totalCost:totalCost
 
 }
 );
@@ -4108,17 +2589,11 @@ await loadCoachTrips();
 
 alert(
 "変更しました。\n\n"+
-"交通費合計："+
-totalCost.toLocaleString()+
-"円"
+"交通費合計："+totalCost.toLocaleString()+"円"
 );
 
 };
 
-
-/* =====================================
-コーチ削除
-===================================== */
 
 window.deleteCoachTrip=async function(id){
 
@@ -4137,9 +2612,9 @@ alert("削除しました。");
 };
 
 
-/* =====================================
+/* =========================
 全履歴削除
-===================================== */
+========================= */
 
 window.deleteAllHistory=async function(){
 
@@ -4147,51 +2622,36 @@ if(!confirm(
 "通常配車・監督コーチ配車の履歴を全部削除します。\n\n本当に削除しますか？"
 ))return;
 
-
 if(!confirm(
 "最終確認です。\n\n元に戻せません。"
 ))return;
 
-
 try{
 
-for(
-const name of [
+for(const name of [
 "tripGroups",
 "trips",
 "coachTrips"
-]
-){
+]){
 
-const snapshot=
-await getDocs(
+const snapshot=await getDocs(
 collection(db,name)
 );
 
-for(
-const item of snapshot.docs
-){
+for(const item of snapshot.docs){
 
 await deleteDoc(
-doc(
-db,
-name,
-item.id
-)
+doc(db,name,item.id)
 );
 
 }
 
 }
-
 
 await loadTrips();
-
 await loadCoachTrips();
 
-alert(
-"配車履歴を全部削除しました！"
-);
+alert("配車履歴を全部削除しました！");
 
 }catch(error){
 
@@ -4202,27 +2662,21 @@ showError(error);
 };
 
 
-/* =====================================
+/* =========================
 コーチ別集計
-===================================== */
+========================= */
 
 function renderCoachSummary(){
 
-const area=
-document.getElementById(
-"coachSummary"
-);
+const area=document.getElementById("coachSummary");
 
 if(!area)return;
 
 area.innerHTML="";
 
-
 const data={};
 
-
-coachesData.forEach(
-coach=>{
+coachesData.forEach(coach=>{
 
 data[coach.name]={
 participate:0,
@@ -4235,20 +2689,14 @@ cost:0
 
 });
 
-
-coachTripsData.forEach(
-item=>{
+coachTripsData.forEach(item=>{
 
 const participants=
-Array.isArray(
-item.participants
-)
+Array.isArray(item.participants)
 ?item.participants
 :[];
 
-
-participants.forEach(
-name=>{
+participants.forEach(name=>{
 
 if(!data[name]){
 
@@ -4267,20 +2715,14 @@ data[name].participate++;
 
 });
 
-
 const cars=
-Array.isArray(item.cars)
-?item.cars
-:[];
+Array.isArray(item.cars)?item.cars:[];
 
-
-cars.forEach(
-car=>{
+cars.forEach(car=>{
 
 const name=car.driver;
 
 if(!name)return;
-
 
 if(!data[name]){
 
@@ -4295,78 +2737,50 @@ cost:0
 
 }
 
+const distance=Number(car.distance||0);
 
-const distance=
-Number(car.distance||0);
-
-const savedRate=
-Number(
-car.gasRate||
-item.gasRate||
-gasRate
+const savedRate=Number(
+car.gasRate||item.gasRate||gasRate
 );
 
 const gas=
-Number.isFinite(
-Number(car.gasCost)
-)
+Number.isFinite(Number(car.gasCost))
 ?Number(car.gasCost)
-:Math.round(
-distance*savedRate
-);
+:Math.round(distance*savedRate);
 
-const highway=
-Number(
-car.highwayFee||0
-);
+const highway=Number(car.highwayFee||0);
 
 const cost=
-Number.isFinite(
-Number(car.totalCost)
-)
+Number.isFinite(Number(car.totalCost))
 ?Number(car.totalCost)
 :gas+highway;
 
-
 data[name].drive++;
-
 data[name].distance+=distance;
-
 data[name].gas+=gas;
-
 data[name].highway+=highway;
-
 data[name].cost+=cost;
 
 });
 
 });
 
-
-const names=
-Object.keys(data);
-
+const names=Object.keys(data);
 
 if(!names.length){
 
 area.innerHTML=
-'<div class="empty">'+
-'まだ記録がありません。'+
-'</div>';
+'<div class="empty">まだ記録がありません。</div>';
 
 return;
 
 }
 
+names.forEach(name=>{
 
-names.forEach(
-name=>{
+const row=document.createElement("div");
 
-const row=
-document.createElement("div");
-
-row.className=
-"history-item";
+row.className="history-item";
 
 row.innerHTML=
 
@@ -4405,9 +2819,9 @@ area.appendChild(row);
 }
 
 
-/* =====================================
+/* =========================
 月間集計
-===================================== */
+========================= */
 
 function renderCoachMonthlySummary(){
 
@@ -4416,141 +2830,95 @@ const now=new Date();
 const prefix=
 now.getFullYear()+
 "-"+
-String(
-now.getMonth()+1
-).padStart(2,"0");
+String(now.getMonth()+1).padStart(2,"0");
 
-
-const groups=
-coachTripsData.filter(
-x=>
-String(
-x.tripDate||""
-).startsWith(prefix)
+const groups=coachTripsData.filter(
+x=>String(x.tripDate||"").startsWith(prefix)
 );
 
-
 let participants=0;
-
 let cars=0;
-
 let totalCost=0;
 
 const dates=new Set();
 
-
-groups.forEach(
-item=>{
+groups.forEach(item=>{
 
 if(item.tripDate){
-
 dates.add(item.tripDate);
-
 }
 
-
 participants+=
-Array.isArray(
-item.participants
-)
+Array.isArray(item.participants)
 ?item.participants.length
 :0;
 
-
-if(
-Array.isArray(item.cars)
-){
+if(Array.isArray(item.cars)){
 
 cars+=item.cars.length;
 
-}else if(
-Array.isArray(item.drivers)
-){
+}else if(Array.isArray(item.drivers)){
 
 cars+=item.drivers.length;
 
 }
 
+if(Number.isFinite(Number(item.totalCost))){
 
-if(
-Number.isFinite(
-Number(item.totalCost)
-)
-){
-
-totalCost+=
-Number(item.totalCost);
+totalCost+=Number(item.totalCost);
 
 }else{
 
 const itemCars=
-Array.isArray(item.cars)
-?item.cars
-:[];
+Array.isArray(item.cars)?item.cars:[];
 
-itemCars.forEach(
-car=>{
+itemCars.forEach(car=>{
 
-const distance=
-Number(car.distance||0);
+const distance=Number(car.distance||0);
 
-const rate=
-Number(
+const rate=Number(
 car.gasRate||
 item.gasRate||
 gasRate
 );
 
 const gas=
-Number.isFinite(
-Number(car.gasCost)
-)
+Number.isFinite(Number(car.gasCost))
 ?Number(car.gasCost)
-:Math.round(
-distance*rate
-);
+:Math.round(distance*rate);
 
-const highway=
-Number(
-car.highwayFee||0
-);
+const highway=Number(car.highwayFee||0);
 
-totalCost+=
-gas+highway;
+totalCost+=gas+highway;
 
 });
 
 }
 
 });
-
 
 document.getElementById(
 "coachMonthParticipants"
-).textContent=
-participants;
+).textContent=participants;
 
 document.getElementById(
 "coachMonthDays"
-).textContent=
-dates.size;
+).textContent=dates.size;
 
 document.getElementById(
 "coachMonthCars"
-).textContent=
-cars;
+).textContent=cars;
 
 document.getElementById(
 "coachMonthCost"
-).textContent=
-totalCost.toLocaleString();
+).textContent=totalCost.toLocaleString();
 
 }
 
 
-/* =====================================
+/* =========================
 起動
-===================================== */
+========================= */
 
 async function startApp(){
 
@@ -4558,39 +2926,25 @@ try{
 
 setToday();
 
-document.getElementById(
-"status"
-).textContent=
+document.getElementById("status").textContent=
 "Firebaseデータ読み込み中…";
 
-
 await loadGasRate();
-
 await initializeMembers();
-
 await loadCoaches();
-
 await loadTrips();
-
 await loadCoachTrips();
 
-
 if(
-document.getElementById(
-"coachCars"
-).children.length===0
+document.getElementById("coachCars").children.length===0
 ){
 
 addCoachCar();
 
 }
 
-
-document.getElementById(
-"status"
-).textContent=
+document.getElementById("status").textContent=
 "Firebase接続OK ✅";
-
 
 }catch(error){
 
@@ -4599,7 +2953,6 @@ showError(error);
 }
 
 }
-
 
 startApp();
 
