@@ -405,27 +405,43 @@
   // 初期化
   // --------------------------------
 
-  async function initializeMembers() {
+async function initializeMembers() {
 
-    const snapshot = await getDocs(collection(db, "members"));
+  const snapshot = await getDocs(collection(db, "members"));
 
-    if (snapshot.empty) {
+  const existingNames = [];
 
-      for (let i = 0; i < initialMembers.length; i++) {
+  snapshot.forEach((item) => {
+    const data = item.data();
 
-        await addDoc(collection(db, "members"), {
-          name: initialMembers[i],
-          order: i,
-          active: true,
-          createdAt: new Date()
-        });
+    if (data.name) {
+      existingNames.push(data.name);
+    }
+  });
 
-      }
+
+  for (let i = 0; i < initialMembers.length; i++) {
+
+    const name = initialMembers[i];
+
+    if (!existingNames.includes(name)) {
+
+      await addDoc(collection(db, "members"), {
+
+        name: name,
+        order: i,
+        active: true,
+        createdAt: new Date()
+
+      });
 
     }
 
-    await loadMembers();
   }
+
+
+  await loadMembers();
+}
 
 
   // --------------------------------
