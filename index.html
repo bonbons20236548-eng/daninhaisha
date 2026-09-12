@@ -93,7 +93,7 @@ button:disabled{
   min-height:52px;
 }
 
-/* ★ 3人横並び */
+/* 3人横並び */
 .member-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -334,13 +334,6 @@ button:disabled{
   line-height:1.8;
 }
 
-.participant-count{
-  color:#ff3f9f;
-  font-weight:bold;
-  font-size:13px;
-  margin-top:8px;
-}
-
 .passenger-box{
   background:#222;
   border-radius:9px;
@@ -356,8 +349,49 @@ button:disabled{
   border-left:3px solid #ff3f9f;
 }
 
-/* iPhoneでも3列のまま */
+.gas-setting{
+  background:#292929;
+  border-radius:12px;
+  padding:13px;
+  margin-top:12px;
+}
+
+.gas-setting-title{
+  color:#ff3f9f;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.gas-current{
+  color:#fff;
+  font-size:18px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.car-cost{
+  background:#292929;
+  border-radius:9px;
+  padding:10px;
+  margin-top:10px;
+  line-height:1.8;
+  font-size:13px;
+}
+
+.cost-total{
+  color:#ff3f9f;
+  font-size:15px;
+  font-weight:bold;
+}
+
+.setting-button{
+  width:100%;
+  background:#444;
+  margin-top:8px;
+}
+
 @media(max-width:380px){
+
   .member-grid{
     grid-template-columns:repeat(3,1fr);
   }
@@ -404,10 +438,19 @@ Firebase接続中…
 <input type="text" id="venueName" placeholder="例：○○小学校">
 
 <label>距離（km）</label>
-<input type="number" id="distance" placeholder="例：25" min="0" inputmode="decimal">
+<input
+  type="number"
+  id="distance"
+  placeholder="例：25"
+  min="0"
+  inputmode="decimal"
+>
 
 <label>高速料金・ETCメモ</label>
-<textarea id="highwayMemo" placeholder="例：往復2,400円 / 帰りのみ高速"></textarea>
+<textarea
+  id="highwayMemo"
+  placeholder="例：往復2,400円 / 帰りのみ高速"
+></textarea>
 
 <label>乗車メンバー</label>
 
@@ -431,39 +474,61 @@ Firebase接続中…
 <h2>🏀 監督・コーチ配車</h2>
 
 <div class="section-note">
-参加した監督・コーチと、誰の車に乗ったかを車ごとに記録できます。
+車ごとに運転者と同乗する監督・コーチを選択すると、参加者は自動で記録されます。<br>
+ガソリン代は「距離 × ガソリン単価」で自動計算します。
 </div>
 
 <label>日付</label>
 <input type="date" id="coachTripDate">
 
 <label>会場名</label>
-<input type="text" id="coachVenueName" placeholder="例：○○小学校">
+<input
+  type="text"
+  id="coachVenueName"
+  placeholder="例：○○小学校"
+>
 
-<h3>👥 参加した監督・コーチ</h3>
+<div class="gas-setting">
 
-<div id="coachParticipantList" class="member-grid">
-読み込み中…
+<div class="gas-setting-title">
+⛽ 現在のガソリン単価
 </div>
 
-<div id="participantCount" class="participant-count">
-参加者 0人
+<div class="gas-current">
+<span id="gasRateDisplay">20</span> 円 / km
+</div>
+
+<button
+  class="setting-button"
+  onclick="changeGasRate()"
+>
+⚙️ ガソリン単価を変更
+</button>
+
 </div>
 
 <h3>🚗 車ごとの配車</h3>
 
 <div id="coachCars"></div>
 
-<button class="add-car-button" onclick="addCoachCar()">
+<button
+  class="add-car-button"
+  onclick="addCoachCar()"
+>
 ＋ 車を追加
 </button>
 
 <div id="coachCarTotal" class="total-box">
 合計距離：0 km<br>
-合計高速料金：0 円
+合計ガソリン代：0 円<br>
+合計高速料金：0 円<br>
+<strong>交通費合計：0 円</strong>
 </div>
 
-<button class="main-button" onclick="saveCoachTrip()">
+<button
+  class="main-button"
+  onclick="saveCoachTrip()"
+>
 🏀 監督・コーチ配車を保存
 </button>
 
@@ -499,9 +564,9 @@ Firebase接続中…
 </div>
 
 <div class="summary-item">
-<div class="summary-label">参加記録数</div>
-<div id="coachMonthTrips" class="summary-number">0</div>
-<div class="summary-unit">回</div>
+<div class="summary-label">交通費合計</div>
+<div id="coachMonthCost" class="summary-number">0</div>
+<div class="summary-unit">円</div>
 </div>
 
 </div>
@@ -542,7 +607,10 @@ Firebase接続中…
 ⚠️ データ管理
 </div>
 
-<button class="main-button danger" onclick="deleteAllHistory()">
+<button
+  class="main-button danger"
+  onclick="deleteAllHistory()"
+>
 🗑️ 配車履歴を全部削除
 </button>
 
@@ -557,11 +625,18 @@ Firebase接続中…
 
 <div class="box">
 
-<button class="management-toggle" onclick="toggleCoachManagement()">
+<button
+  class="management-toggle"
+  onclick="toggleCoachManagement()"
+>
 ⚙️ 監督・コーチ管理を開く　▼
 </button>
 
-<div id="coachManagementArea" class="management-area" style="display:none">
+<div
+  id="coachManagementArea"
+  class="management-area"
+  style="display:none"
+>
 
 <h2>🏀 監督・コーチ管理</h2>
 
@@ -571,7 +646,11 @@ Firebase接続中…
 
 <div class="member-add">
 
-<input type="text" id="newCoachName" placeholder="監督・コーチ名">
+<input
+  type="text"
+  id="newCoachName"
+  placeholder="監督・コーチ名"
+>
 
 <button onclick="addCoach()">
 追加
@@ -594,17 +673,28 @@ Firebase接続中…
 
 <div class="box">
 
-<button class="management-toggle" onclick="toggleMemberManagement()">
+<button
+  class="management-toggle"
+  onclick="toggleMemberManagement()"
+>
 ⚙️ メンバー管理を開く　▼
 </button>
 
-<div id="managementArea" class="management-area" style="display:none">
+<div
+  id="managementArea"
+  class="management-area"
+  style="display:none"
+>
 
 <h2>👥 メンバー管理</h2>
 
 <div class="member-add">
 
-<input type="text" id="newMemberName" placeholder="新しいメンバー名">
+<input
+  type="text"
+  id="newMemberName"
+  placeholder="新しいメンバー名"
+>
 
 <button onclick="addMember()">
 追加
@@ -643,7 +733,7 @@ import {
 
 
 const firebaseConfig = {
-  apiKey:"AIzaSyBRYKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
+  apiKey:"AIzaSyBRYKiCM_T3gl3dOIGDm5YIqUyJe-5ig8A",
   authDomain:"minibusdanin.firebaseapp.com",
   projectId:"minibusdanin",
   storageBucket:"minibusdanin.firebasestorage.app",
@@ -680,6 +770,14 @@ const initialMembers=[
 "舘"
 ];
 
+
+/* =====================================
+初期ガソリン単価
+===================================== */
+
+const DEFAULT_GAS_RATE=20;
+
+let gasRate=DEFAULT_GAS_RATE;
 
 let membersData=[];
 let coachesData=[];
@@ -743,27 +841,210 @@ document.getElementById("status").textContent=
 
 
 /* =====================================
+ガソリン単価読み込み
+===================================== */
+
+async function loadGasRate(){
+
+try{
+
+const snapshot=await getDocs(
+collection(db,"settings")
+);
+
+let found=null;
+
+snapshot.forEach(item=>{
+
+const data=item.data();
+
+if(data.key==="gasRate"){
+found={
+id:item.id,
+...data
+};
+}
+
+});
+
+
+if(found){
+
+const rate=Number(found.value);
+
+if(Number.isFinite(rate)&&rate>0){
+
+gasRate=rate;
+
+}
+
+}else{
+
+await addDoc(
+collection(db,"settings"),
+{
+key:"gasRate",
+value:DEFAULT_GAS_RATE,
+updatedAt:new Date()
+}
+);
+
+gasRate=DEFAULT_GAS_RATE;
+
+}
+
+
+updateGasRateDisplay();
+
+}catch(error){
+
+console.log("ガソリン単価設定を読み込めませんでした。初期値を使用します。");
+
+gasRate=DEFAULT_GAS_RATE;
+
+updateGasRateDisplay();
+
+}
+
+}
+
+
+/* =====================================
+ガソリン単価表示
+===================================== */
+
+function updateGasRateDisplay(){
+
+const display=document.getElementById(
+"gasRateDisplay"
+);
+
+if(display){
+
+display.textContent=
+Number(gasRate).toLocaleString();
+
+}
+
+}
+
+
+/* =====================================
+ガソリン単価変更
+===================================== */
+
+window.changeGasRate=async function(){
+
+const newRate=prompt(
+"ガソリン代の単価を入力してください。\n\n現在："+gasRate+"円/km",
+gasRate
+);
+
+if(newRate===null)return;
+
+const rate=Number(newRate);
+
+if(!Number.isFinite(rate)||rate<=0){
+
+alert("0より大きい数字を入力してください。");
+
+return;
+
+}
+
+
+try{
+
+const snapshot=await getDocs(
+collection(db,"settings")
+);
+
+let found=null;
+
+snapshot.forEach(item=>{
+
+const data=item.data();
+
+if(data.key==="gasRate"){
+
+found=item;
+
+}
+
+});
+
+
+if(found){
+
+await updateDoc(
+doc(db,"settings",found.id),
+{
+value:rate,
+updatedAt:new Date()
+}
+);
+
+}else{
+
+await addDoc(
+collection(db,"settings"),
+{
+key:"gasRate",
+value:rate,
+updatedAt:new Date()
+}
+);
+
+}
+
+gasRate=rate;
+
+updateGasRateDisplay();
+
+updateCoachCarTotal();
+
+alert(
+"ガソリン単価を"+
+rate+
+"円/kmに変更しました。"
+);
+
+}catch(error){
+
+showError(error);
+
+}
+
+};
+
+
+/* =====================================
 開閉
 ===================================== */
 
 window.toggleMemberManagement=function(){
 
-const area=document.getElementById("managementArea");
+const area=document.getElementById(
+"managementArea"
+);
 
-const button=document.querySelector("#managementArea")
-.previousElementSibling;
+const button=document.querySelector(
+"#managementArea"
+).previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
 
-button.textContent="⚙️ メンバー管理を閉じる　▲";
+button.textContent=
+"⚙️ メンバー管理を閉じる　▲";
 
 }else{
 
 area.style.display="none";
 
-button.textContent="⚙️ メンバー管理を開く　▼";
+button.textContent=
+"⚙️ メンバー管理を開く　▼";
 
 }
 
@@ -772,22 +1053,27 @@ button.textContent="⚙️ メンバー管理を開く　▼";
 
 window.toggleCoachManagement=function(){
 
-const area=document.getElementById("coachManagementArea");
+const area=document.getElementById(
+"coachManagementArea"
+);
 
-const button=document.querySelector("#coachManagementArea")
-.previousElementSibling;
+const button=document.querySelector(
+"#coachManagementArea"
+).previousElementSibling;
 
 if(area.style.display==="none"){
 
 area.style.display="block";
 
-button.textContent="⚙️ 監督・コーチ管理を閉じる　▲";
+button.textContent=
+"⚙️ 監督・コーチ管理を閉じる　▲";
 
 }else{
 
 area.style.display="none";
 
-button.textContent="⚙️ 監督・コーチ管理を開く　▼";
+button.textContent=
+"⚙️ 監督・コーチ管理を開く　▼";
 
 }
 
@@ -811,7 +1097,9 @@ snapshot.forEach(item=>{
 const data=item.data();
 
 if(data.name){
+
 existing.push(data.name);
+
 }
 
 });
@@ -865,7 +1153,8 @@ id:item.id,
 
 
 membersData.sort(
-(a,b)=>(a.order??9999)-(b.order??9999)
+(a,b)=>
+(a.order??9999)-(b.order??9999)
 );
 
 renderMemberList();
@@ -881,7 +1170,9 @@ renderMemberManagement();
 
 function renderMemberList(){
 
-const area=document.getElementById("memberList");
+const area=document.getElementById(
+"memberList"
+);
 
 area.innerHTML="";
 
@@ -907,9 +1198,12 @@ label.className="member-check";
 
 label.innerHTML=
 '<input type="checkbox" class="member-check-input">'+
-'<span>'+escapeHtml(member.name)+'</span>';
+'<span>'+
+escapeHtml(member.name)+
+'</span>';
 
-label.querySelector("input").dataset.name=member.name;
+label.querySelector("input")
+.dataset.name=member.name;
 
 area.appendChild(label);
 
@@ -952,21 +1246,29 @@ escapeHtml(member.name)+
 '<div class="member-buttons">'+
 
 '<button class="small-button gray" '+
-'onclick="moveMember(\''+member.id+'\',-1)" '+
+'onclick="moveMember(\''+
+member.id+
+'\',-1)" '+
 (index===0?"disabled":"")+
 '>↑</button>'+
 
 '<button class="small-button gray" '+
-'onclick="moveMember(\''+member.id+'\',1)" '+
+'onclick="moveMember(\''+
+member.id+
+'\',1)" '+
 (index===active.length-1?"disabled":"")+
 '>↓</button>'+
 
 '<button class="small-button" '+
-'onclick="renameMember(\''+member.id+'\')">'+
+'onclick="renameMember(\''+
+member.id+
+'\')">'+
 '✏️</button>'+
 
 '<button class="small-button danger" '+
-'onclick="hideMember(\''+member.id+'\')">'+
+'onclick="hideMember(\''+
+member.id+
+'\')">'+
 '🙈</button>'+
 
 '</div>';
@@ -999,9 +1301,13 @@ row.innerHTML=
 escapeHtml(member.name)+
 '</div>'+
 '<div class="member-buttons">'+
+
 '<button class="small-button green" '+
-'onclick="showMember(\''+member.id+'\')">'+
+'onclick="showMember(\''+
+member.id+
+'\')">'+
 '👀 再表示</button>'+
+
 '</div>';
 
 area.appendChild(row);
@@ -1019,7 +1325,9 @@ area.appendChild(row);
 
 window.addMember=async function(){
 
-const input=document.getElementById("newMemberName");
+const input=document.getElementById(
+"newMemberName"
+);
 
 const name=input.value.trim();
 
@@ -1042,7 +1350,11 @@ return;
 
 
 const maxOrder=membersData.length
-?Math.max(...membersData.map(m=>m.order??0))
+?Math.max(
+...membersData.map(
+m=>m.order??0
+)
+)
 :-1;
 
 
@@ -1071,7 +1383,9 @@ alert(name+"さんを追加しました。");
 
 window.renameMember=async function(id){
 
-const member=membersData.find(m=>m.id===id);
+const member=membersData.find(
+m=>m.id===id
+);
 
 if(!member)return;
 
@@ -1108,12 +1422,14 @@ const snapshot=await getDocs(
 collection(db,"tripGroups")
 );
 
+
 for(const item of snapshot.docs){
 
 const data=item.data();
 
 const old=Array.isArray(data.members)
-?data.members:[];
+?data.members
+:[];
 
 if(old.includes(member.name)){
 
@@ -1133,7 +1449,9 @@ x=>x===member.name?name:x
 
 await updateDoc(
 doc(db,"members",id),
-{name:name}
+{
+name:name
+}
 );
 
 await loadMembers();
@@ -1151,17 +1469,22 @@ alert("名前を変更しました。");
 
 window.hideMember=async function(id){
 
-const member=membersData.find(m=>m.id===id);
+const member=membersData.find(
+m=>m.id===id
+);
 
 if(!member)return;
 
 if(!confirm(
-member.name+"さんを非表示にしますか？"
+member.name+
+"さんを非表示にしますか？"
 ))return;
 
 await updateDoc(
 doc(db,"members",id),
-{active:false}
+{
+active:false
+}
 );
 
 await loadMembers();
@@ -1173,7 +1496,9 @@ window.showMember=async function(id){
 
 await updateDoc(
 doc(db,"members",id),
-{active:true}
+{
+active:true
+}
 );
 
 await loadMembers();
@@ -1185,17 +1510,26 @@ await loadMembers();
 メンバー並び替え
 ===================================== */
 
-window.moveMember=async function(id,direction){
+window.moveMember=async function(
+id,
+direction
+){
 
 const active=membersData.filter(
 m=>m.active!==false
 );
 
-const index=active.findIndex(m=>m.id===id);
+const index=active.findIndex(
+m=>m.id===id
+);
 
 const targetIndex=index+direction;
 
-if(index<0||targetIndex<0||targetIndex>=active.length)return;
+if(
+index<0||
+targetIndex<0||
+targetIndex>=active.length
+)return;
 
 const current=active[index];
 
@@ -1203,12 +1537,16 @@ const target=active[targetIndex];
 
 await updateDoc(
 doc(db,"members",current.id),
-{order:target.order}
+{
+order:target.order
+}
 );
 
 await updateDoc(
 doc(db,"members",target.id),
-{order:current.order}
+{
+order:current.order
+}
 );
 
 await loadMembers();
@@ -1224,20 +1562,32 @@ window.saveTrip=async function(){
 
 try{
 
-const tripDate=document.getElementById("tripDate").value;
+const tripDate=
+document.getElementById(
+"tripDate"
+).value;
 
-const venue=document.getElementById("venueName").value.trim();
+const venue=
+document.getElementById(
+"venueName"
+).value.trim();
 
 const distance=Number(
-document.getElementById("distance").value
+document.getElementById(
+"distance"
+).value
 );
 
-const memo=document.getElementById("highwayMemo").value.trim();
+const memo=
+document.getElementById(
+"highwayMemo"
+).value.trim();
 
 
 if(!tripDate){
 
 alert("日付を入力してください。");
+
 return;
 
 }
@@ -1245,13 +1595,18 @@ return;
 if(!venue){
 
 alert("会場名を入力してください。");
+
 return;
 
 }
 
-if(!Number.isFinite(distance)||distance<0){
+if(
+!Number.isFinite(distance)||
+distance<0
+){
 
 alert("距離を正しく入力してください。");
+
 return;
 
 }
@@ -1261,12 +1616,15 @@ const selected=Array.from(
 document.querySelectorAll(
 "#memberList input:checked"
 )
-).map(input=>input.dataset.name);
+).map(
+input=>input.dataset.name
+);
 
 
 if(!selected.length){
 
 alert("乗車メンバーを選択してください。");
+
 return;
 
 }
@@ -1287,13 +1645,24 @@ createdAt:new Date()
 
 alert("配車記録を保存しました！");
 
-document.getElementById("venueName").value="";
-document.getElementById("distance").value="";
-document.getElementById("highwayMemo").value="";
+document.getElementById(
+"venueName"
+).value="";
+
+document.getElementById(
+"distance"
+).value="";
+
+document.getElementById(
+"highwayMemo"
+).value="";
+
 
 document.querySelectorAll(
 "#memberList input"
-).forEach(x=>x.checked=false);
+).forEach(
+x=>x.checked=false
+);
 
 await loadTrips();
 
@@ -1329,79 +1698,15 @@ id:item.id,
 
 
 coachesData.sort(
-(a,b)=>(a.order??9999)-(b.order??9999)
+(a,b)=>
+(a.order??9999)-(b.order??9999)
 );
-
-renderCoachParticipants();
 
 renderCoachManagement();
 
 renderCoachSummary();
 
 }
-
-
-/* =====================================
-コーチ参加者
-===================================== */
-
-function renderCoachParticipants(){
-
-const area=document.getElementById(
-"coachParticipantList"
-);
-
-area.innerHTML="";
-
-const active=coachesData.filter(
-c=>c.active!==false
-);
-
-
-if(!active.length){
-
-area.innerHTML=
-'<div class="empty">監督・コーチを登録してください。</div>';
-
-return;
-
-}
-
-
-active.forEach(coach=>{
-
-const label=document.createElement("label");
-
-label.className="member-check";
-
-label.innerHTML=
-'<input type="checkbox" '+
-'class="coach-participant" '+
-'value="'+escapeHtml(coach.name)+'">'+
-'<span>'+escapeHtml(coach.name)+'</span>';
-
-label.querySelector("input").onchange=
-updateParticipantCount;
-
-area.appendChild(label);
-
-});
-
-}
-
-
-window.updateParticipantCount=function(){
-
-const count=document.querySelectorAll(
-".coach-participant:checked"
-).length;
-
-document.getElementById(
-"participantCount"
-).textContent=
-"参加者 "+count+"人";
-
-};
 
 
 /* =====================================
@@ -1437,8 +1742,13 @@ passengerHTML+=
 '<label class="member-check">'+
 '<input type="checkbox" '+
 'class="car-passenger" '+
-'value="'+escapeHtml(coach.name)+'">'+
-'<span>'+escapeHtml(coach.name)+'</span>'+
+'value="'+
+escapeHtml(coach.name)+
+'" '+
+'onchange="updateCoachCarTotal()">'+
+'<span>'+
+escapeHtml(coach.name)+
+'</span>'+
 '</label>';
 
 });
@@ -1453,8 +1763,10 @@ return `
 
 <label>運転者・車を出した人</label>
 
-<select class="coach-driver"
-onchange="updateCoachCarTotal()">
+<select
+class="coach-driver"
+onchange="updateCoachCarTotal()"
+>
 
 ${driverOptions}
 
@@ -1481,13 +1793,29 @@ inputmode="decimal"
 oninput="updateCoachCarTotal()"
 >
 
+<div class="car-cost">
+
+⛽ ガソリン代：
+<strong class="coach-gas-cost">0 円</strong><br>
+
+🛣️ 高速料金：
+<strong class="coach-highway-cost">0 円</strong><br>
+
+<div class="cost-total">
+💰 この車の交通費：
+<span class="coach-total-cost">0 円</span>
+</div>
+
+</div>
+
 <label>高速料金（円）</label>
 
 <input
 type="number"
 class="coach-highway-fee"
 min="0"
-placeholder="例：1200"
+value="0"
+placeholder="高速を使った場合だけ入力"
 inputmode="numeric"
 oninput="updateCoachCarTotal()"
 >
@@ -1518,11 +1846,15 @@ onclick="removeCoachCar(this)"
 
 window.addCoachCar=function(){
 
-const area=document.getElementById("coachCars");
+const area=document.getElementById(
+"coachCars"
+);
 
 area.insertAdjacentHTML(
 "beforeend",
-createCoachCarHTML(area.children.length)
+createCoachCarHTML(
+area.children.length
+)
 );
 
 renumberCars();
@@ -1538,7 +1870,9 @@ updateCoachCarTotal();
 
 window.removeCoachCar=function(button){
 
-const car=button.closest(".coach-car");
+const car=button.closest(
+".coach-car"
+);
 
 if(car)car.remove();
 
@@ -1557,9 +1891,11 @@ function renumberCars(){
 
 document.querySelectorAll(
 "#coachCars .coach-car"
-).forEach((car,index)=>{
+).forEach(
+(car,index)=>{
 
-const title=car.querySelector(".car-title");
+const title=
+car.querySelector(".car-title");
 
 if(title){
 
@@ -1574,26 +1910,113 @@ title.textContent=
 
 
 /* =====================================
-車合計
+車ごとの交通費計算
+===================================== */
+
+function calculateCarCost(car){
+
+const distance=Number(
+car.querySelector(
+".coach-distance"
+)?.value||0
+);
+
+const highwayFee=Number(
+car.querySelector(
+".coach-highway-fee"
+)?.value||0
+);
+
+
+const gasCost=
+Math.round(
+distance*gasRate
+);
+
+const total=
+gasCost+highwayFee;
+
+
+return {
+distance:distance,
+gasCost:gasCost,
+highwayFee:highwayFee,
+total:total
+};
+
+}
+
+
+/* =====================================
+車合計表示
 ===================================== */
 
 window.updateCoachCarTotal=function(){
 
-let distance=0;
+let totalDistance=0;
 
-let fee=0;
+let totalGas=0;
+
+let totalHighway=0;
+
+let totalCost=0;
+
 
 document.querySelectorAll(
 "#coachCars .coach-car"
 ).forEach(car=>{
 
-distance+=Number(
-car.querySelector(".coach-distance")?.value||0
+const cost=
+calculateCarCost(car);
+
+totalDistance+=cost.distance;
+
+totalGas+=cost.gasCost;
+
+totalHighway+=cost.highwayFee;
+
+totalCost+=cost.total;
+
+
+const gasElement=
+car.querySelector(
+".coach-gas-cost"
 );
 
-fee+=Number(
-car.querySelector(".coach-highway-fee")?.value||0
+const highwayElement=
+car.querySelector(
+".coach-highway-cost"
 );
+
+const totalElement=
+car.querySelector(
+".coach-total-cost"
+);
+
+
+if(gasElement){
+
+gasElement.textContent=
+cost.gasCost.toLocaleString()+
+" 円";
+
+}
+
+if(highwayElement){
+
+highwayElement.textContent=
+cost.highwayFee.toLocaleString()+
+" 円";
+
+}
+
+if(totalElement){
+
+totalElement.textContent=
+cost.total.toLocaleString()+
+" 円";
+
+}
 
 });
 
@@ -1601,14 +2024,69 @@ car.querySelector(".coach-highway-fee")?.value||0
 document.getElementById(
 "coachCarTotal"
 ).innerHTML=
+
 "合計距離：<strong>"+
-distance.toLocaleString()+
+totalDistance.toLocaleString()+
 " km</strong><br>"+
+
+"合計ガソリン代：<strong>"+
+totalGas.toLocaleString()+
+" 円</strong><br>"+
+
 "合計高速料金：<strong>"+
-fee.toLocaleString()+
+totalHighway.toLocaleString()+
+" 円</strong><br>"+
+
+"<strong>交通費合計："+
+totalCost.toLocaleString()+
 " 円</strong>";
 
 };
+
+
+/* =====================================
+コーチ参加者自動取得
+===================================== */
+
+function getCoachParticipants(cars){
+
+const names=[];
+
+cars.forEach(car=>{
+
+if(car.driver){
+
+if(!names.includes(car.driver)){
+
+names.push(car.driver);
+
+}
+
+}
+
+
+if(Array.isArray(car.passengers)){
+
+car.passengers.forEach(name=>{
+
+if(
+name &&
+!names.includes(name)
+){
+
+names.push(name);
+
+}
+
+});
+
+}
+
+});
+
+return names;
+
+}
 
 
 /* =====================================
@@ -1619,11 +2097,13 @@ window.saveCoachTrip=async function(){
 
 try{
 
-const date=document.getElementById(
+const date=
+document.getElementById(
 "coachTripDate"
 ).value;
 
-const venue=document.getElementById(
+const venue=
+document.getElementById(
 "coachVenueName"
 ).value.trim();
 
@@ -1631,6 +2111,7 @@ const venue=document.getElementById(
 if(!date){
 
 alert("日付を入力してください。");
+
 return;
 
 }
@@ -1638,23 +2119,6 @@ return;
 if(!venue){
 
 alert("会場名を入力してください。");
-return;
-
-}
-
-
-const participants=Array.from(
-document.querySelectorAll(
-".coach-participant:checked"
-)
-).map(x=>x.value);
-
-
-if(!participants.length){
-
-alert(
-"参加した監督・コーチを選択してください。"
-);
 
 return;
 
@@ -1665,53 +2129,78 @@ const cars=[];
 
 let totalDistance=0;
 
-let totalFee=0;
+let totalGas=0;
+
+let totalHighway=0;
+
+let totalCost=0;
 
 
-const carElements=document.querySelectorAll(
+const carElements=
+document.querySelectorAll(
 "#coachCars .coach-car"
 );
 
 
 if(!carElements.length){
 
-alert("車を1台以上追加してください。");
+alert(
+"車を1台以上追加してください。"
+);
+
 return;
 
 }
 
 
-for(let i=0;i<carElements.length;i++){
+for(
+let i=0;
+i<carElements.length;
+i++
+){
 
-const car=carElements[i];
+const car=
+carElements[i];
 
-const driver=car.querySelector(
+const driver=
+car.querySelector(
 ".coach-driver"
 ).value;
 
-const distance=Number(
-car.querySelector(".coach-distance").value||0
+const distance=
+Number(
+car.querySelector(
+".coach-distance"
+).value||0
 );
 
-const highwayFee=Number(
-car.querySelector(".coach-highway-fee").value||0
+const highwayFee=
+Number(
+car.querySelector(
+".coach-highway-fee"
+).value||0
 );
 
-const memo=car.querySelector(
+const memo=
+car.querySelector(
 ".coach-highway-memo"
 ).value.trim();
 
-const passengers=Array.from(
+const passengers=
+Array.from(
 car.querySelectorAll(
 ".car-passenger:checked"
 )
-).map(x=>x.value);
+).map(
+x=>x.value
+);
 
 
 if(!driver){
 
 alert(
-(i+1)+"台目の運転者を選択してください。"
+(i+1)+
+"台目の運転者を選択してください。"
 );
 
 return;
@@ -1719,10 +2208,14 @@ return;
 }
 
 
-if(!Number.isFinite(distance)||distance<0){
+if(
+!Number.isFinite(distance)||
+distance<0
+){
 
 alert(
-(i+1)+"台目の距離を確認してください。"
+(i+1)+
+"台目の距離を確認してください。"
 );
 
 return;
@@ -1730,15 +2223,28 @@ return;
 }
 
 
-if(!Number.isFinite(highwayFee)||highwayFee<0){
+if(
+!Number.isFinite(highwayFee)||
+highwayFee<0
+){
 
 alert(
-(i+1)+"台目の高速料金を確認してください。"
+(i+1)+
+"台目の高速料金を確認してください。"
 );
 
 return;
 
 }
+
+
+const gasCost=
+Math.round(
+distance*gasRate
+);
+
+const carTotal=
+gasCost+highwayFee;
 
 
 cars.push({
@@ -1749,16 +2255,43 @@ passengers:passengers,
 
 distance:distance,
 
+gasRate:gasRate,
+
+gasCost:gasCost,
+
 highwayFee:highwayFee,
 
-highwayMemo:memo
+highwayMemo:memo,
+
+totalCost:carTotal
 
 });
 
 
 totalDistance+=distance;
 
-totalFee+=highwayFee;
+totalGas+=gasCost;
+
+totalHighway+=highwayFee;
+
+totalCost+=carTotal;
+
+}
+
+
+/* 運転者＋同乗者を自動で参加者にする */
+
+const participants=
+getCoachParticipants(cars);
+
+
+if(!participants.length){
+
+alert(
+"参加する監督・コーチが登録されていません。"
+);
+
+return;
 
 }
 
@@ -1775,13 +2308,28 @@ participants:participants,
 
 cars:cars,
 
-drivers:cars.map(x=>x.driver),
+drivers:
+cars.map(
+x=>x.driver
+),
 
-carCount:cars.length,
+carCount:
+cars.length,
 
-totalDistance:totalDistance,
+totalDistance:
+totalDistance,
 
-totalHighwayFee:totalFee,
+gasRate:
+gasRate,
+
+totalGasCost:
+totalGas,
+
+totalHighwayFee:
+totalHighway,
+
+totalCost:
+totalCost,
 
 createdAt:new Date()
 
@@ -1789,16 +2337,13 @@ createdAt:new Date()
 );
 
 
-alert("監督・コーチ配車を保存しました！");
+alert(
+"監督・コーチ配車を保存しました！\n\n"+
+"交通費合計："+
+totalCost.toLocaleString()+
+"円"
+);
 
-
-document.querySelectorAll(
-".coach-participant"
-).forEach(x=>x.checked=false);
-
-document.getElementById(
-"participantCount"
-).textContent="参加者 0人";
 
 document.getElementById(
 "coachVenueName"
@@ -1811,7 +2356,10 @@ document.getElementById(
 document.getElementById(
 "coachCarTotal"
 ).innerHTML=
-"合計距離：0 km<br>合計高速料金：0 円";
+"合計距離：0 km<br>"+
+"合計ガソリン代：0 円<br>"+
+"合計高速料金：0 円<br>"+
+"<strong>交通費合計：0 円</strong>";
 
 await loadCoachTrips();
 
@@ -1830,49 +2378,66 @@ showError(error);
 
 function renderCoachManagement(){
 
-const area=document.getElementById(
+const area=
+document.getElementById(
 "coachManagementList"
 );
 
 area.innerHTML="";
 
-const active=coachesData.filter(
+const active=
+coachesData.filter(
 c=>c.active!==false
 );
 
-const inactive=coachesData.filter(
+const inactive=
+coachesData.filter(
 c=>c.active===false
 );
 
 
-active.forEach((coach,index)=>{
+active.forEach(
+(coach,index)=>{
 
-const row=document.createElement("div");
+const row=
+document.createElement("div");
 
-row.className="member-management";
+row.className=
+"member-management";
 
 row.innerHTML=
+
 '<div class="member-name">'+
 escapeHtml(coach.name)+
 '</div>'+
+
 '<div class="member-buttons">'+
 
 '<button class="small-button gray" '+
-'onclick="moveCoach(\''+coach.id+'\',-1)" '+
+'onclick="moveCoach(\''+
+coach.id+
+'\',-1)" '+
 (index===0?"disabled":"")+
 '>↑</button>'+
 
 '<button class="small-button gray" '+
-'onclick="moveCoach(\''+coach.id+'\',1)" '+
-(index===active.length-1?"disabled":"")+
+'onclick="moveCoach(\''+
+coach.id+
+'\',1)" '+
+(index===active.length-1
+?"disabled":"")+
 '>↓</button>'+
 
 '<button class="small-button" '+
-'onclick="renameCoach(\''+coach.id+'\')">'+
+'onclick="renameCoach(\''+
+coach.id+
+'\')">'+
 '✏️</button>'+
 
 '<button class="small-button danger" '+
-'onclick="hideCoach(\''+coach.id+'\')">'+
+'onclick="hideCoach(\''+
+coach.id+
+'\')">'+
 '🙈</button>'+
 
 '</div>';
@@ -1884,30 +2449,41 @@ area.appendChild(row);
 
 if(inactive.length){
 
-const title=document.createElement("div");
+const title=
+document.createElement("div");
 
-title.className="inactive-title";
+title.className=
+"inactive-title";
 
-title.textContent="非表示の監督・コーチ";
+title.textContent=
+"非表示の監督・コーチ";
 
 area.appendChild(title);
 
 
-inactive.forEach(coach=>{
+inactive.forEach(
+coach=>{
 
-const row=document.createElement("div");
+const row=
+document.createElement("div");
 
 row.className=
 "member-management hidden-member";
 
 row.innerHTML=
+
 '<div class="member-name">'+
 escapeHtml(coach.name)+
 '</div>'+
+
 '<div class="member-buttons">'+
+
 '<button class="small-button green" '+
-'onclick="showCoach(\''+coach.id+'\')">'+
+'onclick="showCoach(\''+
+coach.id+
+'\')">'+
 '👀 再表示</button>'+
+
 '</div>';
 
 area.appendChild(row);
@@ -1925,29 +2501,45 @@ area.appendChild(row);
 
 window.addCoach=async function(){
 
-const input=document.getElementById(
+const input=
+document.getElementById(
 "newCoachName"
 );
 
-const name=input.value.trim();
+const name=
+input.value.trim();
 
 if(!name){
 
-alert("監督・コーチ名を入力してください。");
+alert(
+"監督・コーチ名を入力してください。"
+);
+
 return;
 
 }
 
-if(coachesData.some(c=>c.name===name)){
+
+if(
+coachesData.some(
+c=>c.name===name
+)
+){
 
 alert("同じ名前があります。");
+
 return;
 
 }
 
 
-const maxOrder=coachesData.length
-?Math.max(...coachesData.map(c=>c.order??0))
+const maxOrder=
+coachesData.length
+?Math.max(
+...coachesData.map(
+c=>c.order??0
+)
+)
 :-1;
 
 
@@ -1965,7 +2557,10 @@ input.value="";
 
 await loadCoaches();
 
-alert(name+"さんを追加しました。");
+alert(
+name+
+"さんを追加しました。"
+);
 
 };
 
@@ -1976,72 +2571,107 @@ alert(name+"さんを追加しました。");
 
 window.renameCoach=async function(id){
 
-const coach=coachesData.find(
+const coach=
+coachesData.find(
 c=>c.id===id
 );
 
 if(!coach)return;
 
-const newName=prompt(
+const newName=
+prompt(
 "新しい名前を入力してください。",
 coach.name
 );
 
 if(newName===null)return;
 
-const name=newName.trim();
+const name=
+newName.trim();
 
 if(!name){
 
-alert("名前を空欄にはできません。");
+alert(
+"名前を空欄にはできません。"
+);
+
 return;
 
 }
 
-if(coachesData.some(
+
+if(
+coachesData.some(
 c=>c.id!==id&&c.name===name
-)){
+)
+){
 
 alert("同じ名前があります。");
+
 return;
 
 }
 
 
-const snapshot=await getDocs(
+const snapshot=
+await getDocs(
 collection(db,"coachTrips")
 );
 
 
-for(const item of snapshot.docs){
+for(
+const item of snapshot.docs
+){
 
 const data=item.data();
 
 let changed=false;
 
-const participants=Array.isArray(
-data.participants
-)?data.participants:[];
 
-const newParticipants=participants.map(
+const participants=
+Array.isArray(
+data.participants
+)
+?data.participants
+:[];
+
+
+const newParticipants=
+participants.map(
 x=>{
+
 if(x===coach.name){
+
 changed=true;
+
 return name;
+
 }
+
 return x;
+
 }
 );
 
 
-const cars=Array.isArray(data.cars)
-?data.cars:[];
+const cars=
+Array.isArray(data.cars)
+?data.cars
+:[];
 
-const newCars=cars.map(car=>{
 
-const copy={...car};
+const newCars=
+cars.map(
+car=>{
 
-if(copy.driver===coach.name){
+const copy={
+...car
+};
+
+
+if(
+copy.driver===coach.name
+){
 
 copy.driver=name;
 
@@ -2049,11 +2679,20 @@ changed=true;
 
 }
 
-if(Array.isArray(copy.passengers)){
 
-copy.passengers=copy.passengers.map(x=>{
+if(
+Array.isArray(
+copy.passengers
+)
+){
 
-if(x===coach.name){
+copy.passengers=
+copy.passengers.map(
+x=>{
+
+if(
+x===coach.name
+){
 
 changed=true;
 
@@ -2063,23 +2702,36 @@ return name;
 
 return x;
 
-});
+}
+);
 
 }
 
 return copy;
 
-});
+}
+);
 
 
 if(changed){
 
 await updateDoc(
-doc(db,"coachTrips",item.id),
+doc(
+db,
+"coachTrips",
+item.id
+),
 {
-participants:newParticipants,
-cars:newCars,
-drivers:newCars.map(x=>x.driver)
+participants:
+newParticipants,
+
+cars:
+newCars,
+
+drivers:
+newCars.map(
+x=>x.driver
+)
 }
 );
 
@@ -2090,7 +2742,9 @@ drivers:newCars.map(x=>x.driver)
 
 await updateDoc(
 doc(db,"coaches",id),
-{name:name}
+{
+name:name
+}
 );
 
 await loadCoaches();
@@ -2108,17 +2762,23 @@ alert("名前を変更しました。");
 
 window.hideCoach=async function(id){
 
-const coach=coachesData.find(c=>c.id===id);
+const coach=
+coachesData.find(
+c=>c.id===id
+);
 
 if(!coach)return;
 
 if(!confirm(
-coach.name+"さんを非表示にしますか？"
+coach.name+
+"さんを非表示にしますか？"
 ))return;
 
 await updateDoc(
 doc(db,"coaches",id),
-{active:false}
+{
+active:false
+}
 );
 
 await loadCoaches();
@@ -2130,7 +2790,9 @@ window.showCoach=async function(id){
 
 await updateDoc(
 doc(db,"coaches",id),
-{active:true}
+{
+active:true
+}
 );
 
 await loadCoaches();
@@ -2142,33 +2804,49 @@ await loadCoaches();
 コーチ並び替え
 ===================================== */
 
-window.moveCoach=async function(id,direction){
+window.moveCoach=async function(
+id,
+direction
+){
 
-const active=coachesData.filter(
+const active=
+coachesData.filter(
 c=>c.active!==false
 );
 
-const index=active.findIndex(
+const index=
+active.findIndex(
 c=>c.id===id
 );
 
-const targetIndex=index+direction;
+const targetIndex=
+index+direction;
 
-if(index<0||targetIndex<0||
-targetIndex>=active.length)return;
+if(
+index<0||
+targetIndex<0||
+targetIndex>=active.length
+)return;
 
-const current=active[index];
+const current=
+active[index];
 
-const target=active[targetIndex];
+const target=
+active[targetIndex];
+
 
 await updateDoc(
 doc(db,"coaches",current.id),
-{order:target.order}
+{
+order:target.order
+}
 );
 
 await updateDoc(
 doc(db,"coaches",target.id),
-{order:current.order}
+{
+order:current.order
+}
 );
 
 await loadCoaches();
@@ -2186,27 +2864,34 @@ tripGroupsData=[];
 legacyTripsData=[];
 
 
-const groupSnapshot=await getDocs(
+const groupSnapshot=
+await getDocs(
 collection(db,"tripGroups")
 );
 
-groupSnapshot.forEach(item=>{
+
+groupSnapshot.forEach(
+item=>{
 
 tripGroupsData.push({
 id:item.id,
 ...item.data()
 });
 
-});
+}
+);
 
 
 try{
 
-const legacySnapshot=await getDocs(
+const legacySnapshot=
+await getDocs(
 collection(db,"trips")
 );
 
-legacySnapshot.forEach(item=>{
+
+legacySnapshot.forEach(
+item=>{
 
 const data=item.data();
 
@@ -2223,14 +2908,19 @@ id:item.id,
 
 }catch(error){
 
-console.log("旧trips読み込みなし");
+console.log(
+"旧trips読み込みなし"
+);
 
 }
 
 
 tripGroupsData.sort(
-(a,b)=>String(b.tripDate||"")
-.localeCompare(String(a.tripDate||""))
+(a,b)=>
+String(b.tripDate||"")
+.localeCompare(
+String(a.tripDate||"")
+)
 );
 
 renderHistory();
@@ -2246,23 +2936,29 @@ async function loadCoachTrips(){
 
 coachTripsData=[];
 
-const snapshot=await getDocs(
+const snapshot=
+await getDocs(
 collection(db,"coachTrips")
 );
 
-snapshot.forEach(item=>{
+snapshot.forEach(
+item=>{
 
 coachTripsData.push({
 id:item.id,
 ...item.data()
 });
 
-});
+}
+);
 
 
 coachTripsData.sort(
-(a,b)=>String(b.tripDate||"")
-.localeCompare(String(a.tripDate||""))
+(a,b)=>
+String(b.tripDate||"")
+.localeCompare(
+String(a.tripDate||"")
+)
 );
 
 renderHistory();
@@ -2280,65 +2976,102 @@ renderCoachMonthlySummary();
 
 function renderHistory(){
 
-const area=document.getElementById("history");
+const area=
+document.getElementById(
+"history"
+);
 
 area.innerHTML="";
 
 
-if(tripGroupsData.length===0){
+if(
+tripGroupsData.length===0
+){
 
 area.innerHTML=
-'<div class="empty">まだ通常配車記録がありません。</div>';
+'<div class="empty">'+
+'まだ通常配車記録がありません。'+
+'</div>';
 
 }else{
 
-tripGroupsData.forEach(item=>{
+tripGroupsData.forEach(
+item=>{
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
-div.className="history-item";
+div.className=
+"history-item";
 
-const members=Array.isArray(item.members)
-?item.members:[];
+
+const members=
+Array.isArray(item.members)
+?item.members
+:[];
+
 
 div.innerHTML=
+
 '<div class="history-date">'+
 escapeHtml(item.tripDate||"")+
 '</div>'+
+
 '<div class="history-detail">'+
+
 '🚐 <strong>通常配車</strong><br>'+
+
 '🏫 会場：'+
-escapeHtml(item.venueName||"未登録")+
+escapeHtml(
+item.venueName||"未登録"
+)+
 '<br>'+
+
 '📏 距離：'+
-Number(item.distance||0)+
+Number(
+item.distance||0
+)+
 ' km<br>'+
+
 '👥 乗車：'+
-escapeHtml(members.join("、")||"なし")+
+escapeHtml(
+members.join("、")||"なし"
+)+
 '<br>'+
+
 '🛣️ 高速・ETC：'+
-escapeHtml(item.highwayMemo||"なし")+
+escapeHtml(
+item.highwayMemo||"なし"
+)+
+
 '</div>';
 
-const buttons=document.createElement("div");
 
-buttons.className="history-buttons";
+const buttons=
+document.createElement("div");
+
+buttons.className=
+"history-buttons";
 
 
-const edit=document.createElement("button");
+const edit=
+document.createElement("button");
 
 edit.textContent="✏️ 編集";
 
-edit.onclick=()=>editTrip(item.id);
+edit.onclick=
+()=>editTrip(item.id);
 
 
-const del=document.createElement("button");
+const del=
+document.createElement("button");
 
 del.textContent="🗑️ 削除";
 
 del.className="danger";
 
-del.onclick=()=>deleteTrip(item.id);
+del.onclick=
+()=>deleteTrip(item.id);
 
 
 buttons.appendChild(edit);
@@ -2356,126 +3089,296 @@ area.appendChild(div);
 
 if(coachTripsData.length){
 
-const title=document.createElement("h3");
+const title=
+document.createElement("h3");
 
-title.textContent="🏀 監督・コーチ配車履歴";
+title.textContent=
+"🏀 監督・コーチ配車履歴";
 
 area.appendChild(title);
 
 
-coachTripsData.forEach(item=>{
+coachTripsData.forEach(
+item=>{
 
-const div=document.createElement("div");
+const div=
+document.createElement("div");
 
-div.className="history-item";
+div.className=
+"history-item";
 
-const participants=Array.isArray(
+
+const participants=
+Array.isArray(
 item.participants
-)?item.participants:[];
+)
+?item.participants
+:[];
 
-let cars=Array.isArray(item.cars)
-?item.cars:[];
+
+let cars=
+Array.isArray(item.cars)
+?item.cars
+:[];
 
 
-if(!cars.length&&Array.isArray(item.drivers)){
+if(
+!cars.length &&
+Array.isArray(item.drivers)
+){
 
-cars=item.drivers.map(driver=>({
+cars=
+item.drivers.map(
+driver=>({
+
 driver:driver,
+
 passengers:[],
-distance:Number(item.distance||0),
+
+distance:
+Number(
+item.distance||0
+),
+
+gasRate:
+Number(
+item.gasRate||gasRate
+),
+
+gasCost:
+Math.round(
+Number(
+item.distance||0
+)*
+Number(
+item.gasRate||gasRate
+)
+),
+
 highwayFee:0,
-highwayMemo:item.highwayMemo||""
-}));
+
+highwayMemo:"",
+
+totalCost:
+Math.round(
+Number(
+item.distance||0
+)*
+Number(
+item.gasRate||gasRate
+)
+)
+
+})
+);
 
 }
 
 
 let totalDistance=0;
 
+let totalGas=0;
+
 let totalFee=0;
+
+let totalCost=0;
 
 let carHTML="";
 
 
-cars.forEach((car,index)=>{
+cars.forEach(
+(car,index)=>{
 
-totalDistance+=Number(car.distance||0);
+const distance=
+Number(car.distance||0);
 
-totalFee+=Number(car.highwayFee||0);
+const savedGasRate=
+Number(
+car.gasRate||
+item.gasRate||
+gasRate
+);
+
+const gasCost=
+Number.isFinite(
+Number(car.gasCost)
+)
+?Number(car.gasCost)
+:Math.round(
+distance*savedGasRate
+);
+
+const highwayFee=
+Number(
+car.highwayFee||0
+);
+
+const carTotal=
+Number.isFinite(
+Number(car.totalCost)
+)
+?Number(car.totalCost)
+:gasCost+highwayFee;
 
 
-const passengers=Array.isArray(
+totalDistance+=distance;
+
+totalGas+=gasCost;
+
+totalFee+=highwayFee;
+
+totalCost+=carTotal;
+
+
+const passengers=
+Array.isArray(
 car.passengers
-)?car.passengers:[];
+)
+?car.passengers
+:[];
 
 
 carHTML+=
+
 '<div class="coach-history-car">'+
-'🚗 <strong>'+(index+1)+'台目</strong><br>'+
+
+'🚗 <strong>'+
+(index+1)+
+'台目</strong><br>'+
+
 '👤 運転者：'+
-escapeHtml(car.driver||"未登録")+
+escapeHtml(
+car.driver||"未登録"
+)+
 '<br>'+
+
 '👥 同乗：'+
-escapeHtml(passengers.join("、")||"なし")+
+escapeHtml(
+passengers.join("、")||"なし"
+)+
 '<br>'+
+
 '📏 距離：'+
-Number(car.distance||0).toLocaleString()+
+distance.toLocaleString()+
 ' km<br>'+
+
+'⛽ ガソリン：'+
+gasCost.toLocaleString()+
+' 円 '+
+'（'+
+savedGasRate+
+'円/km）<br>'+
+
 '🛣️ 高速料金：'+
-Number(car.highwayFee||0).toLocaleString()+
-' 円'+
-(car.highwayMemo
-?'<br>📝 '+escapeHtml(car.highwayMemo)
-:"")+
+highwayFee.toLocaleString()+
+' 円<br>'+
+
+'<strong>💰 交通費：'+
+carTotal.toLocaleString()+
+' 円</strong>'+
+
+(
+car.highwayMemo
+?
+'<br>📝 '+
+escapeHtml(
+car.highwayMemo
+)
+:""
+)+
+
 '</div>';
 
 });
 
 
+/* 古い記録との互換用 */
+
+if(
+!totalCost &&
+Number(item.totalCost||0)
+){
+
+totalCost=
+Number(item.totalCost||0);
+
+}
+
+
 div.innerHTML=
+
 '<div class="history-date">'+
-escapeHtml(item.tripDate||"")+
+escapeHtml(
+item.tripDate||""
+)+
 '</div>'+
+
 '<div class="history-detail">'+
+
 '🏀 <strong>監督・コーチ配車</strong><br>'+
+
 '🏫 会場：'+
-escapeHtml(item.venueName||"未登録")+
+escapeHtml(
+item.venueName||"未登録"
+)+
 '<br>'+
+
 '👥 参加者：'+
-escapeHtml(participants.join("、")||"なし")+
+escapeHtml(
+participants.join("、")||"なし"
+)+
 '<br>'+
+
 '🚗 配車台数：'+
 cars.length+
 '台<br>'+
+
 '📏 合計距離：'+
 totalDistance.toLocaleString()+
 ' km<br>'+
+
+'⛽ 合計ガソリン代：'+
+totalGas.toLocaleString()+
+' 円<br>'+
+
 '🛣️ 合計高速料金：'+
 totalFee.toLocaleString()+
-' 円'+
+' 円<br>'+
+
+'<strong>💰 交通費合計：'+
+totalCost.toLocaleString()+
+' 円</strong>'+
+
 carHTML+
+
 '</div>';
 
 
-const buttons=document.createElement("div");
+const buttons=
+document.createElement("div");
 
-buttons.className="history-buttons";
+buttons.className=
+"history-buttons";
 
 
-const edit=document.createElement("button");
+const edit=
+document.createElement("button");
 
 edit.textContent="✏️ 編集";
 
-edit.onclick=()=>editCoachTrip(item.id);
+edit.onclick=
+()=>editCoachTrip(item.id);
 
 
-const del=document.createElement("button");
+const del=
+document.createElement("button");
 
 del.textContent="🗑️ 削除";
 
 del.className="danger";
 
-del.onclick=()=>deleteCoachTrip(item.id);
+del.onclick=
+()=>deleteCoachTrip(item.id);
 
 
 buttons.appendChild(edit);
@@ -2499,14 +3402,16 @@ area.appendChild(div);
 
 window.editTrip=async function(id){
 
-const item=tripGroupsData.find(
+const item=
+tripGroupsData.find(
 x=>x.id===id
 );
 
 if(!item)return;
 
 
-const date=prompt(
+const date=
+prompt(
 "日付",
 item.tripDate||""
 );
@@ -2514,7 +3419,8 @@ item.tripDate||""
 if(date===null)return;
 
 
-const venue=prompt(
+const venue=
+prompt(
 "会場名",
 item.venueName||""
 );
@@ -2522,7 +3428,8 @@ item.venueName||""
 if(venue===null)return;
 
 
-const distance=prompt(
+const distance=
+prompt(
 "距離（km）",
 item.distance||0
 );
@@ -2530,7 +3437,8 @@ item.distance||0
 if(distance===null)return;
 
 
-const memo=prompt(
+const memo=
+prompt(
 "高速料金・ETCメモ",
 item.highwayMemo||""
 );
@@ -2541,10 +3449,16 @@ if(memo===null)return;
 await updateDoc(
 doc(db,"tripGroups",id),
 {
+
 tripDate:date,
+
 venueName:venue,
-distance:Number(distance)||0,
+
+distance:
+Number(distance)||0,
+
 highwayMemo:memo
+
 }
 );
 
@@ -2582,14 +3496,16 @@ alert("削除しました。");
 
 window.editCoachTrip=async function(id){
 
-const item=coachTripsData.find(
+const item=
+coachTripsData.find(
 x=>x.id===id
 );
 
 if(!item)return;
 
 
-const date=prompt(
+const date=
+prompt(
 "日付",
 item.tripDate||""
 );
@@ -2597,7 +3513,8 @@ item.tripDate||""
 if(date===null)return;
 
 
-const venue=prompt(
+const venue=
+prompt(
 "会場名",
 item.venueName||""
 );
@@ -2605,32 +3522,51 @@ item.venueName||""
 if(venue===null)return;
 
 
-const participants=prompt(
-"参加した監督・コーチ\n\nカンマ区切りで入力",
-Array.isArray(item.participants)
-?item.participants.join(",")
-:""
-);
-
-if(participants===null)return;
-
-
-let cars=Array.isArray(item.cars)
-?item.cars:[];
+let cars=
+Array.isArray(item.cars)
+?item.cars
+:[];
 
 
 if(!cars.length){
 
-const drivers=Array.isArray(item.drivers)
-?item.drivers:[];
+const drivers=
+Array.isArray(item.drivers)
+?item.drivers
+:[];
 
-cars=drivers.map(driver=>({
+cars=
+drivers.map(
+driver=>({
+
 driver:driver,
+
 passengers:[],
-distance:Number(item.distance||0),
+
+distance:
+Number(item.distance||0),
+
+gasRate:
+Number(item.gasRate||gasRate),
+
+gasCost:
+Math.round(
+Number(item.distance||0)*
+Number(item.gasRate||gasRate)
+),
+
 highwayFee:0,
-highwayMemo:item.highwayMemo||""
-}));
+
+highwayMemo:"",
+
+totalCost:
+Math.round(
+Number(item.distance||0)*
+Number(item.gasRate||gasRate)
+)
+
+})
+);
 
 }
 
@@ -2638,22 +3574,32 @@ highwayMemo:item.highwayMemo||""
 const newCars=[];
 
 
-for(let i=0;i<cars.length;i++){
+for(
+let i=0;
+i<cars.length;
+i++
+){
 
 const old=cars[i];
 
 
-const driver=prompt(
-(i+1)+"台目・運転者",
+const driver=
+prompt(
+(i+1)+
+"台目・運転者",
 old.driver||""
 );
 
 if(driver===null)return;
 
 
-const passengers=prompt(
-(i+1)+"台目・同乗者\n\nカンマ区切り",
-Array.isArray(old.passengers)
+const passengers=
+prompt(
+(i+1)+
+"台目・同乗者\n\nカンマ区切り",
+Array.isArray(
+old.passengers
+)
 ?old.passengers.join(",")
 :""
 );
@@ -2661,51 +3607,154 @@ Array.isArray(old.passengers)
 if(passengers===null)return;
 
 
-const distance=prompt(
-(i+1)+"台目・距離（km）",
+const distance=
+prompt(
+(i+1)+
+"台目・距離（km）",
 old.distance||0
 );
 
 if(distance===null)return;
 
 
-const fee=prompt(
-(i+1)+"台目・高速料金（円）",
+const oldGasRate=
+Number(
+old.gasRate||
+item.gasRate||
+gasRate
+);
+
+
+const gasRateInput=
+prompt(
+(i+1)+
+"台目・ガソリン単価（円/km）",
+oldGasRate
+);
+
+if(gasRateInput===null)return;
+
+
+const carGasRate=
+Number(gasRateInput);
+
+if(
+!Number.isFinite(carGasRate)||
+carGasRate<=0
+){
+
+alert(
+"ガソリン単価は0より大きい数字にしてください。"
+);
+
+return;
+
+}
+
+
+const fee=
+prompt(
+(i+1)+
+"台目・高速料金（円）",
 old.highwayFee||0
 );
 
 if(fee===null)return;
 
 
-const memo=prompt(
-(i+1)+"台目・ETCメモ",
+const memo=
+prompt(
+(i+1)+
+"台目・ETCメモ",
 old.highwayMemo||""
 );
 
 if(memo===null)return;
 
 
+const distanceNumber=
+Number(distance)||0;
+
+const highwayFee=
+Number(fee)||0;
+
+const gasCost=
+Math.round(
+distanceNumber*carGasRate
+);
+
+const carTotal=
+gasCost+highwayFee;
+
+
 newCars.push({
-driver:driver.trim(),
-passengers:passengers
+
+driver:
+driver.trim(),
+
+passengers:
+passengers
 .split(",")
 .map(x=>x.trim())
 .filter(Boolean),
-distance:Number(distance)||0,
-highwayFee:Number(fee)||0,
-highwayMemo:memo.trim()
+
+distance:
+distanceNumber,
+
+gasRate:
+carGasRate,
+
+gasCost:
+gasCost,
+
+highwayFee:
+highwayFee,
+
+highwayMemo:
+memo.trim(),
+
+totalCost:
+carTotal
+
 });
 
 }
 
 
-const totalDistance=newCars.reduce(
-(sum,x)=>sum+Number(x.distance||0),
+const participants=
+getCoachParticipants(
+newCars
+);
+
+
+const totalDistance=
+newCars.reduce(
+(sum,x)=>
+sum+Number(x.distance||0),
 0
 );
 
-const totalFee=newCars.reduce(
-(sum,x)=>sum+Number(x.highwayFee||0),
+
+const totalGas=
+newCars.reduce(
+(sum,x)=>
+sum+Number(x.gasCost||0),
+0
+);
+
+
+const totalFee=
+newCars.reduce(
+(sum,x)=>
+sum+Number(x.highwayFee||0),
+0
+);
+
+
+const totalCost=
+newCars.reduce(
+(sum,x)=>
+sum+Number(x.totalCost||0),
 0
 );
 
@@ -2713,23 +3762,48 @@ const totalFee=newCars.reduce(
 await updateDoc(
 doc(db,"coachTrips",id),
 {
+
 tripDate:date,
+
 venueName:venue,
-participants:participants
-.split(",")
-.map(x=>x.trim())
-.filter(Boolean),
-cars:newCars,
-drivers:newCars.map(x=>x.driver),
-carCount:newCars.length,
-totalDistance:totalDistance,
-totalHighwayFee:totalFee
+
+participants:
+participants,
+
+cars:
+newCars,
+
+drivers:
+newCars.map(
+x=>x.driver
+),
+
+carCount:
+newCars.length,
+
+totalDistance:
+totalDistance,
+
+totalGasCost:
+totalGas,
+
+totalHighwayFee:
+totalFee,
+
+totalCost:
+totalCost
+
 }
 );
 
 await loadCoachTrips();
 
-alert("変更しました。");
+alert(
+"変更しました。\n\n"+
+"交通費合計："+
+totalCost.toLocaleString()+
+"円"
+);
 
 };
 
@@ -2773,20 +3847,29 @@ if(!confirm(
 
 try{
 
-for(const name of [
+for(
+const name of [
 "tripGroups",
 "trips",
 "coachTrips"
-]){
+]
+){
 
-const snapshot=await getDocs(
+const snapshot=
+await getDocs(
 collection(db,name)
 );
 
-for(const item of snapshot.docs){
+for(
+const item of snapshot.docs
+){
 
 await deleteDoc(
-doc(db,name,item.id)
+doc(
+db,
+name,
+item.id
+)
 );
 
 }
@@ -2798,7 +3881,9 @@ await loadTrips();
 
 await loadCoachTrips();
 
-alert("配車履歴を全部削除しました！");
+alert(
+"配車履歴を全部削除しました！"
+);
 
 }catch(error){
 
@@ -2815,7 +3900,8 @@ showError(error);
 
 function renderCoachSummary(){
 
-const area=document.getElementById(
+const area=
+document.getElementById(
 "coachSummary"
 );
 
@@ -2825,25 +3911,34 @@ area.innerHTML="";
 const data={};
 
 
-coachesData.forEach(coach=>{
+coachesData.forEach(
+coach=>{
 
 data[coach.name]={
 participate:0,
 drive:0,
 distance:0,
-fee:0
+gas:0,
+highway:0,
+cost:0
 };
 
 });
 
 
-coachTripsData.forEach(item=>{
+coachTripsData.forEach(
+item=>{
 
-const participants=Array.isArray(
+const participants=
+Array.isArray(
 item.participants
-)?item.participants:[];
+)
+?item.participants
+:[];
 
-participants.forEach(name=>{
+
+participants.forEach(
+name=>{
 
 if(!data[name]){
 
@@ -2851,7 +3946,9 @@ data[name]={
 participate:0,
 drive:0,
 distance:0,
-fee:0
+gas:0,
+highway:0,
+cost:0
 };
 
 }
@@ -2861,14 +3958,19 @@ data[name].participate++;
 });
 
 
-const cars=Array.isArray(item.cars)
-?item.cars:[];
+const cars=
+Array.isArray(item.cars)
+?item.cars
+:[];
 
-cars.forEach(car=>{
+
+cars.forEach(
+car=>{
 
 const name=car.driver;
 
 if(!name)return;
+
 
 if(!data[name]){
 
@@ -2876,53 +3978,115 @@ data[name]={
 participate:0,
 drive:0,
 distance:0,
-fee:0
+gas:0,
+highway:0,
+cost:0
 };
 
 }
 
-data[name].drive++;
 
-data[name].distance+=
+const distance=
 Number(car.distance||0);
 
-data[name].fee+=
-Number(car.highwayFee||0);
+const savedRate=
+Number(
+car.gasRate||
+item.gasRate||
+gasRate
+);
+
+const gas=
+Number.isFinite(
+Number(car.gasCost)
+)
+?Number(car.gasCost)
+:Math.round(
+distance*savedRate
+);
+
+const highway=
+Number(
+car.highwayFee||0
+);
+
+const cost=
+Number.isFinite(
+Number(car.totalCost)
+)
+?Number(car.totalCost)
+:gas+highway;
+
+
+data[name].drive++;
+
+data[name].distance+=distance;
+
+data[name].gas+=gas;
+
+data[name].highway+=highway;
+
+data[name].cost+=cost;
 
 });
 
 });
 
 
-const names=Object.keys(data);
+const names=
+Object.keys(data);
 
 
 if(!names.length){
 
 area.innerHTML=
-'<div class="empty">まだ記録がありません。</div>';
+'<div class="empty">'+
+'まだ記録がありません。'+
+'</div>';
 
 return;
 
 }
 
 
-names.forEach(name=>{
+names.forEach(
+name=>{
 
-const row=document.createElement("div");
+const row=
+document.createElement("div");
 
-row.className="history-item";
+row.className=
+"history-item";
 
 row.innerHTML=
-'<strong>'+escapeHtml(name)+'</strong><br>'+
-'👥 参加：'+data[name].participate+'回<br>'+
-'🚗 運転：'+data[name].drive+'回<br>'+
+
+'<strong>'+
+escapeHtml(name)+
+'</strong><br>'+
+
+'👥 参加：'+
+data[name].participate+
+'回<br>'+
+
+'🚗 運転：'+
+data[name].drive+
+'回<br>'+
+
 '📏 運転距離：'+
 data[name].distance.toLocaleString()+
 ' km<br>'+
+
+'⛽ ガソリン：'+
+data[name].gas.toLocaleString()+
+' 円<br>'+
+
 '🛣️ 高速料金：'+
-data[name].fee.toLocaleString()+
-' 円';
+data[name].highway.toLocaleString()+
+' 円<br>'+
+
+'<strong>💰 交通費：'+
+data[name].cost.toLocaleString()+
+' 円</strong>';
 
 area.appendChild(row);
 
@@ -2940,12 +4104,19 @@ function renderCoachMonthlySummary(){
 const now=new Date();
 
 const prefix=
-now.getFullYear()+"-"+
-String(now.getMonth()+1).padStart(2,"0");
+now.getFullYear()+
+"-"+
+String(
+now.getMonth()+1
+).padStart(2,"0");
 
 
-const groups=coachTripsData.filter(
-x=>String(x.tripDate||"").startsWith(prefix)
+const groups=
+coachTripsData.filter(
+x=>
+String(
+x.tripDate||""
+).startsWith(prefix)
 );
 
 
@@ -2953,10 +4124,13 @@ let participants=0;
 
 let cars=0;
 
+let totalCost=0;
+
 const dates=new Set();
 
 
-groups.forEach(item=>{
+groups.forEach(
+item=>{
 
 if(item.tripDate){
 
@@ -2964,20 +4138,77 @@ dates.add(item.tripDate);
 
 }
 
-participants+=Array.isArray(
+
+participants+=
+Array.isArray(
 item.participants
 )
 ?item.participants.length
 :0;
 
 
-if(Array.isArray(item.cars)){
+if(
+Array.isArray(item.cars)
+){
 
 cars+=item.cars.length;
 
-}else if(Array.isArray(item.drivers)){
+}else if(
+Array.isArray(item.drivers)
+){
 
 cars+=item.drivers.length;
+
+}
+
+
+if(
+Number.isFinite(
+Number(item.totalCost)
+)
+){
+
+totalCost+=
+Number(item.totalCost);
+
+}else{
+
+const itemCars=
+Array.isArray(item.cars)
+?item.cars
+:[];
+
+itemCars.forEach(
+car=>{
+
+const distance=
+Number(car.distance||0);
+
+const rate=
+Number(
+car.gasRate||
+item.gasRate||
+gasRate
+);
+
+const gas=
+Number.isFinite(
+Number(car.gasCost)
+)
+?Number(car.gasCost)
+:Math.round(
+distance*rate
+);
+
+const highway=
+Number(
+car.highwayFee||0
+);
+
+totalCost+=
+gas+highway;
+
+});
 
 }
 
@@ -2986,19 +4217,23 @@ cars+=item.drivers.length;
 
 document.getElementById(
 "coachMonthParticipants"
-).textContent=participants;
+).textContent=
+participants;
 
 document.getElementById(
 "coachMonthDays"
-).textContent=dates.size;
+).textContent=
+dates.size;
 
 document.getElementById(
 "coachMonthCars"
-).textContent=cars;
+).textContent=
+cars;
 
 document.getElementById(
-"coachMonthTrips"
-).textContent=groups.length;
+"coachMonthCost"
+).textContent=
+totalCost.toLocaleString();
 
 }
 
@@ -3015,8 +4250,11 @@ setToday();
 
 document.getElementById(
 "status"
-).textContent="Firebaseデータ読み込み中…";
+).textContent=
+"Firebaseデータ読み込み中…";
 
+
+await loadGasRate();
 
 await initializeMembers();
 
@@ -3027,9 +4265,11 @@ await loadTrips();
 await loadCoachTrips();
 
 
-if(document.getElementById(
+if(
+document.getElementById(
 "coachCars"
-).children.length===0){
+).children.length===0
+){
 
 addCoachCar();
 
@@ -3038,7 +4278,8 @@ addCoachCar();
 
 document.getElementById(
 "status"
-).textContent="Firebase接続OK ✅";
+).textContent=
+"Firebase接続OK ✅";
 
 
 }catch(error){
