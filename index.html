@@ -390,6 +390,26 @@ button:disabled{
   margin-top:8px;
 }
 
+.personal-summary-row{
+  background:#292929;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:10px;
+  border:1px solid #383838;
+}
+
+.personal-summary-name{
+  color:#ff3f9f;
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.personal-summary-detail{
+  font-size:14px;
+  line-height:1.8;
+}
+
 @media(max-width:380px){
 
   .member-grid{
@@ -575,15 +595,34 @@ Firebase接続中…
 
 
 <!-- ========================= -->
-<!-- コーチ別集計 -->
+<!-- コーチ個別集計 -->
 <!-- ========================= -->
 
 <div class="box">
 
-<h2>👤 監督・コーチ別集計</h2>
+<button
+  class="management-toggle"
+  onclick="toggleCoachSummary()"
+>
+👤 監督・コーチ個別集計を開く　▼
+</button>
+
+<div
+  id="coachSummaryArea"
+  class="management-area"
+  style="display:none"
+>
+
+<h2>👤 監督・コーチ個別集計</h2>
+
+<div class="section-note">
+監督・コーチごとの参加回数、運転回数、運転距離、交通費を集計します。
+</div>
 
 <div id="coachSummary">
 読み込み中…
+</div>
+
 </div>
 
 </div>
@@ -600,6 +639,41 @@ Firebase接続中…
 <div id="history">
 読み込み中…
 </div>
+
+
+<!-- ========================= -->
+<!-- 通常メンバー個別集計 -->
+<!-- ========================= -->
+
+<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px">
+
+<button
+  class="management-toggle"
+  onclick="togglePersonalSummary()"
+>
+👥 通常メンバー個別集計を開く　▼
+</button>
+
+<div
+  id="personalSummaryArea"
+  class="management-area"
+  style="display:none"
+>
+
+<h2>👥 通常メンバー個別集計</h2>
+
+<div class="section-note">
+通常配車で選択されたメンバーごとの配車回数と走行距離を集計します。
+</div>
+
+<div id="personalSummary">
+読み込み中…
+</div>
+
+</div>
+
+</div>
+
 
 <div style="margin-top:20px;border-top:1px solid #333;padding-top:14px">
 
@@ -1028,9 +1102,7 @@ const area=document.getElementById(
 "managementArea"
 );
 
-const button=document.querySelector(
-"#managementArea"
-).previousElementSibling;
+const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
@@ -1057,9 +1129,7 @@ const area=document.getElementById(
 "coachManagementArea"
 );
 
-const button=document.querySelector(
-"#coachManagementArea"
-).previousElementSibling;
+const button=area.previousElementSibling;
 
 if(area.style.display==="none"){
 
@@ -1074,6 +1144,72 @@ area.style.display="none";
 
 button.textContent=
 "⚙️ 監督・コーチ管理を開く　▼";
+
+}
+
+};
+
+
+/* =====================================
+コーチ個別集計 開閉
+===================================== */
+
+window.toggleCoachSummary=function(){
+
+const area=document.getElementById(
+"coachSummaryArea"
+);
+
+const button=area.previousElementSibling;
+
+if(area.style.display==="none"){
+
+area.style.display="block";
+
+button.textContent=
+"👤 監督・コーチ個別集計を閉じる　▲";
+
+renderCoachSummary();
+
+}else{
+
+area.style.display="none";
+
+button.textContent=
+"👤 監督・コーチ個別集計を開く　▼";
+
+}
+
+};
+
+
+/* =====================================
+通常メンバー個別集計 開閉
+===================================== */
+
+window.togglePersonalSummary=function(){
+
+const area=document.getElementById(
+"personalSummaryArea"
+);
+
+const button=area.previousElementSibling;
+
+if(area.style.display==="none"){
+
+area.style.display="block";
+
+button.textContent=
+"👥 通常メンバー個別集計を閉じる　▲";
+
+renderPersonalSummary();
+
+}else{
+
+area.style.display="none";
+
+button.textContent=
+"👥 通常メンバー個別集計を開く　▼";
 
 }
 
@@ -2925,6 +3061,19 @@ String(a.tripDate||"")
 
 renderHistory();
 
+
+/* 個別集計を開いている場合は更新 */
+
+if(
+document.getElementById(
+"personalSummaryArea"
+)?.style.display==="block"
+){
+
+renderPersonalSummary();
+
+}
+
 }
 
 
@@ -2966,6 +3115,19 @@ renderHistory();
 renderCoachSummary();
 
 renderCoachMonthlySummary();
+
+
+/* 個別集計を開いている場合は更新 */
+
+if(
+document.getElementById(
+"coachSummaryArea"
+)?.style.display==="block"
+){
+
+renderCoachSummary();
+
+}
 
 }
 
@@ -3392,6 +3554,152 @@ area.appendChild(div);
 });
 
 }
+
+}
+
+
+/* =====================================
+通常メンバー個別集計
+===================================== */
+
+function renderPersonalSummary(){
+
+const area=
+document.getElementById(
+"personalSummary"
+);
+
+if(!area)return;
+
+area.innerHTML="";
+
+
+const data={};
+
+
+/*
+通常配車の「乗車メンバー」を
+メンバーごとに集計する
+
+1回の配車に選択されていれば1回
+その配車の距離をその人の距離として加算
+*/
+
+tripGroupsData.forEach(item=>{
+
+const distance=
+Number(item.distance||0);
+
+const members=
+Array.isArray(item.members)
+?item.members
+:[];
+
+
+members.forEach(name=>{
+
+if(!name)return;
+
+
+if(!data[name]){
+
+data[name]={
+count:0,
+distance:0
+};
+
+}
+
+
+data[name].count++;
+
+data[name].distance+=distance;
+
+});
+
+});
+
+
+/*
+現在登録されているメンバーを
+表示対象にする
+
+非表示メンバーも過去記録があれば
+集計結果から消さない
+*/
+
+const names=
+membersData
+.map(member=>member.name)
+.filter(Boolean);
+
+
+Object.keys(data).forEach(name=>{
+
+if(!names.includes(name)){
+
+names.push(name);
+
+}
+
+});
+
+
+if(!names.length){
+
+area.innerHTML=
+'<div class="empty">'+
+'まだメンバーが登録されていません。'+
+'</div>';
+
+return;
+
+}
+
+
+/*
+並び順はメンバー管理と同じ
+*/
+
+names.forEach(name=>{
+
+const item=
+data[name]||
+{
+count:0,
+distance:0
+};
+
+
+const row=
+document.createElement("div");
+
+row.className=
+"personal-summary-row";
+
+
+row.innerHTML=
+
+'<div class="personal-summary-name">'+
+escapeHtml(name)+
+'</div>'+
+
+'<div class="personal-summary-detail">'+
+
+'🚐 配車回数：<strong>'+
+item.count+
+'回</strong><br>'+
+
+'📏 走行距離合計：<strong>'+
+Number(item.distance).toLocaleString()+
+' km</strong>'+
+
+'</div>';
+
+
+area.appendChild(row);
+
+});
 
 }
 
@@ -3904,6 +4212,8 @@ const area=
 document.getElementById(
 "coachSummary"
 );
+
+if(!area)return;
 
 area.innerHTML="";
 
