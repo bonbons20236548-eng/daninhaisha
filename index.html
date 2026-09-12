@@ -1450,7 +1450,74 @@ async function initializeMembers() {
   // --------------------------------
 
   window.deleteTrip = async function(id) {
+// --------------------------------
+// 乗車履歴を全部削除
+// --------------------------------
 
+window.deleteAllHistory = async function() {
+
+  const ok = confirm(
+    "乗車履歴をすべて削除します。\n\n" +
+    "⚠️ メンバー15人は削除されません。\n" +
+    "⚠️ tripGroups と trips の乗車記録だけ削除します。\n\n" +
+    "本当に削除しますか？"
+  );
+
+  if (!ok) return;
+
+
+  const ok2 = confirm(
+    "最終確認です。\n\n" +
+    "これまでの乗車履歴を全部削除します。"
+  );
+
+  if (!ok2) return;
+
+
+  try {
+
+    // 新しい乗車履歴を削除
+    const groupSnapshot =
+      await getDocs(collection(db, "tripGroups"));
+
+    for (const item of groupSnapshot.docs) {
+
+      await deleteDoc(
+        doc(db, "tripGroups", item.id)
+      );
+
+    }
+
+
+    // 古い乗車履歴を削除
+    const legacySnapshot =
+      await getDocs(collection(db, "trips"));
+
+    for (const item of legacySnapshot.docs) {
+
+      await deleteDoc(
+        doc(db, "trips", item.id)
+      );
+
+    }
+
+
+    await loadTrips();
+
+    alert("乗車履歴をすべて削除しました！");
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "削除中にエラーが発生しました。\n\n" +
+      error.message
+    );
+
+  }
+
+};
     if (!confirm(
       "この乗車記録を削除しますか？"
     )) {
