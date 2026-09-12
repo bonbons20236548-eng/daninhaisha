@@ -14,59 +14,65 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
       margin: 0;
-      padding: 15px;
+      padding: 12px;
       background: #111;
       color: #fff;
+      line-height: 1.5;
     }
 
     h1 {
       text-align: center;
       color: #ff3f9f;
-      margin: 5px 0 20px;
+      margin: 5px 0 8px;
       font-size: 24px;
+      font-weight: 800;
     }
 
     h2 {
       font-size: 18px;
-      margin-top: 0;
+      margin: 0 0 14px;
       color: #ff3f9f;
+      font-weight: 800;
     }
 
     .box {
       background: #1d1d1d;
-      border-radius: 15px;
-      padding: 15px;
-      margin-bottom: 15px;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
       border: 1px solid #333;
     }
 
     label {
       display: block;
-      margin-top: 12px;
-      margin-bottom: 5px;
+      margin-top: 13px;
+      margin-bottom: 6px;
       font-size: 14px;
       color: #ddd;
+      font-weight: 600;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 13px;
+      border-radius: 11px;
       border: 1px solid #555;
       background: #111;
       color: #fff;
       font-size: 16px;
+      min-height: 48px;
     }
 
     button {
       border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
+      border-radius: 11px;
+      padding: 11px 14px;
       background: #ff3f9f;
       color: white;
       font-weight: bold;
       font-size: 14px;
       cursor: pointer;
+      min-height: 42px;
     }
 
     button:disabled {
@@ -79,9 +85,10 @@
 
     .main-button {
       width: 100%;
-      margin-top: 15px;
-      padding: 14px;
+      margin-top: 16px;
+      padding: 15px;
       font-size: 17px;
+      min-height: 52px;
     }
 
     .member-grid {
@@ -93,24 +100,35 @@
 
     .member-check {
       background: #292929;
-      padding: 10px;
-      border-radius: 9px;
+      padding: 12px 10px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
+      min-height: 48px;
+      margin: 0;
+      color: #fff;
+      font-weight: normal;
     }
 
     .member-check input {
       width: auto;
-      transform: scale(1.2);
+      min-height: auto;
+      transform: scale(1.25);
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .member-check span {
+      font-size: 14px;
     }
 
     .member-management {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 5px;
-      padding: 9px 0;
+      gap: 7px;
+      padding: 10px 0;
       border-bottom: 1px solid #333;
     }
 
@@ -121,6 +139,8 @@
     .member-name {
       flex: 1;
       font-size: 15px;
+      font-weight: 600;
+      min-width: 0;
     }
 
     .member-buttons {
@@ -131,8 +151,9 @@
     }
 
     .small-button {
-      padding: 7px 9px;
+      padding: 7px 8px;
       font-size: 12px;
+      min-height: 36px;
     }
 
     .hidden-member {
@@ -141,52 +162,69 @@
 
     .history-item {
       background: #292929;
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px;
       margin-bottom: 10px;
+      border: 1px solid #383838;
     }
 
     .history-date {
       color: #ff3f9f;
-      font-weight: bold;
+      font-weight: 800;
       font-size: 16px;
     }
 
     .history-detail {
-      margin-top: 5px;
-      line-height: 1.6;
+      margin-top: 7px;
+      line-height: 1.7;
       font-size: 14px;
     }
 
     .history-buttons {
       display: flex;
       gap: 7px;
-      margin-top: 10px;
+      margin-top: 12px;
+    }
+
+    .history-buttons button {
+      flex: 1;
     }
 
     .summary {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 9px;
     }
 
     .summary-item {
       background: #292929;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 13px 8px;
+      border-radius: 12px;
       text-align: center;
+      border: 1px solid #383838;
+    }
+
+    .summary-label {
+      font-size: 13px;
+      color: #ddd;
+      margin-bottom: 4px;
     }
 
     .summary-number {
-      font-size: 20px;
+      font-size: 23px;
       color: #ff3f9f;
-      font-weight: bold;
+      font-weight: 800;
+    }
+
+    .summary-unit {
+      font-size: 12px;
+      color: #aaa;
     }
 
     .status {
       text-align: center;
       color: #aaa;
-      font-size: 13px;
+      font-size: 12px;
       margin-bottom: 10px;
     }
 
@@ -221,12 +259,65 @@
       font-size: 14px;
       margin-top: 18px;
       margin-bottom: 5px;
+      font-weight: bold;
     }
 
     .empty {
       color: #aaa;
       text-align: center;
-      padding: 10px;
+      padding: 14px 5px;
+      font-size: 14px;
+    }
+
+    /* メンバー管理を開くボタン */
+    .management-toggle {
+      width: 100%;
+      background: #292929;
+      border: 1px solid #444;
+      color: #fff;
+      text-align: left;
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    .management-area {
+      margin-top: 14px;
+    }
+
+    .section-note {
+      color: #999;
+      font-size: 12px;
+      margin-top: -7px;
+      margin-bottom: 10px;
+    }
+
+    .danger-area {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #333;
+    }
+
+    .danger-title {
+      color: #ff7fba;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 380px) {
+
+      .member-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .member-buttons {
+        gap: 3px;
+      }
+
+      .small-button {
+        padding: 6px 7px;
+      }
+
     }
   </style>
 </head>
@@ -249,16 +340,24 @@
     <h2>🚐 乗車登録</h2>
 
     <label>日付</label>
-    <input type="date" id="tripDate">
+
+    <input
+      type="date"
+      id="tripDate"
+    >
+
 
     <label>会場名</label>
+
     <input
       type="text"
       id="venueName"
       placeholder="例：○○小学校"
     >
 
+
     <label>距離（km）</label>
+
     <input
       type="number"
       id="distance"
@@ -266,7 +365,9 @@
       inputmode="decimal"
     >
 
+
     <label>高速代（円）</label>
+
     <input
       type="number"
       id="highwayFee"
@@ -274,11 +375,13 @@
       inputmode="numeric"
     >
 
+
     <label>乗車メンバー</label>
 
     <div id="memberList" class="member-grid">
       読み込み中…
     </div>
+
 
     <button
       class="main-button"
@@ -286,35 +389,6 @@
     >
       🚐 乗車記録を保存
     </button>
-
-  </div>
-
-
-  <!-- ============================= -->
-  <!-- メンバー管理 -->
-  <!-- ============================= -->
-
-  <div class="box">
-
-    <h2>👥 メンバー管理</h2>
-
-    <div class="member-add">
-
-      <input
-        type="text"
-        id="newMemberName"
-        placeholder="新しいメンバー名"
-      >
-
-      <button onclick="addMember()">
-        追加
-      </button>
-
-    </div>
-
-    <div id="memberManagementList">
-      読み込み中…
-    </div>
 
   </div>
 
@@ -331,7 +405,9 @@
 
       <div class="summary-item">
 
-        <div>乗車日数</div>
+        <div class="summary-label">
+          配車日数
+        </div>
 
         <div
           id="monthDays"
@@ -340,14 +416,18 @@
           0
         </div>
 
-        <div>日</div>
+        <div class="summary-unit">
+          日
+        </div>
 
       </div>
 
 
       <div class="summary-item">
 
-        <div>乗車人数</div>
+        <div class="summary-label">
+          配車人数
+        </div>
 
         <div
           id="monthRiders"
@@ -356,14 +436,18 @@
           0
         </div>
 
-        <div>人</div>
+        <div class="summary-unit">
+          人
+        </div>
 
       </div>
 
 
       <div class="summary-item">
 
-        <div>総距離</div>
+        <div class="summary-label">
+          総距離
+        </div>
 
         <div
           id="monthDistance"
@@ -372,14 +456,18 @@
           0
         </div>
 
-        <div>km</div>
+        <div class="summary-unit">
+          km
+        </div>
 
       </div>
 
 
       <div class="summary-item">
 
-        <div>高速代</div>
+        <div class="summary-label">
+          高速代
+        </div>
 
         <div
           id="monthHighway"
@@ -388,7 +476,9 @@
           0
         </div>
 
-        <div>円</div>
+        <div class="summary-unit">
+          円
+        </div>
 
       </div>
 
@@ -420,15 +510,80 @@
 
     <h2>📅 乗車履歴</h2>
 
-    <button
-      class="main-button danger"
-      onclick="deleteAllHistory()"
-    >
-      🗑️ 乗車履歴を全部削除
-    </button>
-
     <div id="history">
       読み込み中…
+    </div>
+
+
+    <div class="danger-area">
+
+      <div class="danger-title">
+        ⚠️ データ管理
+      </div>
+
+      <div class="section-note">
+        テストデータなど、すべての乗車履歴を削除します。
+      </div>
+
+      <button
+        class="main-button danger"
+        onclick="deleteAllHistory()"
+      >
+        🗑️ 乗車履歴を全部削除
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- メンバー管理（一番下） -->
+  <!-- ============================= -->
+
+  <div class="box">
+
+    <button
+      id="managementToggle"
+      class="management-toggle"
+      onclick="toggleMemberManagement()"
+    >
+      ⚙️ メンバー管理を開く　▼
+    </button>
+
+
+    <div
+      id="managementArea"
+      class="management-area"
+      style="display:none;"
+    >
+
+      <h2>👥 メンバー管理</h2>
+
+      <div class="section-note">
+        メンバーの追加・名前変更・並び替え・非表示ができます。
+      </div>
+
+
+      <div class="member-add">
+
+        <input
+          type="text"
+          id="newMemberName"
+          placeholder="新しいメンバー名"
+        >
+
+        <button onclick="addMember()">
+          追加
+        </button>
+
+      </div>
+
+
+      <div id="memberManagementList">
+        読み込み中…
+      </div>
+
     </div>
 
   </div>
@@ -490,9 +645,6 @@
     initializeApp(firebaseConfig);
 
 
-  // Enterprise版Firestore
-  // 「default」データベースを使用
-
   const db =
     initializeFirestore(
       app,
@@ -537,13 +689,56 @@
 
 
   // ==========================================
-  // 今日の日付をセット
+  // メンバー管理 開閉
+  // ==========================================
+
+  window.toggleMemberManagement =
+    function() {
+
+      const area =
+        document.getElementById(
+          "managementArea"
+        );
+
+      const button =
+        document.getElementById(
+          "managementToggle"
+        );
+
+
+      if (
+        area.style.display === "none"
+      ) {
+
+        area.style.display = "block";
+
+        button.textContent =
+          "⚙️ メンバー管理を閉じる　▲";
+
+      } else {
+
+        area.style.display = "none";
+
+        button.textContent =
+          "⚙️ メンバー管理を開く　▼";
+
+      }
+
+    };
+
+
+
+  // ==========================================
+  // 今日の日付
   // ==========================================
 
   function setToday() {
 
     const input =
-      document.getElementById("tripDate");
+      document.getElementById(
+        "tripDate"
+      );
+
 
     if (!input.value) {
 
@@ -591,6 +786,7 @@
 
       const data =
         item.data();
+
 
       if (data.name) {
 
@@ -697,7 +893,7 @@
 
 
   // ==========================================
-  // 乗車登録用メンバー表示
+  // 乗車登録用メンバー
   // ==========================================
 
   function renderMemberList() {
@@ -792,10 +988,6 @@
 
 
 
-    // ------------------------------
-    // 表示中メンバー
-    // ------------------------------
-
     active.forEach(
       (member, index) => {
 
@@ -810,9 +1002,7 @@
         row.innerHTML = `
 
           <div class="member-name">
-
             ${escapeHtml(member.name)}
-
           </div>
 
 
@@ -863,10 +1053,6 @@
 
 
 
-    // ------------------------------
-    // 非表示メンバー
-    // ------------------------------
-
     if (
       inactive.length > 0
     ) {
@@ -899,9 +1085,7 @@
         row.innerHTML = `
 
           <div class="member-name">
-
             ${escapeHtml(member.name)}
-
           </div>
 
 
@@ -1102,10 +1286,6 @@
 
 
 
-      // ------------------------------
-      // tripGroups
-      // ------------------------------
-
       const groupSnapshot =
         await getDocs(
           collection(db, "tripGroups")
@@ -1159,10 +1339,6 @@
 
 
 
-      // ------------------------------
-      // 旧 trips
-      // ------------------------------
-
       const oldTripsSnapshot =
         await getDocs(
           collection(db, "trips")
@@ -1199,10 +1375,6 @@
       }
 
 
-
-      // ------------------------------
-      // members
-      // ------------------------------
 
       await updateDoc(
         doc(
@@ -1367,10 +1539,8 @@
           current.id
         ),
         {
-
           order:
             targetOrder
-
         }
       );
 
@@ -1382,10 +1552,8 @@
           target.id
         ),
         {
-
           order:
             currentOrder
-
         }
       );
 
@@ -1576,7 +1744,6 @@
       );
 
 
-
       document
         .querySelectorAll(
           "#memberList input[type='checkbox']"
@@ -1622,10 +1789,6 @@
 
 
 
-    // ------------------------------
-    // 新しい tripGroups
-    // ------------------------------
-
     const groupSnapshot =
       await getDocs(
         collection(
@@ -1651,10 +1814,6 @@
     );
 
 
-
-    // ------------------------------
-    // 古い trips
-    // ------------------------------
 
     const legacySnapshot =
       await getDocs(
@@ -1691,10 +1850,6 @@
     );
 
 
-
-    // ------------------------------
-    // 並び替え
-    // ------------------------------
 
     tripGroupsData.sort(
       (a, b) =>
@@ -1750,10 +1905,6 @@
 
 
 
-    // ------------------------------
-    // 新しいデータ
-    // ------------------------------
-
     tripGroupsData.forEach(
       item => {
 
@@ -1798,10 +1949,6 @@
     );
 
 
-
-    // ------------------------------
-    // 古いデータ
-    // ------------------------------
 
     const legacyGroups = {};
 
@@ -1912,10 +2059,6 @@
 
 
 
-    // ------------------------------
-    // 表示
-    // ------------------------------
-
     list.forEach(
       item => {
 
@@ -1938,11 +2081,9 @@
         div.innerHTML = `
 
           <div class="history-date">
-
             ${escapeHtml(
               item.tripDate || ""
             )}
-
           </div>
 
 
@@ -1956,13 +2097,11 @@
 
             <br>
 
-
             📏 距離：
             ${item.distance}
             km
 
             <br>
-
 
             🛣️ 高速代：
             ${item.highwayFee.toLocaleString()}
@@ -1970,8 +2109,7 @@
 
             <br>
 
-
-            👥 乗車：
+            👥 配車：
             ${escapeHtml(
               memberText
             )}
@@ -1981,8 +2119,6 @@
         `;
 
 
-
-        // 新しいデータだけ編集・削除可能
 
         if (
           item.isNew
@@ -1996,7 +2132,6 @@
 
           buttons.className =
             "history-buttons";
-
 
 
           const editButton =
@@ -2014,7 +2149,6 @@
               editTrip(
                 item.id
               );
-
 
 
           const deleteButton =
@@ -2036,7 +2170,6 @@
               deleteTrip(
                 item.id
               );
-
 
 
           buttons.appendChild(
@@ -2084,7 +2217,6 @@
       if (!item) return;
 
 
-
       const newDate =
         prompt(
           "日付",
@@ -2099,7 +2231,6 @@
         return;
 
       }
-
 
 
       const newVenue =
@@ -2118,7 +2249,6 @@
       }
 
 
-
       const newDistance =
         prompt(
           "距離（km）",
@@ -2135,7 +2265,6 @@
       }
 
 
-
       const newHighway =
         prompt(
           "高速代（円）",
@@ -2150,7 +2279,6 @@
         return;
 
       }
-
 
 
       await updateDoc(
@@ -2189,7 +2317,7 @@
 
 
   // ==========================================
-  // 乗車履歴 1件削除
+  // 1件削除
   // ==========================================
 
   window.deleteTrip =
@@ -2241,12 +2369,11 @@
 
 
   // ==========================================
-  // 乗車履歴を全部削除
+  // 全履歴削除
   // ==========================================
 
   window.deleteAllHistory =
     async function() {
-
 
       const ok =
         confirm(
@@ -2264,7 +2391,6 @@
       }
 
 
-
       const ok2 =
         confirm(
           "最終確認です。\n\n" +
@@ -2280,13 +2406,7 @@
       }
 
 
-
       try {
-
-
-        // ------------------------------
-        // 新しい乗車履歴を全部削除
-        // ------------------------------
 
         const groupSnapshot =
           await getDocs(
@@ -2312,11 +2432,6 @@
         }
 
 
-
-        // ------------------------------
-        // 古い乗車履歴も全部削除
-        // ------------------------------
-
         const legacySnapshot =
           await getDocs(
             collection(
@@ -2340,11 +2455,6 @@
 
         }
 
-
-
-        // ------------------------------
-        // 画面更新
-        // ------------------------------
 
         await loadTrips();
 
@@ -2397,7 +2507,6 @@
       `${year}-${month}`;
 
 
-
     const groups =
       tripGroupsData.filter(
         item =>
@@ -2409,7 +2518,6 @@
       );
 
 
-
     const dates =
       new Set(
         groups.map(
@@ -2419,13 +2527,11 @@
       );
 
 
-
     let riders = 0;
 
     let distance = 0;
 
     let highway = 0;
-
 
 
     groups.forEach(
@@ -2455,7 +2561,6 @@
 
 
 
-    // 古いデータ
     const legacy =
       legacyTripsData.filter(
         item =>
@@ -2555,10 +2660,6 @@
 
 
 
-    // ------------------------------
-    // メンバーを初期化
-    // ------------------------------
-
     membersData.forEach(
       member => {
 
@@ -2575,10 +2676,6 @@
     );
 
 
-
-    // ------------------------------
-    // 新しいデータ
-    // ------------------------------
 
     tripGroupsData.forEach(
       item => {
@@ -2623,10 +2720,6 @@
     );
 
 
-
-    // ------------------------------
-    // 古いデータ
-    // ------------------------------
 
     legacyTripsData.forEach(
       item => {
@@ -2702,7 +2795,7 @@
 
           <br>
 
-          🚐 乗車回数：
+          🚐 配車回数：
           ${counts[name]}
           回
 
@@ -2771,12 +2864,9 @@
 
     try {
 
-
       setToday();
 
-
       await initializeMembers();
-
 
       await loadTrips();
 
@@ -2806,7 +2896,6 @@
     }
 
   }
-
 
 
   startApp();
