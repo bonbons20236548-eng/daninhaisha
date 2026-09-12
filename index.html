@@ -1,4428 +1,3711 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>ミニバス配車管理</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      margin: 0;
-      padding: 12px;
-      background: #111;
-      color: #fff;
-      line-height: 1.5;
-    }
-
-    h1 {
-      text-align: center;
-      color: #ff3f9f;
-      margin: 5px 0 8px;
-      font-size: 24px;
-      font-weight: 800;
-    }
-
-    h2 {
-      font-size: 18px;
-      margin: 0 0 14px;
-      color: #ff3f9f;
-      font-weight: 800;
-    }
-
-    h3 {
-      font-size: 15px;
-      margin: 18px 0 8px;
-      color: #fff;
-    }
-
-    .box {
-      background: #1d1d1d;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-      border: 1px solid #333;
-    }
-
-    label {
-      display: block;
-      margin-top: 13px;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #ddd;
-      font-weight: 600;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 13px;
-      border-radius: 11px;
-      border: 1px solid #555;
-      background: #111;
-      color: #fff;
-      font-size: 16px;
-      min-height: 48px;
-    }
-
-    select option {
-      background: #222;
-      color: #fff;
-    }
-
-    button {
-      border: none;
-      border-radius: 11px;
-      padding: 11px 14px;
-      background: #ff3f9f;
-      color: white;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      min-height: 42px;
-    }
-
-    button:disabled {
-      opacity: 0.3;
-    }
-
-    button:active {
-      opacity: 0.7;
-    }
-
-    .main-button {
-      width: 100%;
-      margin-top: 16px;
-      padding: 15px;
-      font-size: 17px;
-      min-height: 52px;
-    }
-
-    .member-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .member-check {
-      background: #292929;
-      padding: 12px 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 48px;
-      margin: 0;
-      color: #fff;
-      font-weight: normal;
-    }
-
-    .member-check input {
-      width: auto;
-      min-height: auto;
-      transform: scale(1.25);
-      margin: 0;
-      flex-shrink: 0;
-    }
-
-    .member-check span {
-      font-size: 14px;
-    }
-
-    .member-management {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 7px;
-      padding: 10px 0;
-      border-bottom: 1px solid #333;
-    }
-
-    .member-management:last-child {
-      border-bottom: none;
-    }
-
-    .member-name {
-      flex: 1;
-      font-size: 15px;
-      font-weight: 600;
-      min-width: 0;
-    }
-
-    .member-buttons {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .small-button {
-      padding: 7px 8px;
-      font-size: 12px;
-      min-height: 36px;
-    }
-
-    .hidden-member {
-      opacity: 0.5;
-    }
-
-    .history-item {
-      background: #292929;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-      border: 1px solid #383838;
-    }
-
-    .history-date {
-      color: #ff3f9f;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .history-detail {
-      margin-top: 7px;
-      line-height: 1.8;
-      font-size: 14px;
-    }
-
-    .history-buttons {
-      display: flex;
-      gap: 7px;
-      margin-top: 12px;
-    }
-
-    .history-buttons button {
-      flex: 1;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-    }
-
-    .summary-item {
-      background: #292929;
-      padding: 13px 8px;
-      border-radius: 12px;
-      text-align: center;
-      border: 1px solid #383838;
-    }
-
-    .summary-label {
-      font-size: 13px;
-      color: #ddd;
-      margin-bottom: 4px;
-    }
-
-    .summary-number {
-      font-size: 23px;
-      color: #ff3f9f;
-      font-weight: 800;
-    }
-
-    .summary-unit {
-      font-size: 12px;
-      color: #aaa;
-    }
-
-    .status {
-      text-align: center;
-      color: #aaa;
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
-
-    .danger {
-      background: #a40050;
-    }
-
-    .gray {
-      background: #555;
-    }
-
-    .green {
-      background: #008f5a;
-    }
-
-    .blue {
-      background: #2868b2;
-    }
-
-    .member-add {
-      display: flex;
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .member-add input {
-      flex: 1;
-    }
-
-    .member-add button {
-      white-space: nowrap;
-    }
-
-    .inactive-title {
-      color: #aaa;
-      font-size: 14px;
-      margin-top: 18px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .empty {
-      color: #aaa;
-      text-align: center;
-      padding: 14px 5px;
-      font-size: 14px;
-    }
-
-    .management-toggle {
-      width: 100%;
-      background: #292929;
-      border: 1px solid #444;
-      color: #fff;
-      text-align: left;
-      padding: 14px;
-      font-size: 15px;
-    }
-
-    .management-area {
-      margin-top: 14px;
-    }
-
-    .section-note {
-      color: #999;
-      font-size: 12px;
-      margin-top: -7px;
-      margin-bottom: 10px;
-    }
-
-    .danger-area {
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid #333;
-    }
-
-    .danger-title {
-      color: #ff7fba;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .sub-box {
-      background: #252525;
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 12px;
-      border: 1px solid #383838;
-    }
-
-    .info-box {
-      background: #202020;
-      border-left: 4px solid #ff3f9f;
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-top: 10px;
-      font-size: 13px;
-      color: #ddd;
-    }
-
-    .check-title {
-      font-size: 14px;
-      color: #ddd;
-      font-weight: 700;
-      margin-top: 15px;
-      margin-bottom: 7px;
-    }
-
-    .coach-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .coach-check {
-      background: #292929;
-      padding: 12px 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 48px;
-      margin: 0;
-      color: #fff;
-      font-weight: normal;
-    }
-
-    .coach-check input {
-      width: auto;
-      min-height: auto;
-      transform: scale(1.25);
-      margin: 0;
-      flex-shrink: 0;
-    }
-
-    .coach-check span {
-      font-size: 14px;
-    }
-
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #292929;
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 8px;
-    }
-
-    .toggle-row span {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .toggle-row input {
-      width: auto;
-      min-height: auto;
-      transform: scale(1.35);
-    }
-
-    .coach-history-title {
-      color: #fff;
-      font-weight: 800;
-      font-size: 15px;
-      margin-bottom: 5px;
-    }
-
-    .coach-tag {
-      display: inline-block;
-      background: #444;
-      border-radius: 8px;
-      padding: 4px 8px;
-      margin: 3px 3px 3px 0;
-      font-size: 12px;
-    }
-
-    .driver-name {
-      color: #ffcf4a;
-      font-weight: 800;
-    }
-
-    .coach-name {
-      color: #6fc3ff;
-      font-weight: 700;
-    }
-
-    @media (max-width: 380px) {
-
-      .member-grid,
-      .coach-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .member-buttons {
-        gap: 3px;
-      }
-
-      .small-button {
-        padding: 6px 7px;
-      }
-
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ミニバス配車管理</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 12px;
+  background: #111;
+  color: #fff;
+  line-height: 1.5;
+}
+
+h1 {
+  text-align: center;
+  color: #ff3f9f;
+  margin: 5px 0 8px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 0 0 14px;
+  color: #ff3f9f;
+  font-weight: 800;
+}
+
+h3 {
+  font-size: 15px;
+  margin: 15px 0 8px;
+  color: #fff;
+}
+
+.box {
+  background: #1d1d1d;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid #333;
+}
+
+label {
+  display: block;
+  margin-top: 13px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #ddd;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 11px;
+  border: 1px solid #555;
+  background: #111;
+  color: #fff;
+  font-size: 16px;
+  min-height: 48px;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+button {
+  border: none;
+  border-radius: 11px;
+  padding: 11px 14px;
+  background: #ff3f9f;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 42px;
+}
+
+button:disabled {
+  opacity: 0.3;
+}
+
+button:active {
+  opacity: 0.7;
+}
+
+.main-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 15px;
+  font-size: 17px;
+  min-height: 52px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.member-check {
+  background: #292929;
+  padding: 12px 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  margin: 0;
+  color: #fff;
+  font-weight: normal;
+}
+
+.member-check input {
+  width: auto;
+  min-height: auto;
+  transform: scale(1.25);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.member-check span {
+  font-size: 14px;
+}
+
+.member-management {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.member-management:last-child {
+  border-bottom: none;
+}
+
+.member-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.member-buttons {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.small-button {
+  padding: 7px 8px;
+  font-size: 12px;
+  min-height: 36px;
+}
+
+.hidden-member {
+  opacity: 0.5;
+}
+
+.history-item {
+  background: #292929;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #383838;
+}
+
+.history-date {
+  color: #ff3f9f;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.history-detail {
+  margin-top: 7px;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.history-buttons {
+  display: flex;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.history-buttons button {
+  flex: 1;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.summary-item {
+  background: #292929;
+  padding: 13px 8px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #383838;
+}
+
+.summary-label {
+  font-size: 13px;
+  color: #ddd;
+  margin-bottom: 4px;
+}
+
+.summary-number {
+  font-size: 23px;
+  color: #ff3f9f;
+  font-weight: 800;
+}
+
+.summary-unit {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.status {
+  text-align: center;
+  color: #aaa;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.danger {
+  background: #a40050;
+}
+
+.gray {
+  background: #555;
+}
+
+.green {
+  background: #008f5a;
+}
+
+.member-add {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.member-add input {
+  flex: 1;
+}
+
+.member-add button {
+  white-space: nowrap;
+}
+
+.inactive-title {
+  color: #aaa;
+  font-size: 14px;
+  margin-top: 18px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.empty {
+  color: #aaa;
+  text-align: center;
+  padding: 14px 5px;
+  font-size: 14px;
+}
+
+.management-toggle {
+  width: 100%;
+  background: #292929;
+  border: 1px solid #444;
+  color: #fff;
+  text-align: left;
+  padding: 14px;
+  font-size: 15px;
+}
+
+.management-area {
+  margin-top: 14px;
+}
+
+.section-note {
+  color: #999;
+  font-size: 12px;
+  margin-top: -7px;
+  margin-bottom: 10px;
+}
+
+.danger-area {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #333;
+}
+
+.danger-title {
+  color: #ff7fba;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.coach-box {
+  background: #252525;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 13px;
+  margin-top: 12px;
+}
+
+.coach-car {
+  background: #191919;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #333;
+}
+
+.remove-car {
+  background: #555;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.add-car-button {
+  width: 100%;
+  margin-top: 10px;
+  background: #444;
+}
+
+.participant-count {
+  color: #ff3f9f;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+@media (max-width: 380px) {
+  .member-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-buttons {
+    gap: 3px;
+  }
+
+  .small-button {
+    padding: 6px 7px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <h1>🏀 ミニバス配車管理</h1>
+<h1>🏀 ミニバス配車管理</h1>
 
-  <div id="status" class="status">
-    Firebase接続中…
-  </div>
+<div id="status" class="status">
+Firebase接続中…
+</div>
 
 
-  <!-- ============================= -->
-  <!-- 配車登録 -->
-  <!-- ============================= -->
+<!-- ================================= -->
+<!-- 配車登録 -->
+<!-- ================================= -->
 
-  <div class="box">
+<div class="box">
 
-    <h2>🚐 配車登録</h2>
+<h2>🚐 配車登録</h2>
 
-    <label>日付</label>
+<label>日付</label>
 
-    <input
-      type="date"
-      id="tripDate"
-    >
+<input
+type="date"
+id="tripDate"
+>
 
 
-    <label>会場名</label>
+<label>会場名</label>
 
-    <input
-      type="text"
-      id="venueName"
-      placeholder="例：○○小学校"
-    >
+<input
+type="text"
+id="venueName"
+placeholder="例：○○小学校"
+>
 
 
-    <label>配車を出した人</label>
+<label>距離（km）</label>
 
-    <select id="driverName">
-      <option value="">選択してください</option>
-    </select>
+<input
+type="number"
+id="distance"
+placeholder="例：25"
+inputmode="decimal"
+>
 
 
-    <label>距離（km）</label>
+<label>高速料金・ETCメモ</label>
 
-    <input
-      type="number"
-      id="distance"
-      placeholder="例：25"
-      inputmode="decimal"
-    >
+<textarea
+id="highwayMemo"
+placeholder="例：往復2,400円 / 帰りのみ高速 / ETC使用など"
+></textarea>
 
 
-    <label>高速道路</label>
+<label>乗車メンバー</label>
 
-    <div class="toggle-row">
+<div
+id="memberList"
+class="member-grid"
+>
+読み込み中…
+</div>
 
-      <span>高速道路を使用する</span>
 
-      <input
-        type="checkbox"
-        id="highwayUsed"
-        onchange="toggleHighwayFee()"
-      >
+<button
+class="main-button"
+onclick="saveTrip()"
+>
+🚐 配車記録を保存
+</button>
 
-    </div>
+</div>
 
 
-    <div id="highwayFeeArea">
+<!-- ================================= -->
+<!-- 監督・コーチ配車登録 -->
+<!-- ================================= -->
 
-      <label>高速代（円）</label>
+<div class="box">
 
-      <input
-        type="number"
-        id="highwayFee"
-        placeholder="高速を使わない場合は0"
-        inputmode="numeric"
-        value="0"
-      >
+<h2>🏀 監督・コーチ配車</h2>
 
-    </div>
+<div class="section-note">
+監督・コーチだけで乗り合わせる場合はこちらから登録します。
+</div>
 
 
-    <label>乗車メンバー</label>
+<label>日付</label>
 
-    <div id="memberList" class="member-grid">
-      読み込み中…
-    </div>
+<input
+type="date"
+id="coachTripDate"
+>
 
 
-    <div class="check-title">
-      🏀 参加コーチ
-    </div>
+<label>会場名</label>
 
-    <div class="section-note">
-      この配車に参加したコーチを選択してください。
-    </div>
+<input
+type="text"
+id="coachVenueName"
+placeholder="例：○○小学校"
+>
 
-    <div id="coachList" class="coach-grid">
-      読み込み中…
-    </div>
 
+<h3>👥 その日に参加した監督・コーチ</h3>
 
-    <button
-      class="main-button"
-      onclick="saveTrip()"
-    >
-      🚐 配車記録を保存
-    </button>
+<div
+id="coachParticipantList"
+class="member-grid"
+>
+読み込み中…
+</div>
 
-  </div>
+<div
+id="participantCount"
+class="participant-count"
+>
+参加者 0人
+</div>
 
 
-  <!-- ============================= -->
-  <!-- 月間集計 -->
-  <!-- ============================= -->
+<h3>🚗 配車した車</h3>
 
-  <div class="box">
+<div id="coachCars"></div>
 
-    <h2>📊 月間集計</h2>
 
-    <div class="summary">
+<button
+class="add-car-button"
+onclick="addCoachCar()"
+>
+＋ 車を追加
+</button>
 
-      <div class="summary-item">
-        <div class="summary-label">
-          配車日数
-        </div>
 
-        <div
-          id="monthDays"
-          class="summary-number"
-        >
-          0
-        </div>
+<label>高速料金・ETCメモ</label>
 
-        <div class="summary-unit">
-          日
-        </div>
-      </div>
+<textarea
+id="coachHighwayMemo"
+placeholder="例：往復2,400円 / 2台とも帰りのみ高速など"
+></textarea>
 
 
-      <div class="summary-item">
-        <div class="summary-label">
-          配車人数
-        </div>
+<button
+class="main-button"
+onclick="saveCoachTrip()"
+>
+🏀 監督・コーチ配車を保存
+</button>
 
-        <div
-          id="monthRiders"
-          class="summary-number"
-        >
-          0
-        </div>
+</div>
 
-        <div class="summary-unit">
-          人
-        </div>
-      </div>
 
+<!-- ================================= -->
+<!-- 監督・コーチ集計 -->
+<!-- ================================= -->
 
-      <div class="summary-item">
-        <div class="summary-label">
-          総距離
-        </div>
+<div class="box">
 
-        <div
-          id="monthDistance"
-          class="summary-number"
-        >
-          0
-        </div>
+<h2>📊 監督・コーチ集計</h2>
 
-        <div class="summary-unit">
-          km
-        </div>
-      </div>
+<div class="summary">
 
+<div class="summary-item">
+<div class="summary-label">
+参加延べ人数
+</div>
 
-      <div class="summary-item">
-        <div class="summary-label">
-          高速代
-        </div>
+<div
+id="coachMonthParticipants"
+class="summary-number"
+>
+0
+</div>
 
-        <div
-          id="monthHighway"
-          class="summary-number"
-        >
-          0
-        </div>
+<div class="summary-unit">
+人
+</div>
+</div>
 
-        <div class="summary-unit">
-          円
-        </div>
-      </div>
 
-    </div>
+<div class="summary-item">
+<div class="summary-label">
+配車日数
+</div>
 
-  </div>
+<div
+id="coachMonthDays"
+class="summary-number"
+>
+0
+</div>
 
+<div class="summary-unit">
+日
+</div>
+</div>
 
-  <!-- ============================= -->
-  <!-- メンバー別集計 -->
-  <!-- ============================= -->
 
-  <div class="box">
+<div class="summary-item">
+<div class="summary-label">
+配車台数
+</div>
 
-    <h2>👤 メンバー別配車集計</h2>
+<div
+id="coachMonthCars"
+class="summary-number"
+>
+0
+</div>
 
-    <div id="memberSummary">
-      読み込み中…
-    </div>
+<div class="summary-unit">
+台
+</div>
+</div>
 
-  </div>
 
+<div class="summary-item">
+<div class="summary-label">
+参加記録数
+</div>
 
-  <!-- ============================= -->
-  <!-- 配車履歴 -->
-  <!-- ============================= -->
+<div
+id="coachMonthTrips"
+class="summary-number"
+>
+0
+</div>
 
-  <div class="box">
+<div class="summary-unit">
+回
+</div>
+</div>
 
-    <h2>📅 配車履歴</h2>
+</div>
 
-    <div id="history">
-      読み込み中…
-    </div>
+</div>
 
 
-    <div class="danger-area">
+<!-- ================================= -->
+<!-- 監督・コーチ別集計 -->
+<!-- ================================= -->
 
-      <div class="danger-title">
-        ⚠️ データ管理
-      </div>
+<div class="box">
 
-      <div class="section-note">
-        テストデータなど、すべての配車履歴を削除します。
-        メンバー・コーチ情報は削除されません。
-      </div>
+<h2>👤 監督・コーチ別集計</h2>
 
-      <button
-        class="main-button danger"
-        onclick="deleteAllHistory()"
-      >
-        🗑️ 配車履歴を全部削除
-      </button>
+<div id="coachSummary">
+読み込み中…
+</div>
 
-    </div>
+</div>
 
-  </div>
 
+<!-- ================================= -->
+<!-- 配車履歴 -->
+<!-- ================================= -->
 
-  <!-- ============================= -->
-  <!-- コーチ管理・履歴 -->
-  <!-- 配車登録の下 -->
-  <!-- ============================= -->
+<div class="box">
 
-  <div class="box">
+<h2>📅 配車履歴</h2>
 
-    <button
-      id="coachManagementToggle"
-      class="management-toggle"
-      onclick="toggleCoachManagement()"
-    >
-      🏀 コーチ管理・履歴を開く　▼
-    </button>
+<div id="history">
+読み込み中…
+</div>
 
 
-    <div
-      id="coachManagementArea"
-      class="management-area"
-      style="display:none;"
-    >
+<div class="danger-area">
 
-      <h2>🏀 コーチ管理・履歴</h2>
+<div class="danger-title">
+⚠️ データ管理
+</div>
 
-      <div class="section-note">
-        コーチの追加・名前変更・非表示ができます。
-        過去の配車で誰が参加したかも確認できます。
-      </div>
+<div class="section-note">
+テストデータなど、すべての配車履歴を削除します。
+</div>
 
+<button
+class="main-button danger"
+onclick="deleteAllHistory()"
+>
+🗑️ 配車履歴を全部削除
+</button>
 
-      <!-- コーチ追加 -->
+</div>
 
-      <div class="sub-box">
+</div>
 
-        <h3>➕ コーチを追加</h3>
 
-        <div class="member-add">
+<!-- ================================= -->
+<!-- 監督・コーチ管理 -->
+<!-- ================================= -->
 
-          <input
-            type="text"
-            id="newCoachName"
-            placeholder="コーチ名"
-          >
+<div class="box">
 
-          <button onclick="addCoach()">
-            追加
-          </button>
+<button
+id="coachManagementToggle"
+class="management-toggle"
+onclick="toggleCoachManagement()"
+>
+⚙️ 監督・コーチ管理を開く　▼
+</button>
 
-        </div>
 
-      </div>
+<div
+id="coachManagementArea"
+class="management-area"
+style="display:none;"
+>
 
+<h2>🏀 監督・コーチ管理</h2>
 
-      <!-- コーチ一覧 -->
+<div class="section-note">
+監督・コーチの追加・名前変更・並び替え・非表示ができます。
+</div>
 
-      <div class="sub-box">
 
-        <h3>👥 コーチ一覧</h3>
+<div class="member-add">
 
-        <div id="coachManagementList">
-          読み込み中…
-        </div>
+<input
+type="text"
+id="newCoachName"
+placeholder="監督・コーチ名"
+>
 
-      </div>
+<button onclick="addCoach()">
+追加
+</button>
 
+</div>
 
-      <!-- コーチ履歴 -->
 
-      <div class="sub-box">
+<div id="coachManagementList">
+読み込み中…
+</div>
 
-        <h3>📅 コーチ参加履歴</h3>
+</div>
 
-        <div id="coachHistory">
-          読み込み中…
-        </div>
+</div>
 
-      </div>
 
-    </div>
+<!-- ================================= -->
+<!-- 15名メンバー管理 -->
+<!-- ================================= -->
 
-  </div>
+<div class="box">
 
+<button
+id="managementToggle"
+class="management-toggle"
+onclick="toggleMemberManagement()"
+>
+⚙️ メンバー管理を開く　▼
+</button>
 
-  <!-- ============================= -->
-  <!-- メンバー管理 -->
-  <!-- ============================= -->
 
-  <div class="box">
+<div
+id="managementArea"
+class="management-area"
+style="display:none;"
+>
 
-    <button
-      id="managementToggle"
-      class="management-toggle"
-      onclick="toggleMemberManagement()"
-    >
-      ⚙️ メンバー管理を開く　▼
-    </button>
+<h2>👥 メンバー管理</h2>
 
+<div class="section-note">
+通常の15名のメンバー管理です。
+</div>
 
-    <div
-      id="managementArea"
-      class="management-area"
-      style="display:none;"
-    >
 
-      <h2>👥 メンバー管理</h2>
+<div class="member-add">
 
-      <div class="section-note">
-        メンバーの追加・名前変更・並び替え・非表示ができます。
-      </div>
+<input
+type="text"
+id="newMemberName"
+placeholder="新しいメンバー名"
+>
 
+<button onclick="addMember()">
+追加
+</button>
 
-      <div class="member-add">
+</div>
 
-        <input
-          type="text"
-          id="newMemberName"
-          placeholder="新しいメンバー名"
-        >
 
-        <button onclick="addMember()">
-          追加
-        </button>
+<div id="memberManagementList">
+読み込み中…
+</div>
 
-      </div>
+</div>
 
-
-      <div id="memberManagementList">
-        読み込み中…
-      </div>
-
-    </div>
-
-  </div>
+</div>
 
 
 <script type="module">
 
-  // ==========================================
-  // Firebase
-  // ==========================================
+/* ==========================================
+   Firebase
+========================================== */
 
-  import {
-    initializeApp
-  } from
-  "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 
-  import {
-    initializeFirestore,
-    collection,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc
-  } from
-  "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import {
+initializeFirestore,
+collection,
+getDocs,
+addDoc,
+updateDoc,
+deleteDoc,
+doc
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
-  const firebaseConfig = {
+const firebaseConfig = {
 
-    apiKey:
-      "AIzaSyBRYKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
+apiKey:
+"AIzaSyBRYKiCM_T3gl3dOIGDm5YIqJe-5ig8A",
 
-    authDomain:
-      "minibusdanin.firebaseapp.com",
+authDomain:
+"minibusdanin.firebaseapp.com",
 
-    projectId:
-      "minibusdanin",
+projectId:
+"minibusdanin",
 
-    storageBucket:
-      "minibusdanin.firebasestorage.app",
+storageBucket:
+"minibusdanin.firebasestorage.app",
 
-    messagingSenderId:
-      "1093555104011",
+messagingSenderId:
+"1093555104011",
 
-    appId:
-      "1:1093555104011:web:935cef97dd4bfee8615a0e",
+appId:
+"1:1093555104011:web:935cef97dd4bfee8615a0e",
 
-    measurementId:
-      "G-XFSJQRLHQ2"
+measurementId:
+"G-XFSJQRLHQ2"
 
-  };
+};
 
 
-  const app =
-    initializeApp(firebaseConfig);
+const app =
+initializeApp(firebaseConfig);
 
 
-  const db =
-    initializeFirestore(
-      app,
-      {},
-      "default"
-    );
+const db =
+initializeFirestore(
+app,
+{},
+"default"
+);
 
 
-  // ==========================================
-  // 初期メンバー
-  // ==========================================
+/* ==========================================
+   初期15名
+========================================== */
 
-  const initialMembers = [
+const initialMembers = [
+"西濱",
+"小澤",
+"竹内",
+"粉川",
+"山口",
+"藤本",
+"萩",
+"中田",
+"西田",
+"伊丹",
+"高木",
+"鈴木",
+"加藤",
+"長沼",
+"舘"
+];
 
-    "西濱",
-    "小澤",
-    "竹内",
-    "粉川",
-    "山口",
-    "藤本",
-    "萩",
-    "中田",
-    "西田",
-    "伊丹",
-    "高木",
-    "鈴木",
-    "加藤",
-    "長沼",
-    "舘"
 
-  ];
+let membersData = [];
+let coachesData = [];
 
+let tripGroupsData = [];
+let legacyTripsData = [];
+let coachTripsData = [];
 
-  // 初期コーチ
-  // 必要ならここに名前を追加できます
 
-  const initialCoaches = [
+/* ==========================================
+   今日の日付
+========================================== */
 
-    "藤本"
+function todayString() {
 
-  ];
+const today = new Date();
 
+const yyyy =
+today.getFullYear();
 
-  let membersData = [];
+const mm =
+String(
+today.getMonth() + 1
+).padStart(2,"0");
 
-  let coachesData = [];
+const dd =
+String(
+today.getDate()
+).padStart(2,"0");
 
-  let tripGroupsData = [];
+return `${yyyy}-${mm}-${dd}`;
+}
 
-  let legacyTripsData = [];
 
+function setToday() {
 
-  // ==========================================
-  // メンバー管理 開閉
-  // ==========================================
+document.getElementById(
+"tripDate"
+).value = todayString();
 
-  window.toggleMemberManagement =
-    function() {
+document.getElementById(
+"coachTripDate"
+).value = todayString();
 
-      const area =
-        document.getElementById(
-          "managementArea"
-        );
+}
 
-      const button =
-        document.getElementById(
-          "managementToggle"
-        );
 
+/* ==========================================
+   メンバー管理 開閉
+========================================== */
 
-      if (
-        area.style.display === "none"
-      ) {
+window.toggleMemberManagement =
+function() {
 
-        area.style.display = "block";
+const area =
+document.getElementById(
+"managementArea"
+);
 
-        button.textContent =
-          "⚙️ メンバー管理を閉じる　▲";
+const button =
+document.getElementById(
+"managementToggle"
+);
 
-      } else {
 
-        area.style.display = "none";
+if(area.style.display === "none") {
 
-        button.textContent =
-          "⚙️ メンバー管理を開く　▼";
+area.style.display = "block";
 
-      }
+button.textContent =
+"⚙️ メンバー管理を閉じる　▲";
 
-    };
+} else {
 
+area.style.display = "none";
 
-  // ==========================================
-  // コーチ管理 開閉
-  // ==========================================
+button.textContent =
+"⚙️ メンバー管理を開く　▼";
 
-  window.toggleCoachManagement =
-    function() {
+}
 
-      const area =
-        document.getElementById(
-          "coachManagementArea"
-        );
+};
 
-      const button =
-        document.getElementById(
-          "coachManagementToggle"
-        );
 
+/* ==========================================
+   コーチ管理 開閉
+========================================== */
 
-      if (
-        area.style.display === "none"
-      ) {
+window.toggleCoachManagement =
+function() {
 
-        area.style.display = "block";
+const area =
+document.getElementById(
+"coachManagementArea"
+);
 
-        button.textContent =
-          "🏀 コーチ管理・履歴を閉じる　▲";
+const button =
+document.getElementById(
+"coachManagementToggle"
+);
 
-      } else {
 
-        area.style.display = "none";
+if(area.style.display === "none") {
 
-        button.textContent =
-          "🏀 コーチ管理・履歴を開く　▼";
+area.style.display = "block";
 
-      }
+button.textContent =
+"⚙️ 監督・コーチ管理を閉じる　▲";
 
-    };
+} else {
 
+area.style.display = "none";
 
-  // ==========================================
-  // 今日の日付
-  // ==========================================
+button.textContent =
+"⚙️ 監督・コーチ管理を開く　▼";
 
-  function setToday() {
+}
 
-    const input =
-      document.getElementById(
-        "tripDate"
-      );
+};
 
 
-    if (!input.value) {
+/* ==========================================
+   初期メンバー作成
+========================================== */
 
-      const today =
-        new Date();
+async function initializeMembers() {
 
-      const yyyy =
-        today.getFullYear();
+const snapshot =
+await getDocs(
+collection(db,"members")
+);
 
-      const mm =
-        String(
-          today.getMonth() + 1
-        ).padStart(2, "0");
+const existingNames = [];
 
-      const dd =
-        String(
-          today.getDate()
-        ).padStart(2, "0");
+snapshot.forEach(item => {
 
-      input.value =
-        `${yyyy}-${mm}-${dd}`;
+const data = item.data();
 
-    }
+if(data.name) {
+existingNames.push(data.name);
+}
 
-  }
+});
 
 
-  // ==========================================
-  // 高速料金表示
-  // ==========================================
+for(
+let i = 0;
+i < initialMembers.length;
+i++
+) {
 
-  window.toggleHighwayFee =
-    function() {
+const name =
+initialMembers[i];
 
-      const used =
-        document.getElementById(
-          "highwayUsed"
-        ).checked;
+if(!existingNames.includes(name)) {
 
-      const area =
-        document.getElementById(
-          "highwayFeeArea"
-        );
+await addDoc(
+collection(db,"members"),
+{
+name:name,
+order:i,
+active:true,
+createdAt:new Date()
+}
+);
 
-      const fee =
-        document.getElementById(
-          "highwayFee"
-        );
+}
 
+}
 
-      if (used) {
 
-        area.style.display =
-          "block";
+await loadMembers();
 
-      } else {
+}
 
-        area.style.display =
-          "block";
 
-        fee.value = "0";
+/* ==========================================
+   メンバー読み込み
+========================================== */
 
-      }
+async function loadMembers() {
 
-    };
+const snapshot =
+await getDocs(
+collection(db,"members")
+);
 
+membersData = [];
 
-  // ==========================================
-  // 初期メンバー作成
-  // ==========================================
+snapshot.forEach(item => {
 
-  async function initializeMembers() {
+membersData.push({
 
-    const snapshot =
-      await getDocs(
-        collection(db, "members")
-      );
+id:item.id,
+...item.data()
 
+});
 
-    const existingNames = [];
+});
 
 
-    snapshot.forEach(item => {
+membersData.sort(
+(a,b) =>
+(a.order ?? 9999) -
+(b.order ?? 9999)
+);
 
-      const data =
-        item.data();
 
+renderMemberList();
+renderMemberManagement();
+renderMemberSummary();
 
-      if (data.name) {
+}
 
-        existingNames.push(
-          data.name
-        );
 
-      }
+/* ==========================================
+   乗車メンバー表示
+========================================== */
 
-    });
+function renderMemberList() {
 
+const area =
+document.getElementById(
+"memberList"
+);
 
-    for (
-      let i = 0;
-      i < initialMembers.length;
-      i++
-    ) {
+area.innerHTML = "";
 
-      const name =
-        initialMembers[i];
+const activeMembers =
+membersData.filter(
+m => m.active !== false
+);
 
 
-      if (
-        !existingNames.includes(name)
-      ) {
+if(activeMembers.length === 0) {
 
-        await addDoc(
-          collection(db, "members"),
-          {
+area.innerHTML =
+'<div class="empty">メンバーがいません。</div>';
 
-            name:
-              name,
+return;
 
-            order:
-              i,
+}
 
-            active:
-              true,
 
-            createdAt:
-              new Date()
+activeMembers.forEach(member => {
 
-          }
-        );
+const label =
+document.createElement("label");
 
-      }
+label.className =
+"member-check";
 
-    }
+label.innerHTML = `
 
+<input
+type="checkbox"
+data-member-name="${escapeHtml(member.name)}"
+>
 
-    await loadMembers();
+<span>
+${escapeHtml(member.name)}
+</span>
 
-  }
+`;
 
+area.appendChild(label);
 
-  // ==========================================
-  // メンバー読み込み
-  // ==========================================
+});
 
-  async function loadMembers() {
+}
 
-    const snapshot =
-      await getDocs(
-        collection(db, "members")
-      );
 
+/* ==========================================
+   メンバー管理表示
+========================================== */
 
-    membersData = [];
+function renderMemberManagement() {
 
+const area =
+document.getElementById(
+"memberManagementList"
+);
 
-    snapshot.forEach(item => {
+area.innerHTML = "";
 
-      membersData.push({
+const active =
+membersData.filter(
+m => m.active !== false
+);
 
-        id:
-          item.id,
+const inactive =
+membersData.filter(
+m => m.active === false
+);
 
-        ...item.data()
 
-      });
+active.forEach((member,index) => {
 
-    });
+const row =
+document.createElement("div");
 
+row.className =
+"member-management";
 
-    membersData.sort(
-      (a, b) => {
+row.innerHTML = `
 
-        const ao =
-          a.order ?? 9999;
+<div class="member-name">
+${escapeHtml(member.name)}
+</div>
 
-        const bo =
-          b.order ?? 9999;
+<div class="member-buttons">
 
-        return ao - bo;
+<button
+class="small-button gray"
+onclick="moveMember('${member.id}',-1)"
+${index === 0 ? "disabled":""}
+>
+↑
+</button>
 
-      }
-    );
+<button
+class="small-button gray"
+onclick="moveMember('${member.id}',1)"
+${index === active.length-1 ? "disabled":""}
+>
+↓
+</button>
 
+<button
+class="small-button"
+onclick="renameMember('${member.id}')"
+>
+✏️
+</button>
 
-    renderMemberList();
+<button
+class="small-button danger"
+onclick="hideMember('${member.id}')"
+>
+🙈
+</button>
 
-    renderMemberManagement();
+</div>
 
-    renderDriverList();
+`;
 
-    renderMemberSummary();
+area.appendChild(row);
 
-  }
+});
 
 
-  // ==========================================
-  // コーチ初期データ作成
-  // ==========================================
+if(inactive.length > 0) {
 
-  async function initializeCoaches() {
+const title =
+document.createElement("div");
 
-    const snapshot =
-      await getDocs(
-        collection(db, "coaches")
-      );
+title.className =
+"inactive-title";
 
+title.textContent =
+"非表示メンバー";
 
-    const existingNames = [];
+area.appendChild(title);
 
 
-    snapshot.forEach(item => {
+inactive.forEach(member => {
 
-      const data =
-        item.data();
+const row =
+document.createElement("div");
 
+row.className =
+"member-management hidden-member";
 
-      if (data.name) {
+row.innerHTML = `
 
-        existingNames.push(
-          data.name
-        );
+<div class="member-name">
+${escapeHtml(member.name)}
+</div>
 
-      }
+<div class="member-buttons">
 
-    });
+<button
+class="small-button green"
+onclick="showMember('${member.id}')"
+>
+👀 再表示
+</button>
 
+</div>
 
-    for (
-      let i = 0;
-      i < initialCoaches.length;
-      i++
-    ) {
+`;
 
-      const name =
-        initialCoaches[i];
+area.appendChild(row);
 
+});
 
-      if (
-        !existingNames.includes(name)
-      ) {
+}
 
-        await addDoc(
-          collection(db, "coaches"),
-          {
+}
 
-            name:
-              name,
 
-            order:
-              i,
+/* ==========================================
+   メンバー追加
+========================================== */
 
-            active:
-              true,
+window.addMember =
+async function() {
 
-            createdAt:
-              new Date()
+const input =
+document.getElementById(
+"newMemberName"
+);
 
-          }
-        );
+const name =
+input.value.trim();
 
-      }
+if(!name) {
 
-    }
+alert("メンバー名を入力してください。");
+return;
 
+}
 
-    await loadCoaches();
 
-  }
+if(
+membersData.some(
+m => m.name === name
+)
+) {
 
+alert("同じ名前のメンバーがいます。");
+return;
 
-  // ==========================================
-  // コーチ読み込み
-  // ==========================================
+}
 
-  async function loadCoaches() {
 
-    const snapshot =
-      await getDocs(
-        collection(db, "coaches")
-      );
+const maxOrder =
+membersData.length > 0
+?
+Math.max(
+...membersData.map(
+m => m.order ?? 0
+)
+)
+:
+-1;
 
 
-    coachesData = [];
+await addDoc(
+collection(db,"members"),
+{
+name:name,
+order:maxOrder+1,
+active:true,
+createdAt:new Date()
+}
+);
 
 
-    snapshot.forEach(item => {
+input.value = "";
 
-      coachesData.push({
+await loadMembers();
 
-        id:
-          item.id,
+alert(
+`${name}さんを追加しました。`
+);
 
-        ...item.data()
+};
 
-      });
 
-    });
+/* ==========================================
+   メンバー名前変更
+========================================== */
 
+window.renameMember =
+async function(id) {
 
-    coachesData.sort(
-      (a, b) => {
+const member =
+membersData.find(
+m => m.id === id
+);
 
-        const ao =
-          a.order ?? 9999;
+if(!member) return;
 
-        const bo =
-          b.order ?? 9999;
 
-        return ao - bo;
+const newName =
+prompt(
+"新しい名前を入力してください。",
+member.name
+);
 
-      }
-    );
+if(newName === null) return;
 
+const trimmed =
+newName.trim();
 
-    renderCoachList();
+if(!trimmed) {
 
-    renderCoachManagement();
+alert("名前を空欄にはできません。");
+return;
 
-    renderCoachHistory();
+}
 
-  }
 
+if(
+membersData.some(
+m =>
+m.id !== id &&
+m.name === trimmed
+)
+) {
 
-  // ==========================================
-  // 配車担当者一覧
-  // ==========================================
+alert("同じ名前のメンバーがいます。");
+return;
 
-  function renderDriverList() {
+}
 
-    const select =
-      document.getElementById(
-        "driverName"
-      );
 
+if(
+!confirm(
+`「${member.name}」を「${trimmed}」に変更しますか？`
+)
+) return;
 
-    select.innerHTML =
-      '<option value="">選択してください</option>';
 
+const groupSnapshot =
+await getDocs(
+collection(db,"tripGroups")
+);
 
-    const activeMembers =
-      membersData.filter(
-        member =>
-          member.active !== false
-      );
 
+for(
+const item of groupSnapshot.docs
+) {
 
-    activeMembers.forEach(member => {
+const data =
+item.data();
 
-      const option =
-        document.createElement(
-          "option"
-        );
+const oldMembers =
+Array.isArray(data.members)
+?
+data.members
+:
+[];
 
 
-      option.value =
-        member.name;
+if(
+oldMembers.includes(member.name)
+) {
 
-      option.textContent =
-        member.name;
+await updateDoc(
+doc(
+db,
+"tripGroups",
+item.id
+),
+{
+members:
+oldMembers.map(
+name =>
+name === member.name
+?
+trimmed
+:
+name
+)
+}
+);
 
+}
 
-      select.appendChild(
-        option
-      );
+}
 
-    });
 
+await updateDoc(
+doc(db,"members",id),
+{
+name:trimmed
+}
+);
 
-    const activeCoaches =
-      coachesData.filter(
-        coach =>
-          coach.active !== false
-      );
 
+await loadMembers();
+await loadTrips();
 
-    activeCoaches.forEach(coach => {
+alert("名前を変更しました。");
 
-      const option =
-        document.createElement(
-          "option"
-        );
+};
 
 
-      option.value =
-        coach.name;
+/* ==========================================
+   メンバー非表示
+========================================== */
 
-      option.textContent =
-        `${coach.name}（コーチ）`;
+window.hideMember =
+async function(id) {
 
+const member =
+membersData.find(
+m => m.id === id
+);
 
-      select.appendChild(
-        option
-      );
+if(!member) return;
 
-    });
 
-  }
+if(
+!confirm(
+`${member.name}さんを非表示にしますか？`
+)
+) return;
 
 
-  // ==========================================
-  // 乗車メンバー表示
-  // ==========================================
+await updateDoc(
+doc(db,"members",id),
+{
+active:false
+}
+);
 
-  function renderMemberList() {
+await loadMembers();
 
-    const area =
-      document.getElementById(
-        "memberList"
-      );
+};
 
 
-    area.innerHTML = "";
+/* ==========================================
+   メンバー再表示
+========================================== */
 
+window.showMember =
+async function(id) {
 
-    const activeMembers =
-      membersData.filter(
-        member =>
-          member.active !== false
-      );
+await updateDoc(
+doc(db,"members",id),
+{
+active:true
+}
+);
 
+await loadMembers();
 
-    if (
-      activeMembers.length === 0
-    ) {
+};
 
-      area.innerHTML =
-        '<div class="empty">メンバーがいません。</div>';
 
-      return;
+/* ==========================================
+   メンバー並び替え
+========================================== */
 
-    }
+window.moveMember =
+async function(id,direction) {
 
+const active =
+membersData.filter(
+m => m.active !== false
+);
 
-    activeMembers.forEach(member => {
+const index =
+active.findIndex(
+m => m.id === id
+);
 
-      const label =
-        document.createElement(
-          "label"
-        );
+const targetIndex =
+index + direction;
 
+if(
+index < 0 ||
+targetIndex < 0 ||
+targetIndex >= active.length
+) return;
 
-      label.className =
-        "member-check";
 
+const current =
+active[index];
 
-      label.innerHTML = `
+const target =
+active[targetIndex];
 
-        <input
-          type="checkbox"
-          data-member-name="${escapeHtml(member.name)}"
-        >
+await updateDoc(
+doc(db,"members",current.id),
+{
+order:target.order
+}
+);
 
-        <span>
-          ${escapeHtml(member.name)}
-        </span>
+await updateDoc(
+doc(db,"members",target.id),
+{
+order:current.order
+}
+);
 
-      `;
+await loadMembers();
 
+};
 
-      area.appendChild(
-        label
-      );
 
-    });
+/* ==========================================
+   配車登録
+========================================== */
 
-  }
+window.saveTrip =
+async function() {
 
+const tripDate =
+document.getElementById(
+"tripDate"
+).value;
 
-  // ==========================================
-  // コーチ選択表示
-  // ==========================================
+const venueName =
+document.getElementById(
+"venueName"
+).value.trim();
 
-  function renderCoachList() {
+const distanceValue =
+document.getElementById(
+"distance"
+).value;
 
-    const area =
-      document.getElementById(
-        "coachList"
-      );
+const highwayMemo =
+document.getElementById(
+"highwayMemo"
+).value.trim();
 
 
-    area.innerHTML = "";
+if(!tripDate) {
+alert("日付を入力してください。");
+return;
+}
 
+if(!venueName) {
+alert("会場名を入力してください。");
+return;
+}
 
-    const activeCoaches =
-      coachesData.filter(
-        coach =>
-          coach.active !== false
-      );
+if(distanceValue === "") {
+alert("距離を入力してください。");
+return;
+}
 
 
-    if (
-      activeCoaches.length === 0
-    ) {
+const distance =
+Number(distanceValue);
 
-      area.innerHTML =
-        '<div class="empty">コーチが登録されていません。</div>';
+if(
+Number.isNaN(distance) ||
+distance < 0
+) {
 
-      return;
+alert("距離を正しく入力してください。");
+return;
 
-    }
+}
 
 
-    activeCoaches.forEach(coach => {
+const checkboxes =
+document.querySelectorAll(
+"#memberList input[type='checkbox']:checked"
+);
 
-      const label =
-        document.createElement(
-          "label"
-        );
+const selectedMembers =
+Array.from(checkboxes)
+.map(
+checkbox =>
+checkbox.dataset.memberName
+);
 
 
-      label.className =
-        "coach-check";
+if(selectedMembers.length === 0) {
 
+alert(
+"乗車メンバーを1人以上選択してください。"
+);
 
-      label.innerHTML = `
+return;
 
-        <input
-          type="checkbox"
-          data-coach-name="${escapeHtml(coach.name)}"
-        >
+}
 
-        <span>
-          ${escapeHtml(coach.name)}
-        </span>
 
-      `;
+await addDoc(
+collection(db,"tripGroups"),
+{
 
+tripDate:tripDate,
 
-      area.appendChild(
-        label
-      );
+venueName:venueName,
 
-    });
+distance:distance,
 
-  }
+highwayMemo:highwayMemo,
 
+members:selectedMembers,
 
-  // ==========================================
-  // コーチ管理表示
-  // ==========================================
+createdAt:new Date()
 
-  function renderCoachManagement() {
+}
+);
 
-    const area =
-      document.getElementById(
-        "coachManagementList"
-      );
 
+alert("配車記録を保存しました！");
 
-    area.innerHTML = "";
 
+document
+.querySelectorAll(
+"#memberList input[type='checkbox']"
+)
+.forEach(
+input => input.checked = false
+);
 
-    const active =
-      coachesData.filter(
-        coach =>
-          coach.active !== false
-      );
 
+document.getElementById(
+"venueName"
+).value = "";
 
-    const inactive =
-      coachesData.filter(
-        coach =>
-          coach.active === false
-      );
+document.getElementById(
+"distance"
+).value = "";
 
+document.getElementById(
+"highwayMemo"
+).value = "";
 
-    if (
-      active.length === 0 &&
-      inactive.length === 0
-    ) {
 
-      area.innerHTML =
-        '<div class="empty">コーチが登録されていません。</div>';
+await loadTrips();
 
-      return;
+};
 
-    }
 
+/* ==========================================
+   監督・コーチ管理
+========================================== */
 
-    active.forEach((coach, index) => {
+async function loadCoaches() {
 
-      const row =
-        document.createElement(
-          "div"
-        );
+const snapshot =
+await getDocs(
+collection(db,"coaches")
+);
 
+coachesData = [];
 
-      row.className =
-        "member-management";
+snapshot.forEach(item => {
 
+coachesData.push({
 
-      row.innerHTML = `
+id:item.id,
+...item.data()
 
-        <div class="member-name">
-          🏀 ${escapeHtml(coach.name)}
-        </div>
+});
 
+});
 
-        <div class="member-buttons">
 
-          <button
-            class="small-button"
-            onclick="renameCoach('${coach.id}')"
-          >
-            ✏️
-          </button>
+coachesData.sort(
+(a,b) =>
+(a.order ?? 9999) -
+(b.order ?? 9999)
+);
 
 
-          <button
-            class="small-button danger"
-            onclick="hideCoach('${coach.id}')"
-          >
-            🙈
-          </button>
+renderCoachParticipants();
+renderCoachManagement();
+renderCoachSummary();
 
-        </div>
+}
 
-      `;
 
+/* ==========================================
+   コーチ参加者表示
+========================================== */
 
-      area.appendChild(
-        row
-      );
+function renderCoachParticipants() {
 
-    });
+const area =
+document.getElementById(
+"coachParticipantList"
+);
 
+area.innerHTML = "";
 
-    if (
-      inactive.length > 0
-    ) {
 
-      const title =
-        document.createElement(
-          "div"
-        );
+const active =
+coachesData.filter(
+c => c.active !== false
+);
 
 
-      title.className =
-        "inactive-title";
+if(active.length === 0) {
 
+area.innerHTML =
+'<div class="empty">監督・コーチが登録されていません。</div>';
 
-      title.textContent =
-        "非表示コーチ";
+return;
 
+}
 
-      area.appendChild(
-        title
-      );
 
+active.forEach(coach => {
 
-      inactive.forEach(coach => {
+const label =
+document.createElement("label");
 
-        const row =
-          document.createElement(
-            "div"
-          );
+label.className =
+"member-check";
 
+label.innerHTML = `
 
-        row.className =
-          "member-management hidden-member";
+<input
+type="checkbox"
+class="coach-participant"
+value="${escapeHtml(coach.name)}"
+onchange="updateParticipantCount()"
+>
 
+<span>
+${escapeHtml(coach.name)}
+</span>
 
-        row.innerHTML = `
+`;
 
-          <div class="member-name">
-            🏀 ${escapeHtml(coach.name)}
-          </div>
+area.appendChild(label);
 
+});
 
-          <div class="member-buttons">
+}
 
-            <button
-              class="small-button green"
-              onclick="showCoach('${coach.id}')"
-            >
-              👀 再表示
-            </button>
 
-          </div>
+/* ==========================================
+   参加人数表示
+========================================== */
 
-        `;
+window.updateParticipantCount =
+function() {
 
+const checked =
+document.querySelectorAll(
+".coach-participant:checked"
+).length;
 
-        area.appendChild(
-          row
-        );
+document.getElementById(
+"participantCount"
+).textContent =
+`参加者 ${checked}人`;
 
-      });
+};
 
-    }
 
-  }
+/* ==========================================
+   車追加
+========================================== */
 
+function createCoachCarHTML(index) {
 
-  // ==========================================
-  // コーチ追加
-  // ==========================================
+const active =
+coachesData.filter(
+c => c.active !== false
+);
 
-  window.addCoach =
-    async function() {
 
-      const input =
-        document.getElementById(
-          "newCoachName"
-        );
+let options =
+'<option value="">運転者を選択</option>';
 
 
-      const name =
-        input.value.trim();
+active.forEach(coach => {
 
+options += `
 
-      if (!name) {
+<option value="${escapeHtml(coach.name)}">
+${escapeHtml(coach.name)}
+</option>
 
-        alert(
-          "コーチ名を入力してください。"
-        );
+`;
 
-        return;
+});
 
-      }
 
+return `
 
-      const duplicate =
-        coachesData.some(
-          coach =>
-            coach.name === name
-        );
+<div
+class="coach-car"
+data-car-index="${index}"
+>
 
+<label>
+🚗 ${index + 1}台目・運転者
+</label>
 
-      if (duplicate) {
+<select class="coach-driver">
+${options}
+</select>
 
-        alert(
-          "同じ名前のコーチがすでにいます。"
-        );
 
-        return;
+<button
+class="remove-car"
+onclick="removeCoachCar(this)"
+>
+🗑️ この車を削除
+</button>
 
-      }
+</div>
 
+`;
 
-      const maxOrder =
-        coachesData.length > 0
-          ? Math.max(
-              ...coachesData.map(
-                c => c.order ?? 0
-              )
-            )
-          : -1;
+}
 
 
-      await addDoc(
-        collection(db, "coaches"),
-        {
+window.addCoachCar =
+function() {
 
-          name:
-            name,
+const area =
+document.getElementById(
+"coachCars"
+);
 
-          order:
-            maxOrder + 1,
+const index =
+area.children.length;
 
-          active:
-            true,
+area.insertAdjacentHTML(
+"beforeend",
+createCoachCarHTML(index)
+);
 
-          createdAt:
-            new Date()
+};
 
-        }
-      );
 
+/* ==========================================
+   車削除
+========================================== */
 
-      input.value = "";
+window.removeCoachCar =
+function(button) {
 
+const car =
+button.closest(".coach-car");
 
-      await loadCoaches();
+if(car) {
+car.remove();
+}
 
+renumberCars();
 
-      alert(
-        `${name}コーチを追加しました。`
-      );
+};
 
-    };
 
+function renumberCars() {
 
-  // ==========================================
-  // コーチ名前変更
-  // ==========================================
+const cars =
+document.querySelectorAll(
+"#coachCars .coach-car"
+);
 
-  window.renameCoach =
-    async function(id) {
+cars.forEach(
+(car,index) => {
 
-      const coach =
-        coachesData.find(
-          c =>
-            c.id === id
-        );
+const label =
+car.querySelector("label");
 
+label.textContent =
+`🚗 ${index + 1}台目・運転者`;
 
-      if (!coach) return;
+}
+);
 
+}
 
-      const newName =
-        prompt(
-          "新しいコーチ名を入力してください。",
-          coach.name
-        );
 
+/* ==========================================
+   コーチ配車保存
+========================================== */
 
-      if (
-        newName === null
-      ) {
+window.saveCoachTrip =
+async function() {
 
-        return;
+const tripDate =
+document.getElementById(
+"coachTripDate"
+).value;
 
-      }
+const venueName =
+document.getElementById(
+"coachVenueName"
+).value.trim();
 
+const highwayMemo =
+document.getElementById(
+"coachHighwayMemo"
+).value.trim();
 
-      const trimmed =
-        newName.trim();
 
+if(!tripDate) {
 
-      if (!trimmed) {
+alert("日付を入力してください。");
+return;
 
-        alert(
-          "名前を空欄にはできません。"
-        );
+}
 
-        return;
 
-      }
+if(!venueName) {
 
+alert("会場名を入力してください。");
+return;
 
-      if (
-        trimmed === coach.name
-      ) {
+}
 
-        return;
 
-      }
+const participants =
+Array.from(
+document.querySelectorAll(
+".coach-participant:checked"
+)
+)
+.map(
+input => input.value
+);
 
 
-      const duplicate =
-        coachesData.some(
-          c =>
-            c.id !== id &&
-            c.name === trimmed
-        );
+if(participants.length === 0) {
 
+alert(
+"参加した監督・コーチを1人以上選択してください。"
+);
 
-      if (duplicate) {
+return;
 
-        alert(
-          "同じ名前のコーチがいます。"
-        );
+}
 
-        return;
 
-      }
+const driverSelects =
+document.querySelectorAll(
+".coach-driver"
+);
 
 
-      if (
-        !confirm(
-          `「${coach.name}」を「${trimmed}」に変更します。\n\n過去の配車履歴も変更します。`
-        )
-      ) {
+const drivers =
+Array.from(driverSelects)
+.map(
+select => select.value
+)
+.filter(
+value => value
+);
 
-        return;
 
-      }
+if(drivers.length === 0) {
 
+alert(
+"配車する車を1台以上登録してください。"
+);
 
-      const tripSnapshot =
-        await getDocs(
-          collection(
-            db,
-            "tripGroups"
-          )
-        );
+return;
 
+}
 
-      for (
-        const item of tripSnapshot.docs
-      ) {
 
-        const data =
-          item.data();
+await addDoc(
+collection(db,"coachTrips"),
+{
 
+tripDate:tripDate,
 
-        let changed =
-          false;
+venueName:venueName,
 
+participants:participants,
 
-        const oldCoaches =
-          Array.isArray(
-            data.coaches
-          )
-            ? data.coaches
-            : [];
+drivers:drivers,
 
+carCount:drivers.length,
 
-        const newCoaches =
-          oldCoaches.map(
-            name => {
+highwayMemo:highwayMemo,
 
-              if (
-                name === coach.name
-              ) {
+createdAt:new Date()
 
-                changed =
-                  true;
+}
+);
 
-                return trimmed;
 
-              }
+alert(
+"監督・コーチの配車を保存しました！"
+);
 
-              return name;
 
-            }
-          );
+document.querySelectorAll(
+".coach-participant"
+)
+.forEach(
+input => input.checked = false
+);
 
 
-        if (
-          data.driverName === coach.name
-        ) {
+document.getElementById(
+"coachVenueName"
+).value = "";
 
-          changed =
-            true;
+document.getElementById(
+"coachHighwayMemo"
+).value = "";
 
-        }
+document.getElementById(
+"coachCars"
+).innerHTML = "";
 
+document.getElementById(
+"participantCount"
+).textContent =
+"参加者 0人";
 
-        if (changed) {
 
-          const updateData = {
+await loadCoaches();
 
-            coaches:
-              newCoaches
+};
 
-          };
 
+/* ==========================================
+   コーチ管理表示
+========================================== */
 
-          if (
-            data.driverName === coach.name
-          ) {
+function renderCoachManagement() {
 
-            updateData.driverName =
-              trimmed;
+const area =
+document.getElementById(
+"coachManagementList"
+);
 
-          }
+area.innerHTML = "";
 
 
-          await updateDoc(
-            doc(
-              db,
-              "tripGroups",
-              item.id
-            ),
-            updateData
-          );
+const active =
+coachesData.filter(
+c => c.active !== false
+);
 
-        }
+const inactive =
+coachesData.filter(
+c => c.active === false
+);
 
-      }
 
+active.forEach(
+(coach,index) => {
 
-      await updateDoc(
-        doc(
-          db,
-          "coaches",
-          id
-        ),
-        {
+const row =
+document.createElement("div");
 
-          name:
-            trimmed
+row.className =
+"member-management";
 
-        }
-      );
+row.innerHTML = `
 
+<div class="member-name">
+${escapeHtml(coach.name)}
+</div>
 
-      await loadCoaches();
+<div class="member-buttons">
 
-      await loadTrips();
+<button
+class="small-button gray"
+onclick="moveCoach('${coach.id}',-1)"
+${index === 0 ? "disabled":""}
+>
+↑
+</button>
 
-      renderDriverList();
+<button
+class="small-button gray"
+onclick="moveCoach('${coach.id}',1)"
+${index === active.length-1 ? "disabled":""}
+>
+↓
+</button>
 
+<button
+class="small-button"
+onclick="renameCoach('${coach.id}')"
+>
+✏️
+</button>
 
-      alert(
-        "コーチ名を変更しました。"
-      );
+<button
+class="small-button danger"
+onclick="hideCoach('${coach.id}')"
+>
+🙈
+</button>
 
-    };
+</div>
 
+`;
 
-  // ==========================================
-  // コーチ非表示
-  // ==========================================
+area.appendChild(row);
 
-  window.hideCoach =
-    async function(id) {
+}
+);
 
-      const coach =
-        coachesData.find(
-          c =>
-            c.id === id
-        );
 
+if(inactive.length > 0) {
 
-      if (!coach) return;
+const title =
+document.createElement("div");
 
+title.className =
+"inactive-title";
 
-      if (
-        !confirm(
-          `${coach.name}コーチを選択画面から非表示にしますか？\n\n過去の記録は残ります。`
-        )
-      ) {
+title.textContent =
+"非表示の監督・コーチ";
 
-        return;
+area.appendChild(title);
 
-      }
 
+inactive.forEach(coach => {
 
-      await updateDoc(
-        doc(
-          db,
-          "coaches",
-          id
-        ),
-        {
+const row =
+document.createElement("div");
 
-          active:
-            false
+row.className =
+"member-management hidden-member";
 
-        }
-      );
+row.innerHTML = `
 
+<div class="member-name">
+${escapeHtml(coach.name)}
+</div>
 
-      await loadCoaches();
+<div class="member-buttons">
 
-      renderDriverList();
+<button
+class="small-button green"
+onclick="showCoach('${coach.id}')"
+>
+👀 再表示
+</button>
 
-    };
+</div>
 
+`;
 
-  // ==========================================
-  // コーチ再表示
-  // ==========================================
+area.appendChild(row);
 
-  window.showCoach =
-    async function(id) {
+});
 
-      await updateDoc(
-        doc(
-          db,
-          "coaches",
-          id
-        ),
-        {
+}
 
-          active:
-            true
+}
 
-        }
-      );
 
+/* ==========================================
+   コーチ追加
+========================================== */
 
-      await loadCoaches();
+window.addCoach =
+async function() {
 
-      renderDriverList();
+const input =
+document.getElementById(
+"newCoachName"
+);
 
-    };
+const name =
+input.value.trim();
 
+if(!name) {
 
-  // ==========================================
-  // メンバー管理表示
-  // ==========================================
+alert(
+"監督・コーチ名を入力してください。"
+);
 
-  function renderMemberManagement() {
+return;
 
-    const area =
-      document.getElementById(
-        "memberManagementList"
-      );
+}
 
 
-    area.innerHTML = "";
+if(
+coachesData.some(
+c => c.name === name
+)
+) {
 
+alert("同じ名前がすでにあります。");
+return;
 
-    const active =
-      membersData.filter(
-        member =>
-          member.active !== false
-      );
+}
 
 
-    const inactive =
-      membersData.filter(
-        member =>
-          member.active === false
-      );
+const maxOrder =
+coachesData.length > 0
+?
+Math.max(
+...coachesData.map(
+c => c.order ?? 0
+)
+)
+:
+-1;
 
 
-    active.forEach(
-      (member, index) => {
+await addDoc(
+collection(db,"coaches"),
+{
 
-        const row =
-          document.createElement(
-            "div"
-          );
+name:name,
 
+order:maxOrder+1,
 
-        row.className =
-          "member-management";
+active:true,
 
+createdAt:new Date()
 
-        row.innerHTML = `
+}
+);
 
-          <div class="member-name">
-            ${escapeHtml(member.name)}
-          </div>
 
+input.value = "";
 
-          <div class="member-buttons">
+await loadCoaches();
 
-            <button
-              class="small-button gray"
-              onclick="moveMember('${member.id}', -1)"
-              ${index === 0 ? "disabled" : ""}
-            >
-              ↑
-            </button>
+alert(
+`${name}さんを追加しました。`
+);
 
+};
 
-            <button
-              class="small-button gray"
-              onclick="moveMember('${member.id}', 1)"
-              ${index === active.length - 1 ? "disabled" : ""}
-            >
-              ↓
-            </button>
 
+/* ==========================================
+   コーチ名前変更
+========================================== */
 
-            <button
-              class="small-button"
-              onclick="renameMember('${member.id}')"
-            >
-              ✏️
-            </button>
+window.renameCoach =
+async function(id) {
 
+const coach =
+coachesData.find(
+c => c.id === id
+);
 
-            <button
-              class="small-button danger"
-              onclick="hideMember('${member.id}')"
-            >
-              🙈
-            </button>
+if(!coach) return;
 
-          </div>
 
-        `;
+const newName =
+prompt(
+"新しい名前を入力してください。",
+coach.name
+);
 
+if(newName === null) return;
 
-        area.appendChild(
-          row
-        );
 
-      }
-    );
+const trimmed =
+newName.trim();
 
+if(!trimmed) {
 
-    if (
-      inactive.length > 0
-    ) {
+alert("名前を空欄にはできません。");
+return;
 
-      const title =
-        document.createElement(
-          "div"
-        );
+}
 
 
-      title.className =
-        "inactive-title";
+if(
+coachesData.some(
+c =>
+c.id !== id &&
+c.name === trimmed
+)
+) {
 
+alert("同じ名前の監督・コーチがいます。");
+return;
 
-      title.textContent =
-        "非表示メンバー";
+}
 
 
-      area.appendChild(
-        title
-      );
+if(
+!confirm(
+`「${coach.name}」を「${trimmed}」に変更しますか？\n\n過去の監督・コーチ配車履歴も変更します。`
+)
+) return;
 
 
-      inactive.forEach(member => {
+const snapshot =
+await getDocs(
+collection(db,"coachTrips")
+);
 
-        const row =
-          document.createElement(
-            "div"
-          );
 
+for(
+const item of snapshot.docs
+) {
 
-        row.className =
-          "member-management hidden-member";
+const data =
+item.data();
 
 
-        row.innerHTML = `
+const participants =
+Array.isArray(data.participants)
+?
+data.participants
+:
+[];
 
-          <div class="member-name">
-            ${escapeHtml(member.name)}
-          </div>
 
+const drivers =
+Array.isArray(data.drivers)
+?
+data.drivers
+:
+[];
 
-          <div class="member-buttons">
 
-            <button
-              class="small-button green"
-              onclick="showMember('${member.id}')"
-            >
-              👀 再表示
-            </button>
+let changed = false;
 
-          </div>
 
-        `;
+const newParticipants =
+participants.map(
+name => {
 
+if(name === coach.name) {
+changed = true;
+return trimmed;
+}
 
-        area.appendChild(
-          row
-        );
+return name;
 
-      });
+}
+);
 
-    }
 
-  }
+const newDrivers =
+drivers.map(
+name => {
 
+if(name === coach.name) {
+changed = true;
+return trimmed;
+}
 
-  // ==========================================
-  // メンバー追加
-  // ==========================================
+return name;
 
-  window.addMember =
-    async function() {
+}
+);
 
-      const input =
-        document.getElementById(
-          "newMemberName"
-        );
 
+if(changed) {
 
-      const name =
-        input.value.trim();
+await updateDoc(
+doc(
+db,
+"coachTrips",
+item.id
+),
+{
 
+participants:
+newParticipants,
 
-      if (!name) {
+drivers:
+newDrivers
 
-        alert(
-          "メンバー名を入力してください。"
-        );
+}
+);
 
-        return;
+}
 
-      }
+}
 
 
-      const duplicate =
-        membersData.some(
-          member =>
-            member.name === name
-        );
+await updateDoc(
+doc(db,"coaches",id),
+{
+name:trimmed
+}
+);
 
 
-      if (duplicate) {
+await loadCoaches();
 
-        alert(
-          "同じ名前のメンバーがすでにいます。"
-        );
+alert("名前を変更しました。");
 
-        return;
+};
 
-      }
 
+/* ==========================================
+   コーチ非表示
+========================================== */
 
-      const maxOrder =
-        membersData.length > 0
-          ? Math.max(
-              ...membersData.map(
-                m => m.order ?? 0
-              )
-            )
-          : -1;
+window.hideCoach =
+async function(id) {
 
+const coach =
+coachesData.find(
+c => c.id === id
+);
 
-      await addDoc(
-        collection(db, "members"),
-        {
+if(!coach) return;
 
-          name:
-            name,
 
-          order:
-            maxOrder + 1,
+if(
+!confirm(
+`${coach.name}さんを非表示にしますか？\n\n過去の記録は残ります。`
+)
+) return;
 
-          active:
-            true,
 
-          createdAt:
-            new Date()
+await updateDoc(
+doc(db,"coaches",id),
+{
+active:false
+}
+);
 
-        }
-      );
+await loadCoaches();
 
+};
 
-      input.value = "";
 
+/* ==========================================
+   コーチ再表示
+========================================== */
 
-      await loadMembers();
+window.showCoach =
+async function(id) {
 
+await updateDoc(
+doc(db,"coaches",id),
+{
+active:true
+}
+);
 
-      alert(
-        `${name}さんを追加しました。`
-      );
+await loadCoaches();
 
-    };
+};
 
 
-  // ==========================================
-  // メンバー名前変更
-  // ==========================================
+/* ==========================================
+   コーチ並び替え
+========================================== */
 
-  window.renameMember =
-    async function(id) {
+window.moveCoach =
+async function(id,direction) {
 
-      const member =
-        membersData.find(
-          m =>
-            m.id === id
-        );
+const active =
+coachesData.filter(
+c => c.active !== false
+);
 
+const index =
+active.findIndex(
+c => c.id === id
+);
 
-      if (!member) return;
+const targetIndex =
+index + direction;
 
 
-      const newName =
-        prompt(
-          "新しい名前を入力してください。",
-          member.name
-        );
+if(
+index < 0 ||
+targetIndex < 0 ||
+targetIndex >= active.length
+) return;
 
 
-      if (
-        newName === null
-      ) {
+const current =
+active[index];
 
-        return;
+const target =
+active[targetIndex];
 
-      }
 
+await updateDoc(
+doc(db,"coaches",current.id),
+{
+order:target.order
+}
+);
 
-      const trimmed =
-        newName.trim();
 
+await updateDoc(
+doc(db,"coaches",target.id),
+{
+order:current.order
+}
+);
 
-      if (!trimmed) {
 
-        alert(
-          "名前を空欄にはできません。"
-        );
+await loadCoaches();
 
-        return;
+};
 
-      }
 
+/* ==========================================
+   配車データ読み込み
+========================================== */
 
-      if (
-        trimmed === member.name
-      ) {
+async function loadTrips() {
 
-        return;
+tripGroupsData = [];
+legacyTripsData = [];
 
-      }
 
+const groupSnapshot =
+await getDocs(
+collection(db,"tripGroups")
+);
 
-      const duplicate =
-        membersData.some(
-          m =>
-            m.id !== id &&
-            m.name === trimmed
-        );
 
+groupSnapshot.forEach(item => {
 
-      if (duplicate) {
+tripGroupsData.push({
 
-        alert(
-          "同じ名前のメンバーがいます。"
-        );
+id:item.id,
+...item.data()
 
-        return;
+});
 
-      }
+});
 
 
-      if (
-        !confirm(
-          `「${member.name}」を「${trimmed}」に変更します。\n\n過去の配車記録も新しい名前に変更します。`
-        )
-      ) {
+const legacySnapshot =
+await getDocs(
+collection(db,"trips")
+);
 
-        return;
 
-      }
+legacySnapshot.forEach(item => {
 
+const data =
+item.data();
 
-      const groupSnapshot =
-        await getDocs(
-          collection(
-            db,
-            "tripGroups"
-          )
-        );
+if(data.memberName) {
 
+legacyTripsData.push({
 
-      for (
-        const item of groupSnapshot.docs
-      ) {
+id:item.id,
+...data
 
-        const data =
-          item.data();
+});
 
+}
 
-        const oldMembers =
-          Array.isArray(
-            data.members
-          )
-            ? data.members
-            : [];
+});
 
 
-        let changed =
-          false;
+tripGroupsData.sort(
+(a,b) =>
+String(b.tripDate || "")
+.localeCompare(
+String(a.tripDate || "")
+)
+);
 
 
-        const newMembers =
-          oldMembers.map(
-            name => {
+legacyTripsData.sort(
+(a,b) =>
+String(b.tripDate || "")
+.localeCompare(
+String(a.tripDate || "")
+)
+);
 
-              if (
-                name === member.name
-              ) {
 
-                changed =
-                  true;
+renderHistory();
+renderMonthlySummary();
+renderMemberSummary();
 
-                return trimmed;
+}
 
-              }
 
-              return name;
+/* ==========================================
+   コーチ配車読み込み
+========================================== */
 
-            }
-          );
+async function loadCoachTrips() {
 
+coachTripsData = [];
 
-        const updateData = {};
 
+const snapshot =
+await getDocs(
+collection(db,"coachTrips")
+);
 
-        if (changed) {
 
-          updateData.members =
-            newMembers;
+snapshot.forEach(item => {
 
-        }
+coachTripsData.push({
 
+id:item.id,
+...item.data()
 
-        if (
-          data.driverName ===
-          member.name
-        ) {
+});
 
-          updateData.driverName =
-            trimmed;
+});
 
-        }
 
+coachTripsData.sort(
+(a,b) =>
+String(b.tripDate || "")
+.localeCompare(
+String(a.tripDate || "")
+)
+);
 
-        if (
-          Object.keys(
-            updateData
-          ).length > 0
-        ) {
 
-          await updateDoc(
-            doc(
-              db,
-              "tripGroups",
-              item.id
-            ),
-            updateData
-          );
+renderCoachHistory();
+renderCoachSummary();
 
-        }
+}
 
-      }
 
+/* ==========================================
+   通常配車履歴
+========================================== */
 
-      const oldTripsSnapshot =
-        await getDocs(
-          collection(
-            db,
-            "trips"
-          )
-        );
+function renderHistory() {
 
+const area =
+document.getElementById(
+"history"
+);
 
-      for (
-        const item of oldTripsSnapshot.docs
-      ) {
+area.innerHTML = "";
 
-        const data =
-          item.data();
 
+const list =
+tripGroupsData;
 
-        if (
-          data.memberName ===
-          member.name
-        ) {
 
-          await updateDoc(
-            doc(
-              db,
-              "trips",
-              item.id
-            ),
-            {
+if(list.length === 0) {
 
-              memberName:
-                trimmed
+area.innerHTML =
+'<div class="empty">まだ配車記録がありません。</div>';
 
-            }
-          );
+return;
 
-        }
+}
 
-      }
 
+list.forEach(item => {
 
-      await updateDoc(
-        doc(
-          db,
-          "members",
-          id
-        ),
-        {
+const div =
+document.createElement("div");
 
-          name:
-            trimmed
+div.className =
+"history-item";
 
-        }
-      );
 
+const members =
+Array.isArray(item.members)
+?
+item.members
+:
+[];
 
-      await loadMembers();
 
-      await loadTrips();
+const memberText =
+members.length > 0
+?
+members.join("、")
+:
+"なし";
 
-      renderDriverList();
 
+div.innerHTML = `
 
-      alert(
-        "名前を変更しました。"
-      );
+<div class="history-date">
+${escapeHtml(item.tripDate || "")}
+</div>
 
-    };
+<div class="history-detail">
 
+🏫 会場：
+${escapeHtml(item.venueName || "未登録")}
 
-  // ==========================================
-  // メンバー非表示
-  // ==========================================
+<br>
 
-  window.hideMember =
-    async function(id) {
+📏 距離：
+${Number(item.distance || 0)}
+km
 
-      const member =
-        membersData.find(
-          m =>
-            m.id === id
-        );
+<br>
 
+👥 配車メンバー：
+${escapeHtml(memberText)}
 
-      if (!member) return;
+<br>
 
+🛣️ 高速料金・ETC：
+${escapeHtml(item.highwayMemo || "メモなし")}
 
-      if (
-        !confirm(
-          `${member.name}さんをメンバー選択画面から非表示にしますか？\n\n過去の記録は残ります。`
-        )
-      ) {
+</div>
 
-        return;
+`;
 
-      }
 
+const buttons =
+document.createElement("div");
 
-      await updateDoc(
-        doc(
-          db,
-          "members",
-          id
-        ),
-        {
+buttons.className =
+"history-buttons";
 
-          active:
-            false
 
-        }
-      );
+const editButton =
+document.createElement("button");
 
+editButton.textContent =
+"✏️ 編集";
 
-      await loadMembers();
+editButton.onclick =
+() => editTrip(item.id);
 
-    };
 
+const deleteButton =
+document.createElement("button");
 
-  // ==========================================
-  // メンバー再表示
-  // ==========================================
+deleteButton.textContent =
+"🗑️ 削除";
 
-  window.showMember =
-    async function(id) {
+deleteButton.className =
+"danger";
 
-      await updateDoc(
-        doc(
-          db,
-          "members",
-          id
-        ),
-        {
+deleteButton.onclick =
+() => deleteTrip(item.id);
 
-          active:
-            true
 
-        }
-      );
+buttons.appendChild(editButton);
+buttons.appendChild(deleteButton);
 
+div.appendChild(buttons);
 
-      await loadMembers();
+area.appendChild(div);
 
-    };
+});
 
+}
 
-  // ==========================================
-  // メンバー並び替え
-  // ==========================================
 
-  window.moveMember =
-    async function(id, direction) {
+/* ==========================================
+   コーチ配車履歴
+========================================== */
 
-      const active =
-        membersData.filter(
-          member =>
-            member.active !== false
-        );
+function renderCoachHistory() {
 
+const area =
+document.getElementById(
+"history"
+);
 
-      const index =
-        active.findIndex(
-          member =>
-            member.id === id
-        );
 
+/* 通常配車履歴の後ろにコーチ履歴を追加 */
 
-      const targetIndex =
-        index + direction;
+const oldCoach =
+document.getElementById(
+"coachHistoryArea"
+);
 
+if(oldCoach) {
+oldCoach.remove();
+}
 
-      if (
-        index < 0 ||
-        targetIndex < 0 ||
-        targetIndex >= active.length
-      ) {
 
-        return;
+if(coachTripsData.length === 0) {
+return;
+}
 
-      }
 
+const section =
+document.createElement("div");
 
-      const current =
-        active[index];
+section.id =
+"coachHistoryArea";
 
+section.style.marginTop =
+"20px";
 
-      const target =
-        active[targetIndex];
 
+const title =
+document.createElement("h3");
 
-      const currentOrder =
-        current.order;
+title.textContent =
+"🏀 監督・コーチ配車履歴";
 
 
-      const targetOrder =
-        target.order;
+section.appendChild(title);
 
 
-      await updateDoc(
-        doc(
-          db,
-          "members",
-          current.id
-        ),
-        {
+coachTripsData.forEach(item => {
 
-          order:
-            targetOrder
+const div =
+document.createElement("div");
 
-        }
-      );
+div.className =
+"history-item";
 
 
-      await updateDoc(
-        doc(
-          db,
-          "members",
-          target.id
-        ),
-        {
+const participants =
+Array.isArray(item.participants)
+?
+item.participants
+:
+[];
 
-          order:
-            currentOrder
 
-        }
-      );
+const drivers =
+Array.isArray(item.drivers)
+?
+item.drivers
+:
+[];
 
 
-      await loadMembers();
+div.innerHTML = `
 
-    };
+<div class="history-date">
+${escapeHtml(item.tripDate || "")}
+</div>
 
+<div class="history-detail">
 
-  // ==========================================
-  // 配車登録
-  // ==========================================
+🏫 会場：
+${escapeHtml(item.venueName || "未登録")}
 
-  window.saveTrip =
-    async function() {
+<br>
 
-      const tripDate =
-        document.getElementById(
-          "tripDate"
-        ).value;
+👥 参加者：
+${escapeHtml(
+participants.join("、") || "なし"
+)}
 
+<br>
 
-      const venueName =
-        document.getElementById(
-          "venueName"
-        ).value.trim();
+🚗 配車：
+${escapeHtml(
+drivers.join("、") || "なし"
+)}
+（${drivers.length}台）
 
+<br>
 
-      const driverName =
-        document.getElementById(
-          "driverName"
-        ).value;
+🛣️ 高速料金・ETC：
+${escapeHtml(
+item.highwayMemo || "メモなし"
+)}
 
+</div>
 
-      const distanceValue =
-        document.getElementById(
-          "distance"
-        ).value;
+`;
 
 
-      const highwayUsed =
-        document.getElementById(
-          "highwayUsed"
-        ).checked;
+const buttons =
+document.createElement("div");
 
+buttons.className =
+"history-buttons";
 
-      const highwayFeeValue =
-        document.getElementById(
-          "highwayFee"
-        ).value;
 
+const editButton =
+document.createElement("button");
 
-      if (!tripDate) {
+editButton.textContent =
+"✏️ 編集";
 
-        alert(
-          "日付を入力してください。"
-        );
+editButton.onclick =
+() =>
+editCoachTrip(item.id);
 
-        return;
 
-      }
+const deleteButton =
+document.createElement("button");
 
+deleteButton.textContent =
+"🗑️ 削除";
 
-      if (!venueName) {
+deleteButton.className =
+"danger";
 
-        alert(
-          "会場名を入力してください。"
-        );
+deleteButton.onclick =
+() =>
+deleteCoachTrip(item.id);
 
-        return;
 
-      }
+buttons.appendChild(editButton);
+buttons.appendChild(deleteButton);
 
+div.appendChild(buttons);
 
-      if (!driverName) {
+section.appendChild(div);
 
-        alert(
-          "配車を出した人を選択してください。"
-        );
+});
 
-        return;
 
-      }
+area.appendChild(section);
 
+}
 
-      if (
-        distanceValue === ""
-      ) {
 
-        alert(
-          "距離を入力してください。"
-        );
+/* ==========================================
+   通常履歴編集
+========================================== */
 
-        return;
+window.editTrip =
+async function(id) {
 
-      }
+const item =
+tripGroupsData.find(
+trip => trip.id === id
+);
 
+if(!item) return;
 
-      const distance =
-        Number(
-          distanceValue
-        );
 
+const newDate =
+prompt("日付",item.tripDate || "");
 
-      const highwayFee =
-        highwayFeeValue === ""
-          ? 0
-          : Number(
-              highwayFeeValue
-            );
+if(newDate === null) return;
 
 
-      if (
-        Number.isNaN(distance) ||
-        distance < 0
-      ) {
+const newVenue =
+prompt("会場名",item.venueName || "");
 
-        alert(
-          "距離を正しく入力してください。"
-        );
+if(newVenue === null) return;
 
-        return;
 
-      }
+const newDistance =
+prompt(
+"距離（km）",
+item.distance || 0
+);
 
+if(newDistance === null) return;
 
-      if (
-        Number.isNaN(highwayFee) ||
-        highwayFee < 0
-      ) {
 
-        alert(
-          "高速代を正しく入力してください。"
-        );
+const newMemo =
+prompt(
+"高速料金・ETCメモ",
+item.highwayMemo || ""
+);
 
-        return;
+if(newMemo === null) return;
 
-      }
 
+await updateDoc(
+doc(db,"tripGroups",id),
+{
 
-      const memberCheckboxes =
-        document.querySelectorAll(
-          "#memberList input[type='checkbox']:checked"
-        );
+tripDate:newDate,
 
+venueName:newVenue,
 
-      const selectedMembers =
-        Array.from(
-          memberCheckboxes
-        ).map(
-          checkbox =>
-            checkbox.dataset.memberName
-        );
+distance:Number(newDistance),
 
+highwayMemo:newMemo
 
-      if (
-        selectedMembers.length === 0
-      ) {
+}
+);
 
-        alert(
-          "乗車メンバーを1人以上選択してください。"
-        );
 
-        return;
+await loadTrips();
 
-      }
+alert("変更しました。");
 
+};
 
-      const coachCheckboxes =
-        document.querySelectorAll(
-          "#coachList input[type='checkbox']:checked"
-        );
 
+/* ==========================================
+   通常配車削除
+========================================== */
 
-      const selectedCoaches =
-        Array.from(
-          coachCheckboxes
-        ).map(
-          checkbox =>
-            checkbox.dataset.coachName
-        );
+window.deleteTrip =
+async function(id) {
 
+if(
+!confirm(
+"この配車記録を削除しますか？"
+)
+) return;
 
-      await addDoc(
-        collection(
-          db,
-          "tripGroups"
-        ),
-        {
 
-          tripDate:
-            tripDate,
+await deleteDoc(
+doc(db,"tripGroups",id)
+);
 
-          venueName:
-            venueName,
+await loadTrips();
 
-          driverName:
-            driverName,
+alert("削除しました。");
 
-          distance:
-            distance,
+};
 
-          highwayUsed:
-            highwayUsed,
 
-          highwayFee:
-            highwayFee,
+/* ==========================================
+   コーチ履歴編集
+========================================== */
 
-          members:
-            selectedMembers,
+window.editCoachTrip =
+async function(id) {
 
-          coaches:
-            selectedCoaches,
+const item =
+coachTripsData.find(
+trip => trip.id === id
+);
 
-          createdAt:
-            new Date()
+if(!item) return;
 
-        }
-      );
 
+const newDate =
+prompt(
+"日付",
+item.tripDate || ""
+);
 
-      alert(
-        "配車記録を保存しました！"
-      );
+if(newDate === null) return;
 
 
-      document
-        .querySelectorAll(
-          "#memberList input[type='checkbox']"
-        )
-        .forEach(
-          input => {
-            input.checked =
-              false;
-          }
-        );
+const newVenue =
+prompt(
+"会場名",
+item.venueName || ""
+);
 
+if(newVenue === null) return;
 
-      document
-        .querySelectorAll(
-          "#coachList input[type='checkbox']"
-        )
-        .forEach(
-          input => {
-            input.checked =
-              false;
-          }
-        );
 
+const participants =
+prompt(
+"参加した監督・コーチ\n\nカンマ区切りで入力してください。",
+(Array.isArray(item.participants)
+?
+item.participants.join(",")
+:
+"")
+);
 
-      document.getElementById(
-        "venueName"
-      ).value = "";
+if(participants === null) return;
 
 
-      document.getElementById(
-        "distance"
-      ).value = "";
+const drivers =
+prompt(
+"配車した人\n\n車が複数の場合はカンマ区切りで入力してください。",
+(Array.isArray(item.drivers)
+?
+item.drivers.join(",")
+:
+"")
+);
 
+if(drivers === null) return;
 
-      document.getElementById(
-        "highwayFee"
-      ).value = "0";
 
+const memo =
+prompt(
+"高速料金・ETCメモ",
+item.highwayMemo || ""
+);
 
-      document.getElementById(
-        "highwayUsed"
-      ).checked = false;
+if(memo === null) return;
 
 
-      await loadTrips();
+await updateDoc(
+doc(db,"coachTrips",id),
+{
 
-    };
+tripDate:newDate,
 
+venueName:newVenue,
 
-  // ==========================================
-  // 配車データ読み込み
-  // ==========================================
+participants:
+participants
+.split(",")
+.map(x => x.trim())
+.filter(Boolean),
 
-  async function loadTrips() {
+drivers:
+drivers
+.split(",")
+.map(x => x.trim())
+.filter(Boolean),
 
-    tripGroupsData = [];
+carCount:
+drivers
+.split(",")
+.map(x => x.trim())
+.filter(Boolean)
+.length,
 
-    legacyTripsData = [];
+highwayMemo:memo
 
+}
+);
 
-    const groupSnapshot =
-      await getDocs(
-        collection(
-          db,
-          "tripGroups"
-        )
-      );
 
+await loadCoachTrips();
 
-    groupSnapshot.forEach(
-      item => {
+alert("監督・コーチ配車を変更しました。");
 
-        tripGroupsData.push({
+};
 
-          id:
-            item.id,
 
-          ...item.data()
+/* ==========================================
+   コーチ配車削除
+========================================== */
 
-        });
+window.deleteCoachTrip =
+async function(id) {
 
-      }
-    );
+if(
+!confirm(
+"この監督・コーチ配車記録を削除しますか？"
+)
+) return;
 
 
-    const legacySnapshot =
-      await getDocs(
-        collection(
-          db,
-          "trips"
-        )
-      );
+await deleteDoc(
+doc(db,"coachTrips",id)
+);
 
+await loadCoachTrips();
 
-    legacySnapshot.forEach(
-      item => {
+alert("削除しました。");
 
-        const data =
-          item.data();
+};
 
 
-        if (
-          data.memberName
-        ) {
+/* ==========================================
+   全履歴削除
+========================================== */
 
-          legacyTripsData.push({
+window.deleteAllHistory =
+async function() {
 
-            id:
-              item.id,
+if(
+!confirm(
+"通常配車・監督コーチ配車の履歴をすべて削除します。\n\n本当に削除しますか？"
+)
+) return;
 
-            ...data
 
-          });
+if(
+!confirm(
+"最終確認です。\n\nこの操作は元に戻せません。"
+)
+) return;
 
-        }
 
-      }
-    );
+try {
 
+const collections = [
+"tripGroups",
+"trips",
+"coachTrips"
+];
 
-    tripGroupsData.sort(
-      (a, b) =>
-        String(
-          b.tripDate || ""
-        ).localeCompare(
-          String(
-            a.tripDate || ""
-          )
-        )
-    );
 
+for(
+const collectionName of collections
+) {
 
-    legacyTripsData.sort(
-      (a, b) =>
-        String(
-          b.tripDate || ""
-        ).localeCompare(
-          String(
-            a.tripDate || ""
-          )
-        )
-    );
+const snapshot =
+await getDocs(
+collection(
+db,
+collectionName
+)
+);
 
 
-    renderHistory();
+for(
+const item of snapshot.docs
+) {
 
-    renderMonthlySummary();
+await deleteDoc(
+doc(
+db,
+collectionName,
+item.id
+)
+);
 
-    renderMemberSummary();
+}
 
-    renderCoachHistory();
+}
 
-  }
 
+await loadTrips();
+await loadCoachTrips();
 
-  // ==========================================
-  // 配車履歴表示
-  // ==========================================
+alert(
+"すべての配車履歴を削除しました！"
+);
 
-  function renderHistory() {
+} catch(error) {
 
-    const area =
-      document.getElementById(
-        "history"
-      );
+console.error(error);
 
+alert(
+"削除中にエラーが発生しました。\n\n" +
+error.message
+);
 
-    area.innerHTML = "";
+}
 
+};
 
-    const groups = {};
 
+/* ==========================================
+   月間集計
+========================================== */
 
-    tripGroupsData.forEach(
-      item => {
+function renderMonthlySummary() {
 
-        const key =
-          `${item.tripDate}_${item.id}`;
+const now =
+new Date();
 
+const year =
+now.getFullYear();
 
-        groups[key] = {
+const month =
+String(
+now.getMonth()+1
+).padStart(2,"0");
 
-          id:
-            item.id,
+const prefix =
+`${year}-${month}`;
 
-          tripDate:
-            item.tripDate,
 
-          venueName:
-            item.venueName || "",
+const groups =
+tripGroupsData.filter(
+item =>
+String(
+item.tripDate || ""
+).startsWith(prefix)
+);
 
-          driverName:
-            item.driverName || "",
 
-          distance:
-            Number(
-              item.distance || 0
-            ),
+const dates =
+new Set(
+groups.map(
+item => item.tripDate
+)
+);
 
-          highwayUsed:
-            item.highwayUsed === true,
 
-          highwayFee:
-            Number(
-              item.highwayFee || 0
-            ),
+let riders = 0;
+let distance = 0;
 
-          members:
-            Array.isArray(
-              item.members
-            )
-              ? item.members
-              : [],
 
-          coaches:
-            Array.isArray(
-              item.coaches
-            )
-              ? item.coaches
-              : [],
+groups.forEach(item => {
 
-          isNew:
-            true
+riders +=
+Array.isArray(item.members)
+?
+item.members.length
+:
+0;
 
-        };
+distance +=
+Number(item.distance || 0);
 
-      }
-    );
+});
 
 
-    const legacyGroups = {};
+document.getElementById(
+"monthDays"
+).textContent =
+dates.size;
 
+document.getElementById(
+"monthRiders"
+).textContent =
+riders;
 
-    legacyTripsData.forEach(
-      item => {
+document.getElementById(
+"monthDistance"
+).textContent =
+distance.toLocaleString();
 
-        const key =
-          `${item.tripDate}_${item.distance}`;
+}
 
 
-        if (
-          !legacyGroups[key]
-        ) {
+/* ==========================================
+   メンバー別集計
+========================================== */
 
-          legacyGroups[key] = {
+function renderMemberSummary() {
 
-            tripDate:
-              item.tripDate,
+const area =
+document.getElementById(
+"memberSummary"
+);
 
-            distance:
-              Number(
-                item.distance || 0
-              ),
+area.innerHTML = "";
 
-            members:
-              []
 
-          };
+const counts = {};
+const distances = {};
 
-        }
 
+membersData.forEach(member => {
 
-        if (
-          !legacyGroups[key].members.includes(
-            item.memberName
-          )
-        ) {
+counts[member.name] = 0;
+distances[member.name] = 0;
 
-          legacyGroups[key].members.push(
-            item.memberName
-          );
+});
 
-        }
 
-      }
-    );
+tripGroupsData.forEach(item => {
 
+const members =
+Array.isArray(item.members)
+?
+item.members
+:
+[];
 
-    Object.values(
-      legacyGroups
-    ).forEach(
-      item => {
 
-        const key =
-          `legacy_${item.tripDate}_${item.distance}`;
+members.forEach(name => {
 
+if(counts[name] === undefined) {
 
-        groups[key] = {
+counts[name] = 0;
+distances[name] = 0;
 
-          ...item,
+}
 
-          id:
-            null,
+counts[name]++;
+distances[name] +=
+Number(item.distance || 0);
 
-          venueName:
-            "",
+});
 
-          driverName:
-            "",
+});
 
-          highwayFee:
-            0,
 
-          highwayUsed:
-            false,
+const names =
+Object.keys(counts);
 
-          coaches:
-            [],
 
-          isNew:
-            false
+if(names.length === 0) {
 
-        };
+area.innerHTML =
+'<div class="empty">まだデータがありません。</div>';
 
-      }
-    );
+return;
 
+}
 
-    const list =
-      Object.values(groups)
-        .sort(
-          (a, b) =>
-            String(
-              b.tripDate || ""
-            ).localeCompare(
-              String(
-                a.tripDate || ""
-              )
-            )
-        );
 
+names.forEach(name => {
 
-    if (
-      list.length === 0
-    ) {
+const row =
+document.createElement("div");
 
-      area.innerHTML =
-        '<div class="empty">まだ配車記録がありません。</div>';
+row.className =
+"history-item";
 
-      return;
+row.innerHTML = `
 
-    }
+<strong>
+${escapeHtml(name)}
+</strong>
 
+<br>
 
-    list.forEach(
-      item => {
+🚐 配車回数：
+${counts[name]}
+回
 
-        const div =
-          document.createElement(
-            "div"
-          );
+<br>
 
+📏 個人総距離：
+${distances[name].toLocaleString()}
+km
 
-        div.className =
-          "history-item";
+`;
 
+area.appendChild(row);
 
-        const memberText =
-          item.members.length > 0
-            ? item.members.join("、")
-            : "なし";
+});
 
+}
 
-        const coachText =
-          item.coaches.length > 0
-            ? item.coaches.join("、")
-            : "なし";
 
+/* ==========================================
+   コーチ集計
+========================================== */
 
-        const driverText =
-          item.driverName
-            ? `<span class="driver-name">${escapeHtml(item.driverName)}</span>`
-            : "未登録";
+function renderCoachSummary() {
 
+const area =
+document.getElementById(
+"coachSummary"
+);
 
-        div.innerHTML = `
+area.innerHTML = "";
 
-          <div class="history-date">
-            ${escapeHtml(
-              item.tripDate || ""
-            )}
-          </div>
 
+const counts = {};
+const driverCounts = {};
 
-          <div class="history-detail">
 
-            🏫 会場：
-            ${escapeHtml(
-              item.venueName ||
-              "未登録"
-            )}
+coachesData.forEach(coach => {
 
-            <br>
+counts[coach.name] = 0;
+driverCounts[coach.name] = 0;
 
-            🚗 配車：
-            ${driverText}
+});
 
-            <br>
 
-            📏 距離：
-            ${item.distance}
-            km
+coachTripsData.forEach(item => {
 
-            <br>
+const participants =
+Array.isArray(item.participants)
+?
+item.participants
+:
+[];
 
-            🛣️ 高速：
-            ${
-              item.highwayUsed
-                ? "使用"
-                : "なし"
-            }
 
-            <br>
+const drivers =
+Array.isArray(item.drivers)
+?
+item.drivers
+:
+[];
 
-            💴 高速代：
-            ${item.highwayFee.toLocaleString()}
-            円
 
-            <br>
+participants.forEach(name => {
 
-            👥 選手：
-            ${escapeHtml(
-              memberText
-            )}
+if(counts[name] === undefined) {
+counts[name] = 0;
+driverCounts[name] = 0;
+}
 
-            <br>
+counts[name]++;
 
-            🏀 コーチ：
-            ${escapeHtml(
-              coachText
-            )}
+});
 
-          </div>
 
-        `;
+drivers.forEach(name => {
 
+if(driverCounts[name] === undefined) {
+counts[name] = 0;
+driverCounts[name] = 0;
+}
 
-        if (
-          item.isNew
-        ) {
+driverCounts[name]++;
 
-          const buttons =
-            document.createElement(
-              "div"
-            );
+});
 
+});
 
-          buttons.className =
-            "history-buttons";
 
+const names =
+Object.keys(counts);
 
-          const editButton =
-            document.createElement(
-              "button"
-            );
 
+if(names.length === 0) {
 
-          editButton.textContent =
-            "✏️ 編集";
+area.innerHTML =
+'<div class="empty">まだ監督・コーチの記録がありません。</div>';
 
+} else {
 
-          editButton.onclick =
-            () =>
-              editTrip(
-                item.id
-              );
+names.forEach(name => {
 
+const row =
+document.createElement("div");
 
-          const deleteButton =
-            document.createElement(
-              "button"
-            );
+row.className =
+"history-item";
 
+row.innerHTML = `
 
-          deleteButton.textContent =
-            "🗑️ 削除";
+<strong>
+${escapeHtml(name)}
+</strong>
 
+<br>
 
-          deleteButton.className =
-            "danger";
+👥 参加回数：
+${counts[name]}
+回
 
+<br>
 
-          deleteButton.onclick =
-            () =>
-              deleteTrip(
-                item.id
-              );
+🚗 配車回数：
+${driverCounts[name]}
+回
 
+`;
 
-          buttons.appendChild(
-            editButton
-          );
+area.appendChild(row);
 
+});
 
-          buttons.appendChild(
-            deleteButton
-          );
+}
 
 
-          div.appendChild(
-            buttons
-          );
+/* ==========================================
+   コーチ月間集計
+========================================== */
 
-        }
+function renderCoachMonthlySummary() {
 
+const now =
+new Date();
 
-        area.appendChild(
-          div
-        );
+const prefix =
+`${now.getFullYear()}-${String(
+now.getMonth()+1
+).padStart(2,"0")}`;
 
-      }
-    );
 
-  }
+const groups =
+coachTripsData.filter(
+item =>
+String(
+item.tripDate || ""
+).startsWith(prefix)
+);
 
 
-  // ==========================================
-  // 配車履歴編集
-  // ==========================================
+let participants = 0;
+let cars = 0;
 
-  window.editTrip =
-    async function(id) {
 
-      const item =
-        tripGroupsData.find(
-          trip =>
-            trip.id === id
-        );
+const dates =
+new Set();
 
 
-      if (!item) return;
+groups.forEach(item => {
 
+dates.add(item.tripDate);
 
-      const newDate =
-        prompt(
-          "日付",
-          item.tripDate || ""
-        );
+participants +=
+Array.isArray(item.participants)
+?
+item.participants.length
+:
+0;
 
+cars +=
+Array.isArray(item.drivers)
+?
+item.drivers.length
+:
+0;
 
-      if (
-        newDate === null
-      ) {
+});
 
-        return;
 
-      }
+document.getElementById(
+"coachMonthParticipants"
+).textContent =
+participants;
 
+document.getElementById(
+"coachMonthDays"
+).textContent =
+dates.size;
 
-      const newVenue =
-        prompt(
-          "会場名",
-          item.venueName || ""
-        );
+document.getElementById(
+"coachMonthCars"
+).textContent =
+cars;
 
+document.getElementById(
+"coachMonthTrips"
+).textContent =
+groups.length;
 
-      if (
-        newVenue === null
-      ) {
+}
 
-        return;
 
-      }
+/* ==========================================
+   HTMLエスケープ
+========================================== */
 
+function escapeHtml(value) {
 
-      const newDriver =
-        prompt(
-          "配車を出した人",
-          item.driverName || ""
-        );
+return String(value)
 
+.replace(/&/g,"&amp;")
 
-      if (
-        newDriver === null
-      ) {
+.replace(/</g,"&lt;")
 
-        return;
+.replace(/>/g,"&gt;")
 
-      }
+.replace(/"/g,"&quot;")
 
+.replace(/'/g,"&#039;");
 
-      const newDistance =
-        prompt(
-          "距離（km）",
-          item.distance || 0
-        );
+}
 
 
-      if (
-        newDistance === null
-      ) {
+/* ==========================================
+   起動
+========================================== */
 
-        return;
+async function startApp() {
 
-      }
+try {
 
+setToday();
 
-      const newHighway =
-        prompt(
-          "高速代（円）",
-          item.highwayFee || 0
-        );
+await initializeMembers();
 
+await loadCoaches();
 
-      if (
-        newHighway === null
-      ) {
+await loadTrips();
 
-        return;
+await loadCoachTrips();
 
-      }
+renderCoachMonthlySummary();
 
 
-      const distance =
-        Number(
-          newDistance
-        );
+/*
+監督・コーチ集計を
+配車データ読み込み後にも更新
+*/
 
+renderCoachSummary();
+renderCoachMonthlySummary();
 
-      const highway =
-        Number(
-          newHighway
-        );
 
+/*
+最初の車を1台表示
+*/
 
-      if (
-        Number.isNaN(distance) ||
-        distance < 0 ||
-        Number.isNaN(highway) ||
-        highway < 0
-      ) {
+if(
+document.getElementById(
+"coachCars"
+).children.length === 0
+) {
 
-        alert(
-          "数値を正しく入力してください。"
-        );
+addCoachCar();
 
-        return;
+}
 
-      }
 
+document.getElementById(
+"status"
+).textContent =
+"Firebase接続OK ✅";
 
-      await updateDoc(
-        doc(
-          db,
-          "tripGroups",
-          id
-        ),
-        {
 
-          tripDate:
-            newDate,
+} catch(error) {
 
-          venueName:
-            newVenue,
+console.error(error);
 
-          driverName:
-            newDriver,
+document.getElementById(
+"status"
+).textContent =
+"Firebase接続エラー ❌";
 
-          distance:
-            distance,
 
-          highwayFee:
-            highway,
+alert(
+"Firebaseとの接続でエラーが発生しました。\n\n" +
+error.message
+);
 
-          highwayUsed:
-            highway > 0
+}
 
-        }
-      );
+}
 
 
-      await loadTrips();
-
-
-      alert(
-        "変更しました。"
-      );
-
-    };
-
-
-  // ==========================================
-  // 配車1件削除
-  // ==========================================
-
-  window.deleteTrip =
-    async function(id) {
-
-      if (
-        !confirm(
-          "この配車記録を削除しますか？"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      try {
-
-        await deleteDoc(
-          doc(
-            db,
-            "tripGroups",
-            id
-          )
-        );
-
-
-        await loadTrips();
-
-
-        alert(
-          "削除しました。"
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-
-        alert(
-          "削除中にエラーが発生しました。\n\n" +
-          error.message
-        );
-
-      }
-
-    };
-
-
-  // ==========================================
-  // 全履歴削除
-  // ==========================================
-
-  window.deleteAllHistory =
-    async function() {
-
-      const ok =
-        confirm(
-          "配車履歴をすべて削除します。\n\n" +
-          "⚠️ メンバーは削除されません。\n" +
-          "⚠️ コーチも削除されません。\n" +
-          "⚠️ tripGroups と trips の配車記録だけ削除します。\n\n" +
-          "本当に削除しますか？"
-        );
-
-
-      if (!ok) {
-
-        return;
-
-      }
-
-
-      const ok2 =
-        confirm(
-          "最終確認です。\n\n" +
-          "これまでの配車履歴を全部削除します。\n\n" +
-          "この操作は元に戻せません。"
-        );
-
-
-      if (!ok2) {
-
-        return;
-
-      }
-
-
-      try {
-
-        const groupSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "tripGroups"
-            )
-          );
-
-
-        for (
-          const item of groupSnapshot.docs
-        ) {
-
-          await deleteDoc(
-            doc(
-              db,
-              "tripGroups",
-              item.id
-            )
-          );
-
-        }
-
-
-        const legacySnapshot =
-          await getDocs(
-            collection(
-              db,
-              "trips"
-            )
-          );
-
-
-        for (
-          const item of legacySnapshot.docs
-        ) {
-
-          await deleteDoc(
-            doc(
-              db,
-              "trips",
-              item.id
-            )
-          );
-
-        }
-
-
-        await loadTrips();
-
-
-        alert(
-          "配車履歴をすべて削除しました！"
-        );
-
-
-      } catch (error) {
-
-        console.error(error);
-
-
-        alert(
-          "削除中にエラーが発生しました。\n\n" +
-          error.message
-        );
-
-      }
-
-    };
-
-
-  // ==========================================
-  // 月間集計
-  // ==========================================
-
-  function renderMonthlySummary() {
-
-    const now =
-      new Date();
-
-
-    const month =
-      String(
-        now.getMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      );
-
-
-    const year =
-      now.getFullYear();
-
-
-    const prefix =
-      `${year}-${month}`;
-
-
-    const groups =
-      tripGroupsData.filter(
-        item =>
-          String(
-            item.tripDate || ""
-          ).startsWith(
-            prefix
-          )
-      );
-
-
-    const dates =
-      new Set(
-        groups.map(
-          item =>
-            item.tripDate
-        )
-      );
-
-
-    let riders = 0;
-
-    let distance = 0;
-
-    let highway = 0;
-
-
-    groups.forEach(
-      item => {
-
-        riders +=
-          Array.isArray(
-            item.members
-          )
-            ? item.members.length
-            : 0;
-
-
-        distance +=
-          Number(
-            item.distance || 0
-          );
-
-
-        highway +=
-          Number(
-            item.highwayFee || 0
-          );
-
-      }
-    );
-
-
-    const legacy =
-      legacyTripsData.filter(
-        item =>
-          String(
-            item.tripDate || ""
-          ).startsWith(
-            prefix
-          )
-      );
-
-
-    if (
-      groups.length === 0 &&
-      legacy.length > 0
-    ) {
-
-      const legacyDates =
-        new Set(
-          legacy.map(
-            item =>
-              item.tripDate
-          )
-        );
-
-
-      legacyDates.forEach(
-        date =>
-          dates.add(date)
-      );
-
-
-      riders +=
-        legacy.length;
-
-
-      legacy.forEach(
-        item => {
-
-          distance +=
-            Number(
-              item.distance || 0
-            );
-
-        }
-      );
-
-    }
-
-
-    document.getElementById(
-      "monthDays"
-    ).textContent =
-      dates.size;
-
-
-    document.getElementById(
-      "monthRiders"
-    ).textContent =
-      riders;
-
-
-    document.getElementById(
-      "monthDistance"
-    ).textContent =
-      distance.toLocaleString();
-
-
-    document.getElementById(
-      "monthHighway"
-    ).textContent =
-      highway.toLocaleString();
-
-  }
-
-
-  // ==========================================
-  // メンバー別集計
-  // ==========================================
-
-  function renderMemberSummary() {
-
-    const area =
-      document.getElementById(
-        "memberSummary"
-      );
-
-
-    area.innerHTML = "";
-
-
-    const counts = {};
-
-    const distances = {};
-
-
-    membersData.forEach(
-      member => {
-
-        counts[
-          member.name
-        ] = 0;
-
-
-        distances[
-          member.name
-        ] = 0;
-
-      }
-    );
-
-
-    tripGroupsData.forEach(
-      item => {
-
-        const members =
-          Array.isArray(
-            item.members
-          )
-            ? item.members
-            : [];
-
-
-        members.forEach(
-          name => {
-
-            if (
-              counts[name] ===
-              undefined
-            ) {
-
-              counts[name] =
-                0;
-
-              distances[name] =
-                0;
-
-            }
-
-
-            counts[name]++;
-
-
-            distances[name] +=
-              Number(
-                item.distance || 0
-              );
-
-          }
-        );
-
-      }
-    );
-
-
-    legacyTripsData.forEach(
-      item => {
-
-        const name =
-          item.memberName;
-
-
-        if (
-          counts[name] ===
-          undefined
-        ) {
-
-          counts[name] =
-            0;
-
-          distances[name] =
-            0;
-
-        }
-
-
-        counts[name]++;
-
-
-        distances[name] +=
-          Number(
-            item.distance || 0
-          );
-
-      }
-    );
-
-
-    const names =
-      Object.keys(
-        counts
-      );
-
-
-    if (
-      names.length === 0
-    ) {
-
-      area.innerHTML =
-        '<div class="empty">まだデータがありません。</div>';
-
-      return;
-
-    }
-
-
-    names.forEach(
-      name => {
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-
-        row.className =
-          "history-item";
-
-
-        row.innerHTML = `
-
-          <strong>
-            ${escapeHtml(name)}
-          </strong>
-
-          <br>
-
-          🚐 配車参加：
-          ${counts[name]}
-          回
-
-          <br>
-
-          📏 個人総距離：
-          ${distances[name].toLocaleString()}
-          km
-
-        `;
-
-
-        area.appendChild(
-          row
-        );
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // コーチ履歴
-  // ==========================================
-
-  function renderCoachHistory() {
-
-    const area =
-      document.getElementById(
-        "coachHistory"
-      );
-
-
-    area.innerHTML = "";
-
-
-    if (
-      tripGroupsData.length === 0
-    ) {
-
-      area.innerHTML =
-        '<div class="empty">まだコーチ参加履歴がありません。</div>';
-
-      return;
-
-    }
-
-
-    const coachCounts = {};
-
-
-    coachesData.forEach(
-      coach => {
-
-        coachCounts[
-          coach.name
-        ] = 0;
-
-      }
-    );
-
-
-    tripGroupsData.forEach(
-      trip => {
-
-        const coaches =
-          Array.isArray(
-            trip.coaches
-          )
-            ? trip.coaches
-            : [];
-
-
-        coaches.forEach(
-          name => {
-
-            if (
-              coachCounts[name] ===
-              undefined
-            ) {
-
-              coachCounts[name] =
-                0;
-
-            }
-
-
-            coachCounts[name]++;
-
-          }
-        );
-
-      }
-    );
-
-
-    const names =
-      Object.keys(
-        coachCounts
-      );
-
-
-    names.forEach(
-      name => {
-
-        const count =
-          coachCounts[name];
-
-
-        const history =
-          tripGroupsData.filter(
-            trip =>
-              Array.isArray(
-                trip.coaches
-              ) &&
-              trip.coaches.includes(
-                name
-              )
-          );
-
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-
-        div.className =
-          "history-item";
-
-
-        let detail = "";
-
-
-        history.forEach(
-          trip => {
-
-            detail += `
-
-              <div style="margin-top:8px; padding-top:8px; border-top:1px solid #444;">
-
-                📅 ${escapeHtml(
-                  trip.tripDate || ""
-                )}
-
-                <br>
-
-                🏫 ${escapeHtml(
-                  trip.venueName || "未登録"
-                )}
-
-                <br>
-
-                🚗 車：
-                <span class="driver-name">
-                  ${escapeHtml(
-                    trip.driverName || "未登録"
-                  )}
-                </span>
-
-                <br>
-
-                📏 ${Number(
-                  trip.distance || 0
-                )} km
-
-                <br>
-
-                🛣️ 高速：
-                ${
-                  trip.highwayUsed
-                    ? `${Number(
-                        trip.highwayFee || 0
-                      ).toLocaleString()}円`
-                    : "なし"
-                }
-
-              </div>
-
-            `;
-
-          }
-        );
-
-
-        div.innerHTML = `
-
-          <div class="coach-history-title">
-            🏀 ${escapeHtml(name)}
-          </div>
-
-          <div>
-            参加回数：
-            <strong>${count}回</strong>
-          </div>
-
-          ${
-            count > 0
-              ? detail
-              : '<div class="empty">参加履歴なし</div>'
-          }
-
-        `;
-
-
-        area.appendChild(
-          div
-        );
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // HTMLエスケープ
-  // ==========================================
-
-  function escapeHtml(value) {
-
-    return String(value)
-
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-
-      .replace(
-        /</g,
-        "&lt;"
-      )
-
-      .replace(
-        />/g,
-        "&gt;"
-      )
-
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-
-      .replace(
-        /'/g,
-        "&#039;"
-      );
-
-  }
-
-
-  // ==========================================
-  // アプリ開始
-  // ==========================================
-
-  async function startApp() {
-
-    try {
-
-      setToday();
-
-      await initializeMembers();
-
-      await initializeCoaches();
-
-      await loadTrips();
-
-
-      document.getElementById(
-        "status"
-      ).textContent =
-        "Firebase接続OK ✅";
-
-
-    } catch (error) {
-
-      console.error(error);
-
-
-      document.getElementById(
-        "status"
-      ).textContent =
-        "Firebase接続エラー ❌";
-
-
-      alert(
-        "Firebaseとの接続でエラーが発生しました。\n\n" +
-        error.message
-      );
-
-    }
-
-  }
-
-
-  startApp();
+startApp();
 
 </script>
 
