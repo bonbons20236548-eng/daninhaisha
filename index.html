@@ -1641,21 +1641,20 @@ const venue=document.getElementById("coachVenueName").value.trim();
 const roundTrip =
 document.getElementById("coachRoundTrip")?.checked || false;
 
+const highwayRoundTrip =
+document.getElementById("coachHighwayRoundTrip")?.checked || false;
+
 const split =
 document.getElementById("coachSplit")?.checked || false;
 
 if(!date){
-
 alert("日付を入力してください。");
 return;
-
 }
 
 if(!venue){
-
 alert("会場名を入力してください。");
 return;
-
 }
 
 const cars=[];
@@ -1670,66 +1669,94 @@ const carElements=document.querySelectorAll(
 );
 
 if(!carElements.length){
-
 alert("車を1台以上追加してください。");
 return;
-
 }
 
-const multiplier=roundTrip ? 2 : 1;
+const distanceMultiplier=roundTrip ? 2 : 1;
 
 for(let i=0;i<carElements.length;i++){
 
 const car=carElements[i];
 
-const driver=car.querySelector(".coach-driver").value;
+const driver=
+car.querySelector(".coach-driver")?.value || "";
 
 const inputDistance=Number(
-car.querySelector(".coach-distance").value||0
+car.querySelector(".coach-distance")?.value || 0
 );
 
-const inputHighwayFee=Number(
-car.querySelector(".coach-highway-fee").value||0
+const highwayGo=Number(
+car.querySelector(".coach-highway-fee-go")?.value || 0
 );
 
-const memo=car.querySelector(
-".coach-highway-memo"
-).value.trim();
+const highwayReturn=Number(
+car.querySelector(".coach-highway-fee-return")?.value || 0
+);
+
+const memo=
+car.querySelector(".coach-highway-memo")?.value.trim() || "";
 
 const passengers=Array.from(
 car.querySelectorAll(".car-passenger:checked")
 ).map(x=>x.value);
 
 if(!driver){
-
 alert((i+1)+"台目の運転者を選択してください。");
 return;
-
 }
 
 if(!Number.isFinite(inputDistance)||inputDistance<0){
-
 alert((i+1)+"台目の距離を確認してください。");
 return;
-
 }
 
-if(!Number.isFinite(inputHighwayFee)||inputHighwayFee<0){
-
-alert((i+1)+"台目の高速料金を確認してください。");
+if(!Number.isFinite(highwayGo)||highwayGo<0){
+alert((i+1)+"台目の行きの高速料金を確認してください。");
 return;
+}
+
+if(!Number.isFinite(highwayReturn)||highwayReturn<0){
+alert((i+1)+"台目の帰りの高速料金を確認してください。");
+return;
+}
+
+const distance=
+inputDistance*distanceMultiplier;
+
+let highwayFee=0;
+
+if(highwayRoundTrip){
+
+if(highwayReturn>0){
+
+highwayFee=
+highwayGo+highwayReturn;
+
+}else{
+
+highwayFee=
+highwayGo*2;
 
 }
 
-const distance=inputDistance*multiplier;
+}else{
 
-const highwayFee=inputHighwayFee*multiplier;
+highwayFee=
+highwayGo;
 
-const gasCost=Math.round(distance*Number(gasRate));
+}
 
-const baseTotal=gasCost+highwayFee;
+const gasCost=
+Math.round(
+distance*Number(gasRate)
+);
 
-const carTotal=split
+const baseTotal=
+gasCost+highwayFee;
+
+const carTotal=
+split
 ?Math.round(baseTotal/2)
 :baseTotal;
 
@@ -1744,8 +1771,12 @@ distance:distance,
 gasRate:Number(gasRate),
 gasCost:gasCost,
 
-inputHighwayFee:inputHighwayFee,
+inputHighwayFee:highwayGo,
+highwayGo:highwayGo,
+highwayReturn:highwayReturn,
 highwayFee:highwayFee,
+
+highwayRoundTrip:highwayRoundTrip,
 
 highwayMemo:memo,
 
@@ -1761,15 +1792,20 @@ totalBaseCost+=baseTotal;
 
 }
 
-const totalCost=split
+const totalCost=
+split
 ?Math.round(totalBaseCost/2)
 :totalBaseCost;
 
-const participants=getCoachParticipants(cars);
+const participants=
+getCoachParticipants(cars);
 
 if(!participants.length){
 
-alert("参加する監督・コーチが登録されていません。");
+alert(
+"参加する監督・コーチが登録されていません。"
+);
+
 return;
 
 }
@@ -1782,49 +1818,117 @@ tripDate:date,
 venueName:venue,
 
 participants:participants,
+
 cars:cars,
-drivers:cars.map(x=>x.driver),
-carCount:cars.length,
 
-roundTrip:roundTrip,
-split:split,
+drivers:
+cars.map(x=>x.driver),
 
-totalDistance:totalDistance,
-gasRate:Number(gasRate),
-totalGasCost:totalGas,
-totalHighwayFee:totalHighway,
+carCount:
+cars.length,
 
-baseTotalCost:totalBaseCost,
-totalCost:totalCost,
+roundTrip:
+roundTrip,
 
-createdAt:new Date()
+highwayRoundTrip:
+highwayRoundTrip,
+
+split:
+split,
+
+totalDistance:
+totalDistance,
+
+gasRate:
+Number(gasRate),
+
+totalGasCost:
+totalGas,
+
+totalHighwayFee:
+totalHighway,
+
+baseTotalCost:
+totalBaseCost,
+
+totalCost:
+totalCost,
+
+createdAt:
+new Date()
 
 }
 );
 
 let label="片道";
 
-if(roundTrip&&split){
-label="往復・2チーム折半";
+if(roundTrip&&highwayRoundTrip&&split){
+
+label=
+"往復・高速往復・2チーム折半";
+
+}else if(roundTrip&&highwayRoundTrip){
+
+label=
+"往復・高速往復";
+
+}else if(roundTrip&&split){
+
+label=
+"往復・2チーム折半";
+
 }else if(roundTrip){
-label="往復";
+
+label=
+"往復";
+
+}else if(highwayRoundTrip&&split){
+
+label=
+"高速往復・2チーム折半";
+
+}else if(highwayRoundTrip){
+
+label=
+"高速往復";
+
 }else if(split){
-label="片道・2チーム折半";
+
+label=
+"片道・2チーム折半";
+
 }
 
 alert(
 "監督・コーチ配車を保存しました！\n\n"+
 "交通費合計（"+label+"）："+
-totalCost.toLocaleString()+"円"
+totalCost.toLocaleString()+
+"円"
 );
 
-document.getElementById("coachVenueName").value="";
-document.getElementById("coachCars").innerHTML="";
+document.getElementById(
+"coachVenueName"
+).value="";
 
-document.getElementById("coachRoundTrip").checked=false;
-document.getElementById("coachSplit").checked=false;
+document.getElementById(
+"coachCars"
+).innerHTML="";
 
-document.getElementById("coachCarTotal").innerHTML=
+document.getElementById(
+"coachRoundTrip"
+).checked=false;
+
+document.getElementById(
+"coachHighwayRoundTrip"
+).checked=false;
+
+document.getElementById(
+"coachSplit"
+).checked=false;
+
+document.getElementById(
+"coachCarTotal"
+).innerHTML=
 "合計距離：0 km<br>"+
 "合計ガソリン代：0 円<br>"+
 "合計高速料金：0 円<br>"+
