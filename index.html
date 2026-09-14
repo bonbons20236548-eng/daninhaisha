@@ -1383,49 +1383,126 @@ function calculateCarCost(car){
     car.querySelector(".coach-distance")?.value || 0
   );
 
-  const highwayFee = Number(
-    car.querySelector(".coach-highway-fee")?.value || 0
+  // 高速料金：行き
+  const highwayGo = Number(
+    car.querySelector(".coach-highway-fee-go")?.value || 0
   );
 
+  // 高速料金：帰り
+  const highwayReturn = Number(
+    car.querySelector(".coach-highway-fee-return")?.value || 0
+  );
+
+  // 距離の往復
   const roundTrip =
     document.getElementById("coachRoundTrip")?.checked || false;
 
+  // 高速料金の往復
+  const highwayRoundTrip =
+    document.getElementById("coachHighwayRoundTrip")?.checked || false;
+
+  // 2チーム折半
   const split =
     document.getElementById("coachSplit")?.checked || false;
 
+
+  /* =========================
+     距離
+  ========================= */
+
   const multiplier = roundTrip ? 2 : 1;
 
-  // 入力された距離・高速料金は「片道」
-  const actualDistance = distance * multiplier;
-  const actualHighwayFee = highwayFee * multiplier;
+  const actualDistance =
+    distance * multiplier;
 
-  // ガソリン代
-  const gasRateValue = Number(gasRate);
-  const gasCost = Math.round(actualDistance * gasRateValue);
 
-  // 折半前の合計
-  const baseTotal = gasCost + actualHighwayFee;
+  /* =========================
+     高速料金
+  ========================= */
 
-  // 2チーム折半
-  const payableTotal = split
-    ? Math.round(baseTotal / 2)
-    : baseTotal;
+  let actualHighwayFee = 0;
+
+  if(highwayRoundTrip){
+
+    // 帰り料金が入力されていれば
+    // 行き＋帰り
+    if(highwayReturn > 0){
+
+      actualHighwayFee =
+        highwayGo + highwayReturn;
+
+    }else{
+
+      // 帰りが空欄なら行き料金を2倍
+      actualHighwayFee =
+        highwayGo * 2;
+
+    }
+
+  }else{
+
+    // 往復チェックOFFなら行きだけ
+    actualHighwayFee =
+      highwayGo;
+
+  }
+
+
+  /* =========================
+     ガソリン代
+  ========================= */
+
+  const gasRateValue =
+    Number(gasRate);
+
+  const gasCost =
+    Math.round(
+      actualDistance * gasRateValue
+    );
+
+
+  /* =========================
+     合計
+  ========================= */
+
+  const baseTotal =
+    gasCost + actualHighwayFee;
+
+
+  const payableTotal =
+    split
+      ? Math.round(baseTotal / 2)
+      : baseTotal;
+
 
   return {
+
     inputDistance: distance,
+
     distance: actualDistance,
 
     gasRate: gasRateValue,
+
     gasCost: gasCost,
 
-    inputHighwayFee: highwayFee,
+    inputHighwayFee: highwayGo,
+
+    highwayGo: highwayGo,
+
+    highwayReturn: highwayReturn,
+
     highwayFee: actualHighwayFee,
 
     baseTotalCost: baseTotal,
+
     total: payableTotal,
 
     roundTrip: roundTrip,
+
+    highwayRoundTrip: highwayRoundTrip,
+
     split: split
+
   };
 
 }
