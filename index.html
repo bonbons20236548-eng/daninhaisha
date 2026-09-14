@@ -105,6 +105,35 @@ background:#292929;border-radius:12px;padding:14px;margin-bottom:10px;border:1px
 .member-check span{font-size:12px}
 .member-check input{transform:scale(1.05)}
 }
+/* 往復・折半 計算オプション */
+.calculation-options{
+  margin:12px 0 16px;
+  padding:12px;
+  background:#1b1b1b;
+  border:1px solid #333;
+  border-radius:10px;
+}
+
+.option-check{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 4px;
+  font-size:15px;
+  font-weight:bold;
+  color:#fff;
+  cursor:pointer;
+}
+
+.option-check input{
+  width:20px;
+  height:20px;
+  accent-color:#ff3f9f;
+}
+
+.option-check + .option-check{
+  margin-top:4px;
+}
 </style>
 </head>
 
@@ -212,6 +241,27 @@ background:#292929;border-radius:12px;padding:14px;margin-bottom:10px;border:1px
 
 <h3>🚗 車ごとの配車</h3>
 
+<div class="calculation-options">
+
+  <label class="option-check">
+    <input
+      type="checkbox"
+      id="coachRoundTrip"
+      onchange="updateCoachCarTotal()"
+    >
+    <span>🔄 往復で計算する</span>
+  </label>
+
+  <label class="option-check">
+    <input
+      type="checkbox"
+      id="coachSplit"
+      onchange="updateCoachCarTotal()"
+    >
+    <span>➗ 2チームで折半する</span>
+  </label>
+
+</div>
 <div id="coachCars"></div>
 
 <button class="add-car-button" onclick="addCoachCar()">
