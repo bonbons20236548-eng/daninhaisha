@@ -1385,11 +1385,8 @@ function calculateCarCost(car){
   const actualHighwayFee = highwayFee * multiplier;
 
   // ガソリン代
-  const gasRate = Number(
-    document.getElementById("coachGasRate")?.value || 20
-  );
-
-  const gasCost = Math.round(actualDistance * gasRate);
+  const gasRateValue = Number(gasRate);
+  const gasCost = Math.round(actualDistance * gasRateValue);
 
   // 折半前の合計
   const baseTotal = gasCost + actualHighwayFee;
@@ -1403,7 +1400,7 @@ function calculateCarCost(car){
     inputDistance: distance,
     distance: actualDistance,
 
-    gasRate: gasRate,
+    gasRate: gasRateValue,
     gasCost: gasCost,
 
     inputHighwayFee: highwayFee,
@@ -1417,7 +1414,6 @@ function calculateCarCost(car){
   };
 
 }
-
 
 window.updateCoachCarTotal=function(){
 
