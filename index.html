@@ -1426,6 +1426,12 @@ let totalGas=0;
 let totalHighway=0;
 let totalCost=0;
 
+const roundTrip =
+document.getElementById("coachRoundTrip")?.checked || false;
+
+const split =
+document.getElementById("coachSplit")?.checked || false;
+
 document.querySelectorAll("#coachCars .coach-car")
 .forEach(car=>{
 
@@ -1436,20 +1442,43 @@ totalGas+=cost.gasCost;
 totalHighway+=cost.highwayFee;
 totalCost+=cost.total;
 
-const gasElement=car.querySelector(".coach-gas-cost");
-const highwayElement=car.querySelector(".coach-highway-cost");
-const totalElement=car.querySelector(".coach-total-cost");
+const gasElement=
+car.querySelector(".coach-gas-cost");
 
-if(gasElement)
-gasElement.textContent=cost.gasCost.toLocaleString()+" 円";
+const highwayElement=
+car.querySelector(".coach-highway-cost");
 
-if(highwayElement)
-highwayElement.textContent=cost.highwayFee.toLocaleString()+" 円";
+const totalElement=
+car.querySelector(".coach-total-cost");
 
-if(totalElement)
-totalElement.textContent=cost.total.toLocaleString()+" 円";
+if(gasElement){
+
+gasElement.textContent=
+cost.gasCost.toLocaleString()+" 円";
+
+}
+
+if(highwayElement){
+
+highwayElement.textContent=
+cost.highwayFee.toLocaleString()+" 円";
+
+}
+
+if(totalElement){
+
+totalElement.textContent=
+cost.total.toLocaleString()+" 円";
+
+}
 
 });
+
+const directionLabel =
+roundTrip ? "往復" : "片道";
+
+const splitLabel =
+split ? "・2チーム折半" : "";
 
 document.getElementById("coachCarTotal").innerHTML=
 
@@ -1465,12 +1494,14 @@ totalGas.toLocaleString()+
 totalHighway.toLocaleString()+
 " 円</strong><br>"+
 
-"<strong>交通費合計："+
+"<strong>交通費合計（"+
+directionLabel+
+splitLabel+
+"）："+
 totalCost.toLocaleString()+
 " 円</strong>";
 
 };
-
 
 function getCoachParticipants(cars){
 
