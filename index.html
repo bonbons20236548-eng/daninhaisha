@@ -1537,6 +1537,12 @@ try{
 const date=document.getElementById("coachTripDate").value;
 const venue=document.getElementById("coachVenueName").value.trim();
 
+const roundTrip =
+document.getElementById("coachRoundTrip")?.checked || false;
+
+const split =
+document.getElementById("coachSplit")?.checked || false;
+
 if(!date){
 
 alert("日付を入力してください。");
@@ -1556,7 +1562,7 @@ const cars=[];
 let totalDistance=0;
 let totalGas=0;
 let totalHighway=0;
-let totalCost=0;
+let totalBaseCost=0;
 
 const carElements=document.querySelectorAll(
 "#coachCars .coach-car"
@@ -1569,17 +1575,19 @@ return;
 
 }
 
+const multiplier=roundTrip ? 2 : 1;
+
 for(let i=0;i<carElements.length;i++){
 
 const car=carElements[i];
 
 const driver=car.querySelector(".coach-driver").value;
 
-const distance=Number(
+const inputDistance=Number(
 car.querySelector(".coach-distance").value||0
 );
 
-const highwayFee=Number(
+const inputHighwayFee=Number(
 car.querySelector(".coach-highway-fee").value||0
 );
 
@@ -1598,32 +1606,49 @@ return;
 
 }
 
-if(!Number.isFinite(distance)||distance<0){
+if(!Number.isFinite(inputDistance)||inputDistance<0){
 
 alert((i+1)+"台目の距離を確認してください。");
 return;
 
 }
 
-if(!Number.isFinite(highwayFee)||highwayFee<0){
+if(!Number.isFinite(inputHighwayFee)||inputHighwayFee<0){
 
 alert((i+1)+"台目の高速料金を確認してください。");
 return;
 
 }
 
-const gasCost=Math.round(distance*gasRate);
-const carTotal=gasCost+highwayFee;
+const distance=inputDistance*multiplier;
+
+const highwayFee=inputHighwayFee*multiplier;
+
+const gasCost=Math.round(distance*Number(gasRate));
+
+const baseTotal=gasCost+highwayFee;
+
+const carTotal=split
+?Math.round(baseTotal/2)
+:baseTotal;
 
 cars.push({
 
 driver:driver,
 passengers:passengers,
+
+inputDistance:inputDistance,
 distance:distance,
-gasRate:gasRate,
+
+gasRate:Number(gasRate),
 gasCost:gasCost,
+
+inputHighwayFee:inputHighwayFee,
 highwayFee:highwayFee,
+
 highwayMemo:memo,
+
+baseTotalCost:baseTotal,
 totalCost:carTotal
 
 });
@@ -1631,9 +1656,13 @@ totalCost:carTotal
 totalDistance+=distance;
 totalGas+=gasCost;
 totalHighway+=highwayFee;
-totalCost+=carTotal;
+totalBaseCost+=baseTotal;
 
 }
+
+const totalCost=split
+?Math.round(totalBaseCost/2)
+:totalBaseCost;
 
 const participants=getCoachParticipants(cars);
 
@@ -1647,34 +1676,60 @@ return;
 await addDoc(
 collection(db,"coachTrips"),
 {
+
 tripDate:date,
 venueName:venue,
+
 participants:participants,
 cars:cars,
 drivers:cars.map(x=>x.driver),
 carCount:cars.length,
+
+roundTrip:roundTrip,
+split:split,
+
 totalDistance:totalDistance,
-gasRate:gasRate,
+gasRate:Number(gasRate),
 totalGasCost:totalGas,
 totalHighwayFee:totalHighway,
+
+baseTotalCost:totalBaseCost,
 totalCost:totalCost,
+
 createdAt:new Date()
+
 }
 );
 
+let label="片道";
+
+if(roundTrip&&split){
+label="往復・2チーム折半";
+}else if(roundTrip){
+label="往復";
+}else if(split){
+label="片道・2チーム折半";
+}
+
 alert(
 "監督・コーチ配車を保存しました！\n\n"+
-"交通費合計："+totalCost.toLocaleString()+"円"
+"交通費合計（"+label+"）："+
+totalCost.toLocaleString()+"円"
 );
 
 document.getElementById("coachVenueName").value="";
 document.getElementById("coachCars").innerHTML="";
 
+document.getElementById("coachRoundTrip").checked=false;
+document.getElementById("coachSplit").checked=false;
+
 document.getElementById("coachCarTotal").innerHTML=
 "合計距離：0 km<br>"+
 "合計ガソリン代：0 円<br>"+
 "合計高速料金：0 円<br>"+
-"<strong>交通費合計：0 円</strong>";
+"<strong>交通費合計（片道）：0 円</strong>";
+
+addCoachCar();
 
 await loadCoachTrips();
 
