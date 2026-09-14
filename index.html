@@ -2385,7 +2385,14 @@ totalGas.toLocaleString()+
 totalFee.toLocaleString()+
 ' 円<br>'+
 
-'<strong>💰 交通費合計：'+
+'<strong>💰 交通費合計（'+
+(item.roundTrip === true
+  ? '往復'
+  : '片道')+
+(item.split === true
+  ? '・2チーム折半'
+  : '')+
+'）：'+
 totalCost.toLocaleString()+
 ' 円</strong>'+
 
