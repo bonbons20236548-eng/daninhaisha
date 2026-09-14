@@ -1287,18 +1287,33 @@ oninput="updateCoachCarTotal()"
 
 </div>
 
-<label>高速料金（円）</label>
+<div class="highway-fee-box">
+
+<label>高速料金・行き（円）</label>
 
 <input
 type="number"
-class="coach-highway-fee"
+class="coach-highway-fee-go"
 min="0"
 value="0"
-placeholder="高速を使った場合だけ入力"
+placeholder="行きの高速料金"
 inputmode="numeric"
 oninput="updateCoachCarTotal()"
 >
 
+<label>高速料金・帰り（円）</label>
+
+<input
+type="number"
+class="coach-highway-fee-return"
+min="0"
+value="0"
+placeholder="帰りの高速料金"
+inputmode="numeric"
+oninput="updateCoachCarTotal()"
+>
+
+</div>
 <label>ETC・高速メモ</label>
 
 <textarea
