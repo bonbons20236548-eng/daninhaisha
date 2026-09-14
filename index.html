@@ -2602,6 +2602,54 @@ if(date===null)return;
 const venue=prompt("会場名",item.venueName||"");
 if(venue===null)return;
 
+
+/* =========================
+   往復・2チーム折半
+========================= */
+
+const oldRoundTrip=item.roundTrip===true;
+const oldSplit=item.split===true;
+
+const roundTripAnswer=prompt(
+"往復設定\n\n1＝往復\n0＝片道",
+oldRoundTrip?"1":"0"
+);
+
+if(roundTripAnswer===null)return;
+
+if(!["0","1"].includes(roundTripAnswer.trim())){
+
+alert("1 または 0 を入力してください。");
+return;
+
+}
+
+const roundTrip=roundTripAnswer.trim()==="1";
+
+
+const splitAnswer=prompt(
+"2チーム折半\n\n1＝折半\n0＝折半しない",
+oldSplit?"1":"0"
+);
+
+if(splitAnswer===null)return;
+
+if(!["0","1"].includes(splitAnswer.trim())){
+
+alert("1 または 0 を入力してください。");
+return;
+
+}
+
+const split=splitAnswer.trim()==="1";
+
+const multiplier=roundTrip?2:1;
+
+
+/* =========================
+   車データ
+========================= */
+
 let cars=Array.isArray(item.cars)?item.cars:[];
 
 if(!cars.length){
@@ -2630,11 +2678,15 @@ Number(item.gasRate||gasRate)
 
 }
 
+
 const newCars=[];
 
 for(let i=0;i<cars.length;i++){
 
 const old=cars[i];
+
+
+/* 運転者 */
 
 const driver=prompt(
 (i+1)+"台目・運転者",
@@ -2642,6 +2694,9 @@ old.driver||""
 );
 
 if(driver===null)return;
+
+
+/* 同乗者 */
 
 const passengers=prompt(
 (i+1)+"台目・同乗者\n\nカンマ区切り",
@@ -2652,12 +2707,36 @@ Array.isArray(old.passengers)
 
 if(passengers===null)return;
 
-const distance=prompt(
-(i+1)+"台目・距離（km）",
-old.distance||0
+
+/* 片道距離 */
+
+const oldInputDistance=
+Number(
+old.inputDistance ??
+(
+Number(old.distance||0) /
+(oldRoundTrip?2:1)
+)
 );
 
-if(distance===null)return;
+const distanceInput=prompt(
+(i+1)+"台目・片道距離（km）",
+oldInputDistance
+);
+
+if(distanceInput===null)return;
+
+const inputDistance=Number(distanceInput);
+
+if(!Number.isFinite(inputDistance)||inputDistance<0){
+
+alert("距離は0以上の数字にしてください。");
+return;
+
+}
+
+
+/* ガソリン単価 */
 
 const oldGasRate=Number(
 old.gasRate||item.gasRate||gasRate
@@ -2679,12 +2758,36 @@ return;
 
 }
 
-const fee=prompt(
-(i+1)+"台目・高速料金（円）",
-old.highwayFee||0
+
+/* 片道高速料金 */
+
+const oldInputHighwayFee=
+Number(
+old.inputHighwayFee ??
+(
+Number(old.highwayFee||0) /
+(oldRoundTrip?2:1)
+)
 );
 
-if(fee===null)return;
+const highwayInput=prompt(
+(i+1)+"台目・片道高速料金（円）",
+oldInputHighwayFee
+);
+
+if(highwayInput===null)return;
+
+const inputHighwayFee=Number(highwayInput);
+
+if(!Number.isFinite(inputHighwayFee)||inputHighwayFee<0){
+
+alert("高速料金は0以上の数字にしてください。");
+return;
+
+}
+
+
+/* ETCメモ */
 
 const memo=prompt(
 (i+1)+"台目・ETCメモ",
@@ -2693,10 +2796,34 @@ old.highwayMemo||""
 
 if(memo===null)return;
 
-const distanceNumber=Number(distance)||0;
-const highwayFee=Number(fee)||0;
-const gasCost=Math.round(distanceNumber*carGasRate);
-const carTotal=gasCost+highwayFee;
+
+/* =========================
+   再計算
+========================= */
+
+const actualDistance=
+inputDistance*multiplier;
+
+const actualHighwayFee=
+inputHighwayFee*multiplier;
+
+const gasCost=
+Math.round(
+actualDistance*carGasRate
+);
+
+const baseTotal=
+gasCost+actualHighwayFee;
+
+const carTotal=
+split
+?Math.round(baseTotal/2)
+:baseTotal;
+
+
+/* =========================
+   保存用車データ
+========================= */
 
 newCars.push({
 
@@ -2707,38 +2834,73 @@ passengers:passengers
 .map(x=>x.trim())
 .filter(Boolean),
 
-distance:distanceNumber,
+inputDistance:inputDistance,
+distance:actualDistance,
+
 gasRate:carGasRate,
 gasCost:gasCost,
-highwayFee:highwayFee,
+
+inputHighwayFee:inputHighwayFee,
+highwayFee:actualHighwayFee,
+
 highwayMemo:memo.trim(),
+
+baseTotalCost:baseTotal,
 totalCost:carTotal
 
 });
 
 }
 
-const participants=getCoachParticipants(newCars);
 
-const totalDistance=newCars.reduce(
+/* =========================
+   合計
+========================= */
+
+const participants=
+getCoachParticipants(newCars);
+
+if(!participants.length){
+
+alert("参加する監督・コーチが登録されていません。");
+return;
+
+}
+
+
+const totalDistance=
+newCars.reduce(
 (sum,x)=>sum+Number(x.distance||0),
 0
 );
 
-const totalGas=newCars.reduce(
+const totalGas=
+newCars.reduce(
 (sum,x)=>sum+Number(x.gasCost||0),
 0
 );
 
-const totalFee=newCars.reduce(
+const totalFee=
+newCars.reduce(
 (sum,x)=>sum+Number(x.highwayFee||0),
 0
 );
 
-const totalCost=newCars.reduce(
-(sum,x)=>sum+Number(x.totalCost||0),
+const baseTotalCost=
+newCars.reduce(
+(sum,x)=>sum+Number(x.baseTotalCost||0),
 0
 );
+
+const totalCost=
+split
+?Math.round(baseTotalCost/2)
+:baseTotalCost;
+
+
+/* =========================
+   Firestore更新
+========================= */
 
 await updateDoc(
 doc(db,"coachTrips",id),
@@ -2746,23 +2908,51 @@ doc(db,"coachTrips",id),
 
 tripDate:date,
 venueName:venue,
+
 participants:participants,
+
 cars:newCars,
 drivers:newCars.map(x=>x.driver),
 carCount:newCars.length,
+
+roundTrip:roundTrip,
+split:split,
+
 totalDistance:totalDistance,
 totalGasCost:totalGas,
 totalHighwayFee:totalFee,
+
+baseTotalCost:baseTotalCost,
 totalCost:totalCost
 
 }
 );
 
+
 await loadCoachTrips();
+
+
+let label="片道";
+
+if(roundTrip&&split){
+
+label="往復・2チーム折半";
+
+}else if(roundTrip){
+
+label="往復";
+
+}else if(split){
+
+label="片道・2チーム折半";
+
+}
+
 
 alert(
 "変更しました。\n\n"+
-"交通費合計："+totalCost.toLocaleString()+"円"
+"交通費合計（"+label+"）："+
+totalCost.toLocaleString()+"円"
 );
 
 };
