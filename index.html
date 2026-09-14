@@ -1364,23 +1364,57 @@ title.textContent="🚗 "+(index+1)+"台目";
 
 function calculateCarCost(car){
 
-const distance=Number(
-car.querySelector(".coach-distance")?.value||0
-);
+  const distance = Number(
+    car.querySelector(".coach-distance")?.value || 0
+  );
 
-const highwayFee=Number(
-car.querySelector(".coach-highway-fee")?.value||0
-);
+  const highwayFee = Number(
+    car.querySelector(".coach-highway-fee")?.value || 0
+  );
 
-const gasCost=Math.round(distance*gasRate);
-const total=gasCost+highwayFee;
+  const roundTrip =
+    document.getElementById("coachRoundTrip")?.checked || false;
 
-return {
-distance:distance,
-gasCost:gasCost,
-highwayFee:highwayFee,
-total:total
-};
+  const split =
+    document.getElementById("coachSplit")?.checked || false;
+
+  const multiplier = roundTrip ? 2 : 1;
+
+  // 入力された距離・高速料金は「片道」
+  const actualDistance = distance * multiplier;
+  const actualHighwayFee = highwayFee * multiplier;
+
+  // ガソリン代
+  const gasRate = Number(
+    document.getElementById("coachGasRate")?.value || 20
+  );
+
+  const gasCost = Math.round(actualDistance * gasRate);
+
+  // 折半前の合計
+  const baseTotal = gasCost + actualHighwayFee;
+
+  // 2チーム折半
+  const payableTotal = split
+    ? Math.round(baseTotal / 2)
+    : baseTotal;
+
+  return {
+    inputDistance: distance,
+    distance: actualDistance,
+
+    gasRate: gasRate,
+    gasCost: gasCost,
+
+    inputHighwayFee: highwayFee,
+    highwayFee: actualHighwayFee,
+
+    baseTotalCost: baseTotal,
+    total: payableTotal,
+
+    roundTrip: roundTrip,
+    split: split
+  };
 
 }
 
